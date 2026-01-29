@@ -57,36 +57,44 @@ const BeforeAfterSlider = ({ beforeImage, afterImage, alt }) => {
       <img
         src={afterImage}
         alt={`After ${alt}`}
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        loading="lazy"
       />
-      <div className="absolute top-4 right-4 bg-primary px-3 py-1 rounded text-white text-xs font-bold uppercase z-10">After</div>
+      <div className="absolute top-4 right-4 bg-primary px-3 py-1 rounded text-white text-xs font-bold uppercase z-10 animate-pulse-soft">After</div>
 
       {/* Before Image (Foreground, clipped) */}
       <div
-        className="absolute inset-0 w-full h-full overflow-hidden border-r-4 border-primary"
+        className="absolute inset-0 w-full h-full overflow-hidden border-r-4 border-primary transition-all duration-75"
         style={{ width: `${sliderPosition}%` }}
       >
         <img
           src={beforeImage}
           alt={`Before ${alt}`}
-          className="absolute inset-0 w-full h-full object-cover max-w-none"
+          className="absolute inset-0 w-full h-full object-cover max-w-none group-hover:scale-105 transition-transform duration-300"
           style={{ width: containerRef.current ? containerRef.current.offsetWidth : '100%' }}
+          loading="lazy"
         />
-         <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1 rounded text-white text-xs font-bold uppercase z-10">Before</div>
+         <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1 rounded text-white text-xs font-bold uppercase z-10 animate-pulse-soft">Before</div>
       </div>
 
       {/* Slider Handle */}
       <div
-        className="absolute inset-y-0"
+        className="absolute inset-y-0 transition-all duration-75"
         style={{ left: `${sliderPosition}%` }}
       >
         <div
-            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 size-10 rounded-full bg-primary flex items-center justify-center shadow-[0_0_20px_rgba(0,145,255,0.5)] z-20 hover:scale-110 transition-transform"
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 size-10 rounded-full bg-primary flex items-center justify-center shadow-[0_0_20px_rgba(0,145,255,0.5)] z-20 hover:scale-125 active:scale-110 transition-transform animate-glow cursor-grab active:cursor-grabbing group-hover:shadow-[0_0_30px_rgba(0,145,255,0.8)]"
             onMouseDown={handleMouseDown}
             onTouchStart={handleTouchStart}
         >
-          <span className="material-symbols-outlined text-white">unfold_more</span>
+          <span className="material-symbols-outlined text-white animate-float">unfold_more</span>
         </div>
+      </div>
+
+      {/* Indicator lines */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-y-0 left-1/4 w-px bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-y-0 right-1/4 w-px bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
     </div>
   );

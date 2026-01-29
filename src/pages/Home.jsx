@@ -2,40 +2,46 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
+  const [heroReady, setHeroReady] = React.useState(false);
+
+  React.useLayoutEffect(() => {
+    setHeroReady(true);
+  }, []);
+
   return (
     <>
       {/* Hero Section */}
       <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: "linear-gradient(rgba(0,0,0,0.4), rgba(5,5,5,1)), url('https://images.unsplash.com/photo-1603584173870-7f3ca9940280?q=80&w=2069&auto=format&fit=crop')" }}></div>
         <div className="relative z-10 text-center px-4 max-w-5xl">
-          <div className="flex flex-col items-center mb-8">
+          <div className={`flex flex-col items-center mb-8 ${heroReady ? 'animate-fade-in-up' : 'opacity-0'}`}>
             <div className="w-32 h-0.5 bg-white/10 mb-8 relative overflow-hidden">
-              <div className="absolute top-0 left-0 h-full w-1/2 bg-primary animate-[shimmer_2s_infinite]"></div>
+              <div className="absolute top-0 left-0 h-full w-1/2 bg-primary animate-shimmer"></div>
             </div>
-            <p className="text-white/60 font-bold tracking-[0.5em] uppercase text-[10px] mb-4">Establishing Excellence Since 2012</p>
+            <p className="text-white/60 font-bold tracking-[0.5em] uppercase text-[10px] mb-4 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>Establishing Excellence Since 2012</p>
           </div>
-          <h1 className="text-white text-7xl md:text-[110px] font-black leading-[0.9] tracking-tighter mb-10 uppercase">
-            The Art of<br/><span className="text-stroke">Perfection</span>
+          <h1 className={`text-white text-7xl md:text-[110px] font-black leading-[0.9] tracking-tighter mb-10 uppercase ${heroReady ? 'animate-slide-in-left' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
+            The Art of<br/><span className="text-stroke text-glow">Perfection</span>
           </h1>
-          <p className="text-white/40 text-lg md:text-xl font-medium mb-12 max-w-2xl mx-auto leading-relaxed">
+          <p className={`text-white/40 text-lg md:text-xl font-medium mb-12 max-w-2xl mx-auto leading-relaxed ${heroReady ? 'animate-slide-in-right' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
             High-performance detailing for the modern collector. Precision engineered care for elite automotive assets.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/gallery" className="min-w-[220px] bg-primary text-white flex items-center justify-center h-14 px-10 rounded font-black uppercase tracking-[0.2em] text-[11px] hover:bg-white hover:text-black transition-all">
+          <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 ${heroReady ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.5s' }}>
+            <Link to="/gallery" className="min-w-[220px] bg-primary text-white flex items-center justify-center h-14 px-10 rounded font-black uppercase tracking-[0.2em] text-[11px] hover:bg-white hover:text-black transition-all hover:scale-105 hover:-translate-y-1">
                 Explore Services
             </Link>
-            <Link to="/booking" className="min-w-[220px] border border-white/20 bg-white/5 backdrop-blur-md text-white flex items-center justify-center h-14 px-10 rounded font-black uppercase tracking-[0.2em] text-[11px] hover:bg-white hover:text-black transition-all">
+            <Link to="/booking" className="min-w-[220px] border border-white/20 bg-white/5 backdrop-blur-md text-white flex items-center justify-center h-14 px-10 rounded font-black uppercase tracking-[0.2em] text-[11px] hover:bg-white hover:text-black transition-all hover:scale-105 hover:-translate-y-1">
                 Book Session
             </Link>
           </div>
         </div>
-        <div className="absolute bottom-12 left-12 flex flex-col gap-2">
+        <div className="absolute bottom-12 left-12 flex flex-col gap-2 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
             <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Status</div>
             <div className="flex items-center gap-3">
             <div className="w-40 h-[1px] bg-white/10 relative">
-                <div className="absolute top-0 left-0 h-full w-2/3 bg-primary shadow-[0_0_8px_#0091FF]"></div>
+                <div className="absolute top-0 left-0 h-full w-2/3 bg-primary shadow-[0_0_8px_#0091FF] animate-glow"></div>
             </div>
-            <span className="text-[10px] font-bold text-primary tracking-tighter">01 / 04</span>
+            <span className="text-[10px] font-bold text-primary tracking-tighter animate-pulse-soft">01 / 04</span>
             </div>
         </div>
         <div className="absolute bottom-12 right-12">
@@ -49,7 +55,7 @@ const Home = () => {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-24 gap-12">
             <div className="max-w-2xl">
                 <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-[1px] bg-primary"></div>
+                <div className="w-8 h-[1px] bg-primary animate-glow"></div>
                 <h2 className="text-primary text-[11px] font-black tracking-[0.4em] uppercase">Core Capabilities</h2>
                 </div>
                 <h3 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">Precision<br/>Treatments</h3>
@@ -60,10 +66,10 @@ const Home = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
             {/* Service 1 */}
-            <div className="group relative overflow-hidden bg-panel-dark border border-white/5 p-8 transition-all duration-500 hover:bg-white/5 h-[600px] flex flex-col">
+            <div className="group relative overflow-hidden bg-panel-dark border border-white/5 p-8 transition-all duration-500 hover:bg-white/5 h-[600px] flex flex-col hover:border-primary/50 hover-lift">
                 <div className="relative z-10 flex flex-col h-full justify-between">
                     <div>
-                        <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-12">01 / Protection</div>
+                        <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-12 group-hover:animate-glow">01 / Protection</div>
                         <h4 className="text-3xl font-black uppercase tracking-tight mb-4 group-hover:text-primary transition-colors">Ceramic Coating</h4>
                         <p className="text-white/40 text-sm leading-relaxed mb-12 group-hover:text-white/60 transition-colors">Next-generation molecular surface protection offering permanent hydrophobic properties and deep gloss.</p>
                     </div>
@@ -78,10 +84,10 @@ const Home = () => {
                 </div>
             </div>
             {/* Service 2 */}
-            <div className="group relative overflow-hidden bg-panel-dark border border-white/5 p-8 transition-all duration-500 hover:bg-white/5 h-[600px] flex flex-col">
+            <div className="group relative overflow-hidden bg-panel-dark border border-white/5 p-8 transition-all duration-500 hover:bg-white/5 h-[600px] flex flex-col hover:border-primary/50 hover-lift">
                 <div className="relative z-10 flex flex-col h-full justify-between">
                     <div>
-                        <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-12">02 / Interior</div>
+                        <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-12 group-hover:animate-glow">02 / Interior</div>
                         <h4 className="text-3xl font-black uppercase tracking-tight mb-4 group-hover:text-primary transition-colors">Concours Studio</h4>
                         <p className="text-white/40 text-sm leading-relaxed mb-12 group-hover:text-white/60 transition-colors">Micro-cleaning of every pore and stitch using pH-neutral organic agents specifically for fine hide and carbon.</p>
                     </div>
@@ -96,10 +102,10 @@ const Home = () => {
                 </div>
             </div>
             {/* Service 3 */}
-            <div className="group relative overflow-hidden bg-panel-dark border border-white/5 p-8 transition-all duration-500 hover:bg-white/5 h-[600px] flex flex-col">
+            <div className="group relative overflow-hidden bg-panel-dark border border-white/5 p-8 transition-all duration-500 hover:bg-white/5 h-[600px] flex flex-col hover:border-primary/50 hover-lift">
                 <div className="relative z-10 flex flex-col h-full justify-between">
                     <div>
-                        <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-12">03 / Refinement</div>
+                        <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-12 group-hover:animate-glow">03 / Refinement</div>
                         <h4 className="text-3xl font-black uppercase tracking-tight mb-4 group-hover:text-primary transition-colors">Paint Correction</h4>
                         <p className="text-white/40 text-sm leading-relaxed mb-12 group-hover:text-white/60 transition-colors">Multi-stage abrasive refinement to eliminate defects, swirls, and micro-marring for a leveled optical finish.</p>
                     </div>
@@ -122,35 +128,35 @@ const Home = () => {
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
         <div className="max-w-[1440px] mx-auto">
             <div className="text-center mb-24">
-            <h2 className="text-primary text-[11px] font-black tracking-[0.5em] uppercase mb-6">Luxe Collective</h2>
+            <h2 className="text-primary text-[11px] font-black tracking-[0.5em] uppercase mb-6 animate-glow">Luxe Collective</h2>
             <h3 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-8 italic">The Membership</h3>
             <p className="text-white/40 max-w-xl mx-auto font-medium text-sm">Automated maintenance schedules and prioritized slot allocation for the most dedicated automotive enthusiasts.</p>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-            <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div className="space-y-4">
-                <span className="material-symbols-outlined text-primary text-3xl">ac_unit</span>
+            <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-12 stagger-animation">
+                <div className="space-y-4 hover-lift">
+                <span className="material-symbols-outlined text-primary text-3xl animate-float">ac_unit</span>
                 <h5 className="text-lg font-black uppercase tracking-tight">Climate Optimized Storage</h5>
                 <p className="text-white/40 text-[13px] leading-relaxed">Dedicated bays with active humidity control and 24/7 telemetry monitoring of your vehicle's health.</p>
                 </div>
-                <div className="space-y-4">
-                <span className="material-symbols-outlined text-primary text-3xl">analytics</span>
+                <div className="space-y-4 hover-lift">
+                <span className="material-symbols-outlined text-primary text-3xl animate-float" style={{ animationDelay: '0.2s' }}>analytics</span>
                 <h5 className="text-lg font-black uppercase tracking-tight">Digital Ledger</h5>
                 <p className="text-white/40 text-[13px] leading-relaxed">Blockchain-verified maintenance records and high-definition photography of every aesthetic intervention.</p>
                 </div>
-                <div className="space-y-4">
-                <span className="material-symbols-outlined text-primary text-3xl">smart_toy</span>
+                <div className="space-y-4 hover-lift">
+                <span className="material-symbols-outlined text-primary text-3xl animate-float" style={{ animationDelay: '0.4s' }}>smart_toy</span>
                 <h5 className="text-lg font-black uppercase tracking-tight">Precision Monitoring</h5>
                 <p className="text-white/40 text-[13px] leading-relaxed">Regular battery conditioning and tire rotation schedules managed by our concierge automated system.</p>
                 </div>
-                <div className="space-y-4">
-                <span className="material-symbols-outlined text-primary text-3xl">hub</span>
+                <div className="space-y-4 hover-lift">
+                <span className="material-symbols-outlined text-primary text-3xl animate-float" style={{ animationDelay: '0.6s' }}>hub</span>
                 <h5 className="text-lg font-black uppercase tracking-tight">Exclusive Network</h5>
                 <p className="text-white/40 text-[13px] leading-relaxed">VIP access to private rallies, track experiences, and pre-market vehicle acquisition opportunities.</p>
                 </div>
             </div>
             <div className="lg:col-span-5">
-                <div className="bg-panel-dark border border-primary/20 p-12 relative rounded-xl">
+                <div className="bg-panel-dark border border-primary/20 p-12 relative rounded-xl hover-lift">
                 <div className="absolute top-0 right-0 p-4">
                     <span className="text-[10px] font-black text-primary tracking-widest uppercase border border-primary/30 px-3 py-1">Limited Availability</span>
                 </div>
@@ -161,7 +167,7 @@ const Home = () => {
                     <span className="text-white/40 text-sm uppercase font-bold tracking-widest">/ Month</span>
                     </div>
                 </div>
-                <div className="space-y-6 mb-12">
+                <div className="space-y-6 mb-12 stagger-animation">
                     <div className="flex items-center gap-4 group">
                     <div className="size-2 rounded-full bg-primary group-hover:scale-150 transition-transform"></div>
                     <span className="text-sm font-medium text-white/70">Bi-weekly Ceramic Maintenance</span>
@@ -179,16 +185,16 @@ const Home = () => {
                     <span className="text-sm font-medium text-white/70">Zero-Wait Priority Scheduling</span>
                     </div>
                 </div>
-                <button className="w-full bg-white text-black h-16 rounded font-black uppercase tracking-[0.2em] text-[11px] hover:bg-primary hover:text-white transition-all">
+                <button className="w-full bg-white text-black h-16 rounded font-black uppercase tracking-[0.2em] text-[11px] hover:bg-primary hover:text-white transition-all hover-lift">
                         Request Invitation
-                    </button>
+                </button>
                 <div className="mt-8 pt-8 border-t border-white/5 flex justify-between items-center">
                     <span className="text-[10px] text-white/30 uppercase font-black tracking-widest">Slots Remaining: 04</span>
                     <div className="flex gap-1">
-                    <div className="size-1 bg-primary"></div>
-                    <div className="size-1 bg-primary"></div>
-                    <div className="size-1 bg-primary"></div>
-                    <div className="size-1 bg-primary"></div>
+                    <div className="size-1 bg-primary animate-pulse-soft"></div>
+                    <div className="size-1 bg-primary animate-pulse-soft" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="size-1 bg-primary animate-pulse-soft" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="size-1 bg-primary animate-pulse-soft" style={{ animationDelay: '0.3s' }}></div>
                     <div className="size-1 bg-white/10"></div>
                     </div>
                 </div>
