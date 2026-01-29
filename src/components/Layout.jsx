@@ -54,7 +54,7 @@ const Navbar = () => {
         </motion.div>
 
         <nav className="hidden lg:flex items-center gap-8">
-          {navLinks.map((link, i) => (
+          {navLinks.map((link) => (
             <motion.div key={link.name} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 to={link.path}
@@ -210,7 +210,7 @@ const Footer = () => {
           {[
             { title: 'Company', links: ['The Studio', 'Our Work', 'Pricing'] },
             { title: 'Services', links: ['Coatings', 'Correction', 'Preservation'] },
-          ].map((section, idx) => (
+          ].map((section) => (
             <motion.div key={section.title} className="md:col-span-2" variants={itemVariants}>
               <h6 className={`text-[11px] font-black uppercase tracking-[0.3em] mb-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                 {section.title}

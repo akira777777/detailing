@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const LazyImage = ({ src, alt, placeholder = 'blur', className = '' }) => {
   const [imageSrc, setImageSrc] = useState(placeholder === 'blur' ? null : src);
