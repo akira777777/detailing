@@ -1,7 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
+import { PageHeader } from '../components/ui/Components';
+import { pricingConfig } from '../data/mockData';
 
 const Calculator = () => {
+  const { addToast } = useToast();
   const [vehicle, setVehicle] = useState('sedan');
   const [condition, setCondition] = useState('new');
   const [modules, setModules] = useState({
@@ -10,42 +14,19 @@ const Calculator = () => {
     interior: false
   });
 
-  const prices = {
-    base: {
-        sedan: 0,
-        suv: 100,
-        sport: 50,
-        luxury: 150
-    },
-    conditionMultiplier: {
-        new: 1,
-        used: 1.2,
-        bad: 1.5
-    },
-    modules: {
-        coating: 1250,
-        correction: 850,
-        interior: 450
-    }
-  };
-
   const total = useMemo(() => {
     let subtotal = 0;
 
     // Add module costs
-    if (modules.coating) subtotal += prices.modules.coating;
-    if (modules.correction) subtotal += prices.modules.correction;
-    if (modules.interior) subtotal += prices.modules.interior;
+    if (modules.coating) subtotal += pricingConfig.modules.coating;
+    if (modules.correction) subtotal += pricingConfig.modules.correction;
+    if (modules.interior) subtotal += pricingConfig.modules.interior;
 
-    // Apply condition multiplier to relevant services (Correction mostly, but for simplicity let's apply to base labor which we can abstract)
-    // Actually Screen 7 logic is simpler: likely modules are fixed price, maybe adjusted by vehicle size.
-    // Let's assume modules scale with vehicle size slightly.
-
-    subtotal += prices.base[vehicle];
+    subtotal += pricingConfig.base[vehicle];
 
     // Condition affects labor heavy tasks like correction
     if (modules.correction) {
-        subtotal += (prices.modules.correction * prices.conditionMultiplier[condition]) - prices.modules.correction;
+        subtotal += (pricingConfig.modules.correction * pricingConfig.conditionMultiplier[condition]) - pricingConfig.modules.correction;
     }
 
     return subtotal;
@@ -58,14 +39,11 @@ const Calculator = () => {
   return (
     <div className="pt-32 pb-24 px-6 lg:px-12 bg-background-dark min-h-screen">
       <div className="max-w-[1440px] mx-auto">
-        <div className="mb-16">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-[1px] bg-primary shadow-[0_0_10px_#0091FF]"></div>
-            <span className="text-primary text-[11px] font-black tracking-[0.4em] uppercase">Configuration Studio</span>
-          </div>
-          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none mb-6">Service Cost<br/>Calculator</h1>
-          <p className="text-white/40 max-w-xl text-sm leading-relaxed font-medium">Configure your bespoke detailing package. Our pricing algorithm calculates precision estimates based on vehicle geometry and surface requirements.</p>
-        </div>
+        <PageHeader
+            label="Configuration Studio"
+            title={<>Service Cost<br/>Calculator</>}
+            description="Configure your bespoke detailing package. Our pricing algorithm calculates precision estimates based on vehicle geometry and surface requirements."
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-8 space-y-12">
@@ -143,9 +121,9 @@ const Calculator = () => {
               </div>
               <div className="space-y-4">
                  {[
-                    { id: 'coating', title: 'Level 3 Ceramic Coating', desc: 'Multi-layer nano-technological protection. 5-year durability.', icon: 'layers', cost: prices.modules.coating },
-                    { id: 'correction', title: 'Precision Paint Correction', desc: 'Optical refinement for a swirl-free mirror finish.', icon: 'auto_fix_high', cost: prices.modules.correction },
-                    { id: 'interior', title: 'Interior Concours Detail', desc: 'Deep pore cleaning and leather preservation treatment.', icon: 'vacuum', cost: prices.modules.interior }
+                    { id: 'coating', title: 'Level 3 Ceramic Coating', desc: 'Multi-layer nano-technological protection. 5-year durability.', icon: 'layers', cost: pricingConfig.modules.coating },
+                    { id: 'correction', title: 'Precision Paint Correction', desc: 'Optical refinement for a swirl-free mirror finish.', icon: 'auto_fix_high', cost: pricingConfig.modules.correction },
+                    { id: 'interior', title: 'Interior Concours Detail', desc: 'Deep pore cleaning and leather preservation treatment.', icon: 'vacuum', cost: pricingConfig.modules.interior }
                  ].map((mod) => (
                     <div key={mod.id} className={`bg-panel-dark border p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all rounded-xl ${modules[mod.id] ? 'border-primary/30 bg-primary/5' : 'border-white/5 hover:border-white/20'}`}>
                         <div className="flex gap-6 items-start md:items-center">
@@ -186,14 +164,14 @@ const Calculator = () => {
                             <p className="text-[10px] text-white/40 uppercase font-black tracking-widest mb-1">Vehicle</p>
                             <p className="text-sm font-bold capitalize text-white">{vehicle}</p>
                         </div>
-                        <span className="text-xs font-bold text-white">+${prices.base[vehicle]}</span>
+                        <span className="text-xs font-bold text-white">+${pricingConfig.base[vehicle]}</span>
                     </div>
                     <div className="flex justify-between items-start">
                         <div>
                             <p className="text-[10px] text-white/40 uppercase font-black tracking-widest mb-1">Surface Condition</p>
                             <p className="text-sm font-bold capitalize text-white">{condition}</p>
                         </div>
-                        <span className="text-xs font-bold text-white">x{prices.conditionMultiplier[condition]} (Correction)</span>
+                        <span className="text-xs font-bold text-white">x{pricingConfig.conditionMultiplier[condition]} (Correction)</span>
                     </div>
                     <div className="flex justify-between items-start">
                         <div>
@@ -212,10 +190,17 @@ const Calculator = () => {
                     </div>
                 </div>
                 <div className="space-y-4">
-                    <Link to="/booking" className="w-full flex items-center justify-center bg-primary text-white h-16 rounded font-black uppercase tracking-[0.2em] text-[11px] hover:bg-white hover:text-black transition-all shadow-[0_0_20px_rgba(0,145,255,0.3)]">
+                    <Link
+                        to="/booking"
+                        onClick={() => addToast('Configuration applied to booking!', 'success')}
+                        className="w-full flex items-center justify-center bg-primary text-white h-16 rounded font-black uppercase tracking-[0.2em] text-[11px] hover:bg-white hover:text-black transition-all shadow-[0_0_20px_rgba(0,145,255,0.3)]"
+                    >
                         Book This Configuration
                     </Link>
-                    <button className="w-full border border-white/10 text-white/60 h-14 rounded font-black uppercase tracking-[0.2em] text-[11px] hover:border-white hover:text-white transition-all">
+                    <button
+                        onClick={() => addToast('Configuration saved to your profile.', 'info')}
+                        className="w-full border border-white/10 text-white/60 h-14 rounded font-black uppercase tracking-[0.2em] text-[11px] hover:border-white hover:text-white transition-all"
+                    >
                         Save for later
                     </button>
                 </div>

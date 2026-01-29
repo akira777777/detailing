@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
 
 const Booking = () => {
   const navigate = useNavigate();
+  const { addToast } = useToast();
   const [selectedDate, setSelectedDate] = useState(24);
   const [selectedTime, setSelectedTime] = useState('10:30 AM');
 
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   const handleConfirm = () => {
+    addToast('Booking successfully scheduled!', 'success');
     navigate('/booking-confirmation');
   };
 

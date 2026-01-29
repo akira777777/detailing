@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import LazyImage from '../components/LazyImage';
+import { SectionHeader } from '../components/ui/Components';
 
 const Home = () => {
   const [heroReady, setHeroReady] = React.useState(false);
@@ -53,16 +55,14 @@ const Home = () => {
       <section className="py-32 px-6 lg:px-12 bg-background-dark border-t border-white/5">
         <div className="max-w-[1440px] mx-auto">
             <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-24 gap-12">
-            <div className="max-w-2xl">
-                <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-[1px] bg-primary animate-glow"></div>
-                <h2 className="text-primary text-[11px] font-black tracking-[0.4em] uppercase">Core Capabilities</h2>
+                <div className="max-w-2xl">
+                    <SectionHeader
+                        label="Core Capabilities"
+                        title={<>Precision<br/>Treatments</>}
+                        description="Our workshop utilizes advanced chemical engineering and surgical-grade techniques to ensure your vehicle transcends factory standards."
+                        className="mb-0"
+                    />
                 </div>
-                <h3 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">Precision<br/>Treatments</h3>
-            </div>
-            <p className="text-white/40 max-w-sm text-sm leading-relaxed font-medium">
-                Our workshop utilizes advanced chemical engineering and surgical-grade techniques to ensure your vehicle transcends factory standards.
-            </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
             {/* Service 1 */}
@@ -80,7 +80,7 @@ const Home = () => {
                     </div>
                 </div>
                 <div className="absolute top-0 right-0 w-full h-full opacity-0 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none">
-                <img alt="Service Detail" className="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTMdvEMwlCD6wcRMOYy1Rii2vcGxzxfpHpzRFRAufSO7PQXZhsNKsOnbnJoa87IAp2Twef6tlc2WsBC3AHJVo4ZJlQuS52m94Kf-CUBT1l570BGkvnwBjobTcg40v11RNmRau0DpF5_GRO8dK6h8cwXnSOgl0ojvgY4URO5rN8YNSqJ1Gm-WxwPoF96Psd9oDGi26jnWbZ4-AeJHY8g2SIMp20p9JCaL9kmDvwmuJDcqmBuTRG-vSeNUL-Lv9H7C1vUh0s1LbB7u4"/>
+                    <LazyImage alt="Service Detail" className="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTMdvEMwlCD6wcRMOYy1Rii2vcGxzxfpHpzRFRAufSO7PQXZhsNKsOnbnJoa87IAp2Twef6tlc2WsBC3AHJVo4ZJlQuS52m94Kf-CUBT1l570BGkvnwBjobTcg40v11RNmRau0DpF5_GRO8dK6h8cwXnSOgl0ojvgY4URO5rN8YNSqJ1Gm-WxwPoF96Psd9oDGi26jnWbZ4-AeJHY8g2SIMp20p9JCaL9kmDvwmuJDcqmBuTRG-vSeNUL-Lv9H7C1vUh0s1LbB7u4"/>
                 </div>
             </div>
             {/* Service 2 */}
@@ -98,7 +98,7 @@ const Home = () => {
                     </div>
                 </div>
                 <div className="absolute top-0 right-0 w-full h-full opacity-0 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none">
-                <img alt="Service Detail" className="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXwI6jQd8TGolkaReFsVXHEY_hEsAJ4-iFgtQvUD9NcNbww40ZqhW3mNkq7OircX536i9yQKEIJ6GpUAUT-Yca0Opd2gbz3FxaRTivEAuq0jRvsOoYludq2AUOAlF9fAarC90w6M0A-Oj41aapcMCs_hm7ZIWHE0LyIdVV0DDU24uCGtqW49y6lM_BY2_RdzCG8u3tzQFkgcMmZT5f_9KV24M382qhS7YNhqu8LcxUi6AsANfxSjvXHs4FO4UNAxzSWdibX_oralM"/>
+                    <LazyImage alt="Service Detail" className="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXwI6jQd8TGolkaReFsVXHEY_hEsAJ4-iFgtQvUD9NcNbww40ZqhW3mNkq7OircX536i9yQKEIJ6GpUAUT-Yca0Opd2gbz3FxaRTivEAuq0jRvsOoYludq2AUOAlF9fAarC90w6M0A-Oj41aapcMCs_hm7ZIWHE0LyIdVV0DDU24uCGtqW49y6lM_BY2_RdzCG8u3tzQFkgcMmZT5f_9KV24M382qhS7YNhqu8LcxUi6AsANfxSjvXHs4FO4UNAxzSWdibX_oralM"/>
                 </div>
             </div>
             {/* Service 3 */}
@@ -116,7 +116,7 @@ const Home = () => {
                     </div>
                 </div>
                 <div className="absolute top-0 right-0 w-full h-full opacity-0 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none">
-                <img alt="Service Detail" className="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXQ3kGrd3kAssLJz0rNegxZG2LgCouc_tW9bjOO6trLiF8KW6crtaa0fB1DUSYfhRpSKVJw8VIAS-6FaWFrGC-yoLuOSQ3HXqqUYqWvJvURp_NzgLvCZX2RHXkc3SJ1yx1PBKQa5z_Ik-62myXb0UxMSz6TbZ4recw9ISxWgj4fD-R_oHBFw6XzpZBVIegy0lt4Q9KgY1tdTvEH3y9phF9wVqu3HA6zzdnEO8zCtLsAVdXRT351b_vfwUWYEuEFrNHiz6wGXiqoAw"/>
+                    <LazyImage alt="Service Detail" className="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXQ3kGrd3kAssLJz0rNegxZG2LgCouc_tW9bjOO6trLiF8KW6crtaa0fB1DUSYfhRpSKVJw8VIAS-6FaWFrGC-yoLuOSQ3HXqqUYqWvJvURp_NzgLvCZX2RHXkc3SJ1yx1PBKQa5z_Ik-62myXb0UxMSz6TbZ4recw9ISxWgj4fD-R_oHBFw6XzpZBVIegy0lt4Q9KgY1tdTvEH3y9phF9wVqu3HA6zzdnEO8zCtLsAVdXRT351b_vfwUWYEuEFrNHiz6wGXiqoAw"/>
                 </div>
             </div>
             </div>
