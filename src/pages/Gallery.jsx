@@ -1,45 +1,20 @@
 import React, { useState } from 'react';
 import BeforeAfterSlider from '../components/BeforeAfterSlider';
 import AnimatedSection from '../components/AnimatedSection';
-import LazyImage from '../components/LazyImage';
+import { PageHeader } from '../components/ui/Components';
+import { transformations } from '../data/mockData';
 
 const Gallery = () => {
     const [filter, setFilter] = useState('All');
 
-    const transformations = [
-        {
-            id: 1,
-            title: "Porsche 911 Carrera S",
-            category: "Luxury",
-            services: ["Stage 2 Paint Correction", "Gold Ceramic Package", "Wheel Decontamination"],
-            time: "18 Hours",
-            before: "https://lh3.googleusercontent.com/aida-public/AB6AXuCRUMtMysnBlgL_VKz55YRuUy5trgMbv1AuRqadZ7zvVfyU6nwjDSZeLh36ZessfGQ74ceXrkAHaEB6q1WQDkZueRAaNi-nwUXRqW1IToePd6ZEYNtqmA8HprFWDQEydRtZlKJR1t_yFOh2-zycQKKdVHat89iBboMRfzl7b7fYIqQG7ngcvuFNT-PlcNunE-sahCZT7tE7QCe97viGCdOXG0mR0P_WWT30ctMm0jQwoKTOxCvtVzeqdpoBQB7ERH8SRQDLyZR6W_I",
-            after: "https://lh3.googleusercontent.com/aida-public/AB6AXuDFCgomw-DjTCZV9OycWZOOTIUjoBJoJZCnHqOPKjDrRZCIwkF0XQTxM9ckLq2C9LJW8sh75qgpdHply7f02LB4WFSNqRTQ1rY2F1TcPiUBAyweBLS9rOLmo77ytOted0qmvfe6GV8R35Oul7U2mUq3o4Ex2SxeDpuMlsakz313PRHSsm-XbflSQgU9Qi-mPoeWWgVhdjxfYwlGdHrnzxZhGO4qiNbXrMpRITg42jrFTA7fNSOL8rIfNMPOAA32-r16gzXfxio_pxA"
-        },
-        {
-            id: 2,
-            title: "Land Rover Defender",
-            category: "SUV",
-            services: ["Iron Decontamination", "Trim Restoration", "Interior Deep Clean"],
-            time: "12 Hours",
-            before: "https://lh3.googleusercontent.com/aida-public/AB6AXuC3xGW1KzbrA0UXcgkZr-b8nUFSBEe5uM_kTy5C4vEqCFYOG9V2E9KuKDc8_Vyxrs4faXEILlDdGj1z4qOyt60CqRgYLLcovZKKK0K9uAps6jlMGSwToEaX7sInH4v1T84bYJqd2hGc59hX84AE6FLyftfYJUJ6KWKHPSjP_TX9rMElxTt5wDKGT5jBR49Nu76dx1kMVDUmScOnDAM7QWGjGPz8KYqAsVyOk8a8Uc6FbyI3tlxxlsGUWqqAvOwS0Dzx8IXyoYBvn5w",
-            after: "https://lh3.googleusercontent.com/aida-public/AB6AXuAePs0dEfcR_qyDiYkgjC_mF_rhUAnn_S7fpcSktbTzYV2jQafIPOD1xQ8oWQm8ZAjz5PZQvxWYdYdhyVP60NgLFC5bfKP8cpermYNJhTc0cz3KM0NQOhY5gyQARXiENd0vrM_d93H6eGMyr8eoXhb3Rh-JQ-Lg5XGYS9y7vYMDcgbIU7_4zpFdEFfey-IK34FmkMApJpS2zFo_vQbaEKgoHPiAK2Ht2ZCpyCoymnpgL3EmHHntdHQn6G3ILCzLDnkOAx8A1bxzC2s"
-        }
-    ];
-
     return (
         <div className="pt-32 pb-24 px-6 lg:px-12 bg-background-dark min-h-screen">
              <div className="max-w-[1440px] mx-auto">
-                <AnimatedSection className="flex flex-col gap-4 mb-16">
-                    <div className="flex items-center gap-2 text-primary font-bold tracking-widest uppercase text-xs animate-glow">
-                        <span className="h-px w-8 bg-primary animate-shimmer"></span>
-                        The Results
-                    </div>
-                    <h1 className="text-white text-5xl font-black leading-tight tracking-[-0.033em] uppercase animate-slide-in-left">Transformation<br/>Gallery</h1>
-                    <p className="text-white/40 text-lg max-w-2xl animate-fade-in-up">
-                        Witness the professional precision and showroom-quality results. Our gallery highlights the level of care we put into every vehicle that enters our studio.
-                    </p>
-                </AnimatedSection>
+                <PageHeader
+                    label="The Results"
+                    title={<>Transformation<br/>Gallery</>}
+                    description="Witness the professional precision and showroom-quality results. Our gallery highlights the level of care we put into every vehicle that enters our studio."
+                />
 
                 <div className="flex flex-wrap gap-3 items-center mb-12 stagger-animation">
                     <span className="text-xs font-bold uppercase text-white/40 mr-2">Filter By:</span>
