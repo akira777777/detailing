@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
 import { soundManager } from './utils/soundManager';
@@ -14,6 +16,8 @@ import AnimationsShowcase from './pages/AnimationsShowcase';
 
 function App() {
   useEffect(() => {
+    // Инициализация AOS
+    AOS.init({ duration: 800, once: false });
     // Инициализация звуков
     soundManager.init();
   }, []);

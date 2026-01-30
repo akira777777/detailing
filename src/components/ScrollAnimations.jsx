@@ -1,14 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
-
-// Инициализация AOS
-let aosInitialized = false;
-if (!aosInitialized) {
-  AOS.init({ duration: 800, once: false });
-  aosInitialized = true;
-}
 
 // Компонент с эффектом появления при скролле
 export const ScrollReveal = ({ 
