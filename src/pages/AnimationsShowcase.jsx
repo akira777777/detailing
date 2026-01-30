@@ -63,14 +63,14 @@ const AnimationsShowcase = () => {
   };
 
   return (
-    <div className={`min-h-screen pt-32 pb-20 px-4 md:px-8 lg:px-12 ${isDark ? 'bg-background-dark' : 'bg-white'}`}>
+    <div className="min-h-screen pt-32 pb-20 px-4 md:px-8 lg:px-12 bg-white dark:bg-background-dark transition-colors duration-300">
       {/* Header */}
       <ScrollReveal direction="up">
         <div className="max-w-5xl mx-auto text-center mb-20">
-          <h1 className={`text-4xl md:text-5xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
             🎨 Система анимаций & Микровзаимодействия
           </h1>
-          <p className={`text-lg ${isDark ? 'text-white/60' : 'text-gray-600'}`}>
+          <p className="text-lg text-gray-600 dark:text-white/60">
             Демонстрация всех возможностей Framer Motion, AOS, SVG анимаций и звуков
           </p>
         </div>
@@ -79,8 +79,8 @@ const AnimationsShowcase = () => {
       <div className="max-w-6xl mx-auto space-y-24">
         {/* Section 1: SVG Animated Icons */}
         <ScrollReveal direction="left">
-          <div className={`rounded-xl p-12 ${isDark ? 'bg-panel-dark' : 'bg-gray-50'}`}>
-            <h2 className={`text-2xl font-bold mb-12 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
+            <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
               ✨ SVG Анимированные иконки
             </h2>
 
@@ -92,8 +92,8 @@ const AnimationsShowcase = () => {
               viewport={{ once: false, amount: 0.3 }}
             >
               <motion.div className="flex flex-col items-center gap-4" variants={itemVariants}>
-                <AnimatedLogo className={`w-16 h-16 ${isDark ? 'text-primary' : 'text-primary'}`} />
-                <p className={`text-sm ${isDark ? 'text-white/60' : 'text-gray-600'}`}>Logo</p>
+                <AnimatedLogo className="w-16 h-16 text-primary" />
+                <p className="text-sm text-gray-600 dark:text-white/60">Logo</p>
               </motion.div>
 
               <motion.div className="flex flex-col items-center gap-4" variants={itemVariants}>
@@ -105,17 +105,17 @@ const AnimationsShowcase = () => {
                   }}
                 >
                   <AnimatedHeartIcon
-                    className={`w-16 h-16 ${isDark ? 'text-red-500' : 'text-red-500'}`}
+                    className="w-16 h-16 text-red-500"
                     filled={likeCount > 0}
                   />
                 </motion.div>
-                <p className={`text-sm ${isDark ? 'text-white/60' : 'text-gray-600'}`}>
+                <p className="text-sm text-gray-600 dark:text-white/60">
                   Лайки: {likeCount}
                 </p>
               </motion.div>
 
               <motion.div className="flex flex-col items-center gap-4" variants={itemVariants}>
-                <p className={`text-sm ${isDark ? 'text-white/60' : 'text-gray-600'}`}>Рейтинг:</p>
+                <p className="text-sm text-gray-600 dark:text-white/60">Рейтинг:</p>
                 <div className="flex gap-1">
                   {selectedStars.map((active, idx) => (
                     <motion.button
@@ -134,8 +134,8 @@ const AnimationsShowcase = () => {
               </motion.div>
 
               <motion.div className="flex flex-col items-center gap-4" variants={itemVariants}>
-                <AnimatedArrowIcon className={`w-16 h-16 ${isDark ? 'text-primary' : 'text-primary'}`} />
-                <p className={`text-sm ${isDark ? 'text-white/60' : 'text-gray-600'}`}>Arrow</p>
+                <AnimatedArrowIcon className="w-16 h-16 text-primary" />
+                <p className="text-sm text-gray-600 dark:text-white/60">Arrow</p>
               </motion.div>
             </motion.div>
           </div>
@@ -143,8 +143,8 @@ const AnimationsShowcase = () => {
 
         {/* Section 2: Animated Buttons */}
         <ScrollReveal direction="right">
-          <div className={`rounded-xl p-12 ${isDark ? 'bg-panel-dark' : 'bg-gray-50'}`}>
-            <h2 className={`text-2xl font-bold mb-12 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
+            <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
               🔘 Анимированные кнопки
             </h2>
 
@@ -204,19 +204,19 @@ const AnimationsShowcase = () => {
 
         {/* Section 3: Scroll Animations */}
         <ScrollReveal direction="up">
-          <div className={`rounded-xl p-12 ${isDark ? 'bg-panel-dark' : 'bg-gray-50'}`}>
-            <h2 className={`text-2xl font-bold mb-12 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
+            <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
               📜 Scroll-trigger анимации
             </h2>
 
             <motion.div className="space-y-12">
               {/* ScrollScale Example */}
               <ScrollScale>
-                <div className={`p-8 rounded-lg border-2 border-primary ${isDark ? 'bg-surface-dark' : 'bg-blue-50'}`}>
-                  <h3 className={`font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                <div className="p-8 rounded-lg border-2 border-primary bg-blue-50 dark:bg-surface-dark transition-colors duration-300">
+                  <h3 className="font-bold mb-2 text-gray-900 dark:text-white">
                     Scale Animation
                   </h3>
-                  <p className={isDark ? 'text-white/60' : 'text-gray-600'}>
+                  <p className="text-gray-600 dark:text-white/60">
                     Этот элемент масштабируется при скролле
                   </p>
                 </div>
@@ -224,14 +224,14 @@ const AnimationsShowcase = () => {
 
               {/* CountUp Example */}
               <AosReveal animation="zoom-in">
-                <div className={`p-8 rounded-lg border-2 border-green-500 ${isDark ? 'bg-surface-dark' : 'bg-green-50'}`}>
-                  <h3 className={`font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                <div className="p-8 rounded-lg border-2 border-green-500 bg-green-50 dark:bg-surface-dark transition-colors duration-300">
+                  <h3 className="font-bold mb-2 text-gray-900 dark:text-white">
                     Counter Animation
                   </h3>
                   <div className="text-4xl font-bold text-green-500">
                     <CountUp from={0} to={5000} duration={3} />+
                   </div>
-                  <p className={`mt-2 ${isDark ? 'text-white/60' : 'text-gray-600'}`}>
+                  <p className="mt-2 text-gray-600 dark:text-white/60">
                     Счётчик с анимацией
                   </p>
                 </div>
@@ -239,11 +239,11 @@ const AnimationsShowcase = () => {
 
               {/* Parallax Example */}
               <Parallax offset={100}>
-                <div className={`p-8 rounded-lg border-2 border-purple-500 ${isDark ? 'bg-surface-dark' : 'bg-purple-50'}`}>
-                  <h3 className={`font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                <div className="p-8 rounded-lg border-2 border-purple-500 bg-purple-50 dark:bg-surface-dark transition-colors duration-300">
+                  <h3 className="font-bold mb-2 text-gray-900 dark:text-white">
                     Parallax Effect
                   </h3>
-                  <p className={isDark ? 'text-white/60' : 'text-gray-600'}>
+                  <p className="text-gray-600 dark:text-white/60">
                     Элемент движется параллельно при скролле
                   </p>
                 </div>
@@ -254,8 +254,8 @@ const AnimationsShowcase = () => {
 
         {/* Section 4: Features Grid */}
         <ScrollReveal direction="left">
-          <div className={`rounded-xl p-12 ${isDark ? 'bg-panel-dark' : 'bg-gray-50'}`}>
-            <h2 className={`text-2xl font-bold mb-12 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
+            <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
               🎯 Особенности
             </h2>
 
@@ -277,16 +277,14 @@ const AnimationsShowcase = () => {
                 <motion.div
                   key={idx}
                   variants={itemVariants}
-                  className={`p-6 rounded-lg border ${
-                    isDark ? 'bg-surface-dark border-white/10' : 'bg-white border-gray-200'
-                  } hover:border-primary transition-colors`}
+                  className="p-6 rounded-lg border bg-white border-gray-200 dark:bg-surface-dark dark:border-white/10 hover:border-primary transition-colors"
                   whileHover={{ y: -5 }}
                 >
                   <div className="text-3xl mb-3">{feature.icon}</div>
-                  <h3 className={`font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <h3 className="font-bold mb-2 text-gray-900 dark:text-white">
                     {feature.title}
                   </h3>
-                  <p className={isDark ? 'text-white/60' : 'text-gray-600'}>
+                  <p className="text-gray-600 dark:text-white/60">
                     {feature.desc}
                   </p>
                 </motion.div>
@@ -297,8 +295,8 @@ const AnimationsShowcase = () => {
 
         {/* Section 5: Interactive Demo */}
         <ScrollReveal direction="right">
-          <div className={`rounded-xl p-12 ${isDark ? 'bg-panel-dark' : 'bg-gray-50'}`}>
-            <h2 className={`text-2xl font-bold mb-12 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
+            <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
               🎪 Интерактивная демонстрация
             </h2>
 
@@ -320,7 +318,7 @@ const AnimationsShowcase = () => {
 
               <motion.p
                 variants={itemVariants}
-                className={`text-lg text-center max-w-2xl ${isDark ? 'text-white/60' : 'text-gray-600'}`}
+                className="text-lg text-center max-w-2xl text-gray-600 dark:text-white/60"
               >
                 Наведите на элементы и нажимайте кнопки, чтобы увидеть полный спектр анимаций и звуковых эффектов.
                 Попробуйте включить/отключить тёмный режим!
