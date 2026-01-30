@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "aos": "^2.3.4",
     "framer-motion": "^12.29.2",
     "howler": "^2.2.4",
     "react": "^19.2.0",
