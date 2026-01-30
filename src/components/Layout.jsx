@@ -139,6 +139,7 @@ const Navbar = () => {
 };
 
 const Footer = () => {
+  const { isDark } = useTheme();
   const footerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -177,6 +178,7 @@ const Footer = () => {
             </div>
             <p className="text-sm leading-relaxed max-w-xs mb-8 text-gray-600 dark:text-white/30 transition-colors">
               The final word in automotive surface preservation. We don't just detail, we re-engineer the aesthetic experience.
+            </p>
             <p className={`text-sm leading-relaxed max-w-xs mb-8 ${isDark ? 'text-white/30' : 'text-gray-600'}`}>
               Последнее слово в сохранении автомобильных поверхностей. Мы не просто детейлинг — мы переосмысливаем эстетику.
             </p>
