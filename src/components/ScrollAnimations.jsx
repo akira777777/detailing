@@ -1,14 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
-
-// Инициализация AOS
-let aosInitialized = false;
-if (!aosInitialized) {
-  AOS.init({ duration: 800, once: false });
-  aosInitialized = true;
-}
 
 // Компонент с эффектом появления при скролле
 export const ScrollReveal = ({ 
@@ -159,7 +151,7 @@ export const ScrollBlur = ({ children, className = '' }) => {
   );
 };
 
-// Компонент с использованием AOS
+// AosReveal - refactored to use Framer Motion instead of AOS
 export const AosReveal = ({ 
   children, 
   animation = 'fade-up',
@@ -167,15 +159,34 @@ export const AosReveal = ({
   delay = 0,
   className = ''
 }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: false, amount: 0.2 });
+
+  // Map AOS animation names to Framer Motion variants
+  const animations = {
+    'fade-up': { hidden: { opacity: 0, y: 50 }, visible: { opacity: 1, y: 0 } },
+    'fade-down': { hidden: { opacity: 0, y: -50 }, visible: { opacity: 1, y: 0 } },
+    'fade-left': { hidden: { opacity: 0, x: 50 }, visible: { opacity: 1, x: 0 } },
+    'fade-right': { hidden: { opacity: 0, x: -50 }, visible: { opacity: 1, x: 0 } },
+    'zoom-in': { hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } },
+    'zoom-out': { hidden: { opacity: 0, scale: 1.2 }, visible: { opacity: 1, scale: 1 } },
+    'flip-up': { hidden: { opacity: 0, rotateX: 90 }, visible: { opacity: 1, rotateX: 0 } },
+    'flip-down': { hidden: { opacity: 0, rotateX: -90 }, visible: { opacity: 1, rotateX: 0 } },
+  };
+
+  const variant = animations[animation] || animations['fade-up'];
+
   return (
-    <div
+    <motion.div
+      ref={ref}
       className={className}
-      data-aos={animation}
-      data-aos-duration={duration}
-      data-aos-delay={delay}
+      initial="hidden"
+      animate={isInView ? 'visible' : 'hidden'}
+      variants={variant}
+      transition={{ duration: duration / 1000, delay: delay / 1000 }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 };
 

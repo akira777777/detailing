@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import { AnimatedLogo } from './AnimatedIcons';
@@ -20,12 +21,12 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Gallery', path: '/gallery' },
-    { name: 'Calculator', path: '/calculator' },
-    { name: 'Booking', path: '/booking' },
-    { name: 'Dashboard', path: '/dashboard' },
-    { name: 'Animations', path: '/animations' },
+    { name: 'Главная', path: '/' },
+    { name: 'Галерея', path: '/gallery' },
+    { name: 'Калькулятор', path: '/calculator' },
+    { name: 'Запись', path: '/booking' },
+    { name: 'Кабинет', path: '/dashboard' },
+    { name: 'Анимации', path: '/animations' },
   ];
 
   const handleThemeToggle = () => {
@@ -90,7 +91,7 @@ const Navbar = () => {
               className={`hidden sm:block text-[11px] font-bold uppercase tracking-[0.15em] transition-colors ${isDark ? 'text-white hover:text-primary' : 'text-gray-600 hover:text-primary'}`}
               onClick={() => soundManager.playTone(500, 50, 0.15)}
             >
-              Login
+              Войти
             </Link>
           </motion.div>
 
@@ -100,7 +101,7 @@ const Navbar = () => {
               className="bg-white dark:bg-white text-black px-6 py-2.5 rounded font-black text-[11px] uppercase tracking-[0.15em] hover:bg-primary hover:text-white transition-all"
               onClick={() => soundManager.playTone(600, 100, 0.2)}
             >
-              Book Now
+              Записаться
             </Link>
           </motion.div>
 
@@ -183,7 +184,7 @@ const Footer = () => {
               </h2>
             </div>
             <p className={`text-sm leading-relaxed max-w-xs mb-8 ${isDark ? 'text-white/30' : 'text-gray-600'}`}>
-              The final word in automotive surface preservation. We don't just detail, we re-engineer the aesthetic experience.
+              Последнее слово в сохранении автомобильных поверхностей. Мы не просто детейлинг — мы переосмысливаем эстетику.
             </p>
             <div className="flex gap-4">
               {[1, 2].map((i) => (
@@ -208,8 +209,8 @@ const Footer = () => {
           </motion.div>
 
           {[
-            { title: 'Company', links: ['The Studio', 'Our Work', 'Pricing'] },
-            { title: 'Services', links: ['Coatings', 'Correction', 'Preservation'] },
+            { title: 'Компания', links: ['Студия', 'Наши работы', 'Цены'] },
+            { title: 'Услуги', links: ['Покрытия', 'Коррекция', 'Защита'] },
           ].map((section) => (
             <motion.div key={section.title} className="md:col-span-2" variants={itemVariants}>
               <h6 className={`text-[11px] font-black uppercase tracking-[0.3em] mb-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -233,12 +234,12 @@ const Footer = () => {
 
           <motion.div className="md:col-span-4" variants={itemVariants}>
             <h6 className={`text-[11px] font-black uppercase tracking-[0.3em] mb-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              Newsletter
+              Рассылка
             </h6>
             <div className="flex">
               <input
                 type="email"
-                placeholder="Email Address"
+                placeholder="Email адрес"
                 className={`rounded-l px-4 py-3 text-sm outline-none focus:border-primary border transition-colors ${
                   isDark
                     ? 'bg-white/5 border-white/10 focus:bg-white/10 text-white'
@@ -251,7 +252,7 @@ const Footer = () => {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => soundManager.playTone(600, 100, 0.2)}
               >
-                Join
+                Подписаться
               </motion.button>
             </div>
           </motion.div>
@@ -265,7 +266,7 @@ const Footer = () => {
           viewport={{ once: false, amount: 0.5 }}
         >
           <p className={`text-[10px] uppercase tracking-[0.3em] font-bold ${isDark ? 'text-white/20' : 'text-gray-500'}`}>
-            © 2024 LUXE DETAIL SALON. BUILT FOR PERFECTION.
+            © 2024 LUXE DETAIL САЛОН. СОЗДАНО ДЛЯ СОВЕРШЕНСТВА.
           </p>
           <div className={`flex gap-12 text-[10px] uppercase tracking-[0.3em] font-bold ${isDark ? 'text-white/20' : 'text-gray-500'}`}>
             <motion.a
@@ -274,7 +275,7 @@ const Footer = () => {
               whileHover={{ scale: 1.1 }}
               onClick={() => soundManager.playTone(500, 50, 0.15)}
             >
-              Privacy
+              Конфиденциальность
             </motion.a>
             <motion.a
               href="#"
@@ -282,7 +283,7 @@ const Footer = () => {
               whileHover={{ scale: 1.1 }}
               onClick={() => soundManager.playTone(500, 50, 0.15)}
             >
-              Terms
+              Условия
             </motion.a>
           </div>
         </motion.div>
