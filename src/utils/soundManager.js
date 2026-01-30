@@ -11,7 +11,10 @@ class SoundManager {
   // Lazy initialize AudioContext
   getAudioContext() {
     if (!this.audioContext) {
-      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const AudioCtor = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtor) {
+        this.audioContext = new AudioCtor();
+      }
     }
     return this.audioContext;
   }
@@ -61,6 +64,13 @@ class SoundManager {
     if (!this.enabled) return;
 
     const audioContext = this.getAudioContext();
+    if (!audioContext) return;
+
+    // Ensure context is running (browsers may suspend it)
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
@@ -72,6 +82,10 @@ class SoundManager {
 
     gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+
+    oscillator.onended = () => {
+      gainNode.disconnect();
+    };
 
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + duration / 1000);
