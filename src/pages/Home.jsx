@@ -52,7 +52,7 @@ const Home = () => {
       </section>
 
       {/* Services Section */}
-      <section className="py-32 px-6 lg:px-12 bg-background-dark border-t border-white/5">
+      <section className="py-32 px-6 lg:px-12 bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-white/5 transition-colors duration-300">
         <div className="max-w-[1440px] mx-auto">
             <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-24 gap-12">
                 <div className="max-w-2xl">
@@ -66,14 +66,14 @@ const Home = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
             {/* Service 1 */}
-            <div className="group relative overflow-hidden bg-panel-dark border border-white/5 p-8 transition-all duration-500 hover:bg-white/5 h-[600px] flex flex-col hover:border-primary/50 hover-lift">
+            <div className="group relative overflow-hidden bg-white dark:bg-panel-dark border border-gray-200 dark:border-white/5 p-8 transition-all duration-500 hover:bg-gray-50 dark:hover:bg-white/5 h-[600px] flex flex-col hover:border-primary/50 hover-lift shadow-lg dark:shadow-none">
                 <div className="relative z-10 flex flex-col h-full justify-between">
                     <div>
                         <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-12 group-hover:animate-glow">01 / Protection</div>
-                        <h4 className="text-3xl font-black uppercase tracking-tight mb-4 group-hover:text-primary transition-colors">Ceramic Coating</h4>
-                        <p className="text-white/40 text-sm leading-relaxed mb-12 group-hover:text-white/60 transition-colors">Next-generation molecular surface protection offering permanent hydrophobic properties and deep gloss.</p>
+                        <h4 className="text-3xl font-black uppercase tracking-tight mb-4 text-gray-900 dark:text-white group-hover:text-primary transition-colors">Ceramic Coating</h4>
+                        <p className="text-gray-600 dark:text-white/40 text-sm leading-relaxed mb-12 group-hover:text-gray-900 dark:group-hover:text-white/60 transition-colors">Next-generation molecular surface protection offering permanent hydrophobic properties and deep gloss.</p>
                     </div>
-                    <div className="flex items-center gap-4 text-white font-bold text-[10px] tracking-[0.2em] uppercase">
+                    <div className="flex items-center gap-4 text-gray-900 dark:text-white font-bold text-[10px] tracking-[0.2em] uppercase">
                         <span>Details</span>
                         <div className="w-0 group-hover:w-8 h-[1px] bg-primary transition-all duration-500"></div>
                         <span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500">trending_flat</span>
@@ -84,14 +84,14 @@ const Home = () => {
                 </div>
             </div>
             {/* Service 2 */}
-            <div className="group relative overflow-hidden bg-panel-dark border border-white/5 p-8 transition-all duration-500 hover:bg-white/5 h-[600px] flex flex-col hover:border-primary/50 hover-lift">
+            <div className="group relative overflow-hidden bg-white dark:bg-panel-dark border border-gray-200 dark:border-white/5 p-8 transition-all duration-500 hover:bg-gray-50 dark:hover:bg-white/5 h-[600px] flex flex-col hover:border-primary/50 hover-lift shadow-lg dark:shadow-none">
                 <div className="relative z-10 flex flex-col h-full justify-between">
                     <div>
                         <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-12 group-hover:animate-glow">02 / Interior</div>
-                        <h4 className="text-3xl font-black uppercase tracking-tight mb-4 group-hover:text-primary transition-colors">Concours Studio</h4>
-                        <p className="text-white/40 text-sm leading-relaxed mb-12 group-hover:text-white/60 transition-colors">Micro-cleaning of every pore and stitch using pH-neutral organic agents specifically for fine hide and carbon.</p>
+                        <h4 className="text-3xl font-black uppercase tracking-tight mb-4 text-gray-900 dark:text-white group-hover:text-primary transition-colors">Concours Studio</h4>
+                        <p className="text-gray-600 dark:text-white/40 text-sm leading-relaxed mb-12 group-hover:text-gray-900 dark:group-hover:text-white/60 transition-colors">Micro-cleaning of every pore and stitch using pH-neutral organic agents specifically for fine hide and carbon.</p>
                     </div>
-                    <div className="flex items-center gap-4 text-white font-bold text-[10px] tracking-[0.2em] uppercase">
+                    <div className="flex items-center gap-4 text-gray-900 dark:text-white font-bold text-[10px] tracking-[0.2em] uppercase">
                         <span>Details</span>
                         <div className="w-0 group-hover:w-8 h-[1px] bg-primary transition-all duration-500"></div>
                         <span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500">trending_flat</span>
@@ -102,14 +102,14 @@ const Home = () => {
                 </div>
             </div>
             {/* Service 3 */}
-            <div className="group relative overflow-hidden bg-panel-dark border border-white/5 p-8 transition-all duration-500 hover:bg-white/5 h-[600px] flex flex-col hover:border-primary/50 hover-lift">
+            <div className="group relative overflow-hidden bg-white dark:bg-panel-dark border border-gray-200 dark:border-white/5 p-8 transition-all duration-500 hover:bg-gray-50 dark:hover:bg-white/5 h-[600px] flex flex-col hover:border-primary/50 hover-lift shadow-lg dark:shadow-none">
                 <div className="relative z-10 flex flex-col h-full justify-between">
                     <div>
                         <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-12 group-hover:animate-glow">03 / Refinement</div>
-                        <h4 className="text-3xl font-black uppercase tracking-tight mb-4 group-hover:text-primary transition-colors">Paint Correction</h4>
-                        <p className="text-white/40 text-sm leading-relaxed mb-12 group-hover:text-white/60 transition-colors">Multi-stage abrasive refinement to eliminate defects, swirls, and micro-marring for a leveled optical finish.</p>
+                        <h4 className="text-3xl font-black uppercase tracking-tight mb-4 text-gray-900 dark:text-white group-hover:text-primary transition-colors">Paint Correction</h4>
+                        <p className="text-gray-600 dark:text-white/40 text-sm leading-relaxed mb-12 group-hover:text-gray-900 dark:group-hover:text-white/60 transition-colors">Multi-stage abrasive refinement to eliminate defects, swirls, and micro-marring for a leveled optical finish.</p>
                     </div>
-                    <div className="flex items-center gap-4 text-white font-bold text-[10px] tracking-[0.2em] uppercase">
+                    <div className="flex items-center gap-4 text-gray-900 dark:text-white font-bold text-[10px] tracking-[0.2em] uppercase">
                         <span>Details</span>
                         <div className="w-0 group-hover:w-8 h-[1px] bg-primary transition-all duration-500"></div>
                         <span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500">trending_flat</span>
@@ -129,29 +129,29 @@ const Home = () => {
         <div className="max-w-[1440px] mx-auto">
             <div className="text-center mb-24">
             <h2 className="text-primary text-[11px] font-black tracking-[0.5em] uppercase mb-6 animate-glow">Luxe Collective</h2>
-            <h3 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-8 italic">The Membership</h3>
+            <h3 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-8 italic text-white">The Membership</h3>
             <p className="text-white/40 max-w-xl mx-auto font-medium text-sm">Automated maintenance schedules and prioritized slot allocation for the most dedicated automotive enthusiasts.</p>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
             <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-12 stagger-animation">
                 <div className="space-y-4 hover-lift">
                 <span className="material-symbols-outlined text-primary text-3xl animate-float">ac_unit</span>
-                <h5 className="text-lg font-black uppercase tracking-tight">Climate Optimized Storage</h5>
+                <h5 className="text-lg font-black uppercase tracking-tight text-white">Climate Optimized Storage</h5>
                 <p className="text-white/40 text-[13px] leading-relaxed">Dedicated bays with active humidity control and 24/7 telemetry monitoring of your vehicle's health.</p>
                 </div>
                 <div className="space-y-4 hover-lift">
                 <span className="material-symbols-outlined text-primary text-3xl animate-float" style={{ animationDelay: '0.2s' }}>analytics</span>
-                <h5 className="text-lg font-black uppercase tracking-tight">Digital Ledger</h5>
+                <h5 className="text-lg font-black uppercase tracking-tight text-white">Digital Ledger</h5>
                 <p className="text-white/40 text-[13px] leading-relaxed">Blockchain-verified maintenance records and high-definition photography of every aesthetic intervention.</p>
                 </div>
                 <div className="space-y-4 hover-lift">
                 <span className="material-symbols-outlined text-primary text-3xl animate-float" style={{ animationDelay: '0.4s' }}>smart_toy</span>
-                <h5 className="text-lg font-black uppercase tracking-tight">Precision Monitoring</h5>
+                <h5 className="text-lg font-black uppercase tracking-tight text-white">Precision Monitoring</h5>
                 <p className="text-white/40 text-[13px] leading-relaxed">Regular battery conditioning and tire rotation schedules managed by our concierge automated system.</p>
                 </div>
                 <div className="space-y-4 hover-lift">
                 <span className="material-symbols-outlined text-primary text-3xl animate-float" style={{ animationDelay: '0.6s' }}>hub</span>
-                <h5 className="text-lg font-black uppercase tracking-tight">Exclusive Network</h5>
+                <h5 className="text-lg font-black uppercase tracking-tight text-white">Exclusive Network</h5>
                 <p className="text-white/40 text-[13px] leading-relaxed">VIP access to private rallies, track experiences, and pre-market vehicle acquisition opportunities.</p>
                 </div>
             </div>
@@ -161,7 +161,7 @@ const Home = () => {
                     <span className="text-[10px] font-black text-primary tracking-widest uppercase border border-primary/30 px-3 py-1">Limited Availability</span>
                 </div>
                 <div className="mb-10">
-                    <h4 className="text-3xl font-black uppercase tracking-tight mb-2">Prestige Tier</h4>
+                    <h4 className="text-3xl font-black uppercase tracking-tight mb-2 text-white">Prestige Tier</h4>
                     <div className="flex items-baseline gap-2">
                     <span className="text-5xl font-black text-white">$499</span>
                     <span className="text-white/40 text-sm uppercase font-bold tracking-widest">/ Month</span>

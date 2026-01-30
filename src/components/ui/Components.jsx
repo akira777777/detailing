@@ -11,8 +11,8 @@ export const Button = ({
 
     const variants = {
         primary: "bg-primary text-white hover:bg-white hover:text-black",
-        outline: "border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white hover:text-black",
-        ghost: "bg-transparent text-white/60 hover:text-white"
+        outline: "border border-gray-200 dark:border-white/20 bg-white/5 backdrop-blur-md text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white hover:text-black",
+        ghost: "bg-transparent text-gray-500 dark:text-white/60 hover:text-gray-900 dark:hover:text-white"
     };
 
     return (
@@ -38,9 +38,9 @@ export const SectionHeader = ({
                 <div className="w-8 h-[1px] bg-primary animate-glow"></div>
                 <h2 className="text-primary text-[11px] font-black tracking-[0.4em] uppercase">{label}</h2>
             </div>
-            <h3 className="text-white text-5xl md:text-7xl font-black uppercase tracking-tighter mb-8">{title}</h3>
+            <h3 className="text-gray-900 dark:text-white text-5xl md:text-7xl font-black uppercase tracking-tighter mb-8 transition-colors">{title}</h3>
             {description && (
-                <p className="text-white/40 max-w-sm text-sm leading-relaxed font-medium">
+                <p className="text-gray-600 dark:text-white/40 max-w-sm text-sm leading-relaxed font-medium transition-colors">
                     {description}
                 </p>
             )}
@@ -60,11 +60,11 @@ export const PageHeader = ({
                 <span className="h-px w-8 bg-primary animate-shimmer"></span>
                 {label}
             </div>
-            <h1 className="text-white text-5xl md:text-7xl font-black leading-tight tracking-[-0.033em] uppercase animate-slide-in-left mb-6">
+            <h1 className="text-gray-900 dark:text-white text-5xl md:text-7xl font-black leading-tight tracking-[-0.033em] uppercase animate-slide-in-left mb-6 transition-colors">
                 {title}
             </h1>
             {description && (
-                <p className="text-white/40 text-lg max-w-2xl animate-fade-in-up">
+                <p className="text-gray-600 dark:text-white/40 text-lg max-w-2xl animate-fade-in-up transition-colors">
                     {description}
                 </p>
             )}
