@@ -5,6 +5,15 @@ class SoundManager {
     this.sounds = {};
     this.enabled = true;
     this.volume = 0.3;
+    this.audioContext = null; // Lazy initialized to prevent memory leak
+  }
+
+  // Lazy initialize AudioContext
+  getAudioContext() {
+    if (!this.audioContext) {
+      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return this.audioContext;
   }
 
   // Инициализация звуков
@@ -47,11 +56,11 @@ class SoundManager {
     this.enabled = enabled;
   }
 
-  // Генерация простого звука
+  // Generate a simple tone using shared AudioContext
   playTone(frequency = 440, duration = 100, volume = 0.3) {
     if (!this.enabled) return;
 
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const audioContext = this.getAudioContext();
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
