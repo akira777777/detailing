@@ -6,7 +6,10 @@ vi.mock('@neondatabase/serverless', () => ({
   neon: vi.fn(() => vi.fn().mockImplementation(async (strings, ...values) => {
     // Basic mock to simulate SQL behavior
     if (strings[0].includes('SELECT')) {
-      return [{ id: 1, date: '24', time: '10:30 AM', car_model: 'Test Car', package: 'Test Package', total_price: 100, status: 'Confirmed' }];
+      return [{ id: 1, date: '2023-10-24', time: '10:30 AM', car_model: 'Test Car', package: 'Test Package', total_price: 100, status: 'Confirmed' }];
+    }
+    if (strings[0].includes('INSERT')) {
+        return [{ id: 1 }];
     }
     return [];
   })),
@@ -19,6 +22,7 @@ describe('Booking API', () => {
     res = {
       status: vi.fn().mockReturnThis(),
       json: vi.fn().mockReturnThis(),
+      setHeader: vi.fn().mockReturnThis(),
     };
     process.env.DATABASE_URL = 'postgres://test:test@localhost/test';
   });
@@ -39,18 +43,18 @@ describe('Booking API', () => {
   it('should return 400 for invalid POST data (missing fields)', async () => {
     req = {
       method: 'POST',
-      body: { date: '24' },
+      body: { date: '2023-10-24' },
     };
     await handler(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: 'Validation failed' }));
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: 'Invalid booking data' }));
   });
 
-  it('should return 200 for valid POST data', async () => {
+  it('should return 201 for valid POST data', async () => {
     req = {
       method: 'POST',
       body: {
-        date: 24,
+        date: '2023-10-24',
         time: '10:30 AM',
         carModel: 'Tesla Model 3',
         packageName: 'Ceramic Coating',
@@ -58,7 +62,7 @@ describe('Booking API', () => {
       },
     };
     await handler(req, res);
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ message: 'Booking saved successfully' });
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ message: 'Booking confirmed successfully' }));
   });
 });
