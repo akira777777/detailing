@@ -10,9 +10,37 @@ const Booking = () => {
 
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
-  const handleConfirm = () => {
-    addToast('Booking successfully scheduled!', 'success');
-    navigate('/booking-confirmation');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleConfirm = async () => {
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('/api/booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          date: selectedDate,
+          time: selectedTime,
+          carModel: 'Tesla Model 3',
+          packageName: 'Ceramic Coating Package',
+          totalPrice: 499.00,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to confirm booking');
+      }
+
+      addToast('Booking successfully scheduled!', 'success');
+      navigate('/booking-confirmation');
+    } catch (error) {
+      addToast(error.message, 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -136,9 +164,13 @@ const Booking = () => {
                     <span className="text-gray-500 dark:text-white/50 text-[10px] font-black uppercase tracking-widest">Total Estimated</span>
                     <span className="text-gray-900 dark:text-white text-2xl font-black">$499.00</span>
                 </div>
-                <button onClick={handleConfirm} className="flex items-center gap-3 px-10 py-4 bg-primary rounded-xl text-white font-black text-lg shadow-2xl shadow-primary/40 hover:translate-y-[-2px] hover:shadow-primary/50 transition-all">
-                    <span>Confirm Booking</span>
-                    <span className="material-symbols-outlined">arrow_forward</span>
+                <button 
+                  onClick={handleConfirm} 
+                  disabled={isSubmitting}
+                  className={`flex items-center gap-3 px-10 py-4 bg-primary rounded-xl text-white font-black text-lg shadow-2xl shadow-primary/40 transition-all ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:translate-y-[-2px] hover:shadow-primary/50'}`}
+                >
+                    <span>{isSubmitting ? 'Processing...' : 'Confirm Booking'}</span>
+                    {!isSubmitting && <span className="material-symbols-outlined">arrow_forward</span>}
                 </button>
             </div>
         </div>
