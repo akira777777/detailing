@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, memo } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ToastItem = ({ id, message, type, duration, removeToast }) => {
+const ToastItem = memo(({ id, message, type, duration, removeToast }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             removeToast(id);
@@ -52,7 +52,7 @@ const ToastItem = ({ id, message, type, duration, removeToast }) => {
             </button>
         </motion.div>
     );
-};
+});
 
 export const ToastContainer = ({ toasts, removeToast }) => {
     return (
