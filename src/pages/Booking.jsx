@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
+import { Button } from '../components/ui/Components';
 
 const Booking = () => {
   const navigate = useNavigate();
@@ -68,11 +69,17 @@ const Booking = () => {
                     <div className="flex items-center justify-between mb-8">
                         <h3 className="text-gray-900 dark:text-white text-lg font-bold">Pick a Date</h3>
                         <div className="flex items-center gap-2">
-                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors">
+                            <button
+                                aria-label="Previous month"
+                                className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors"
+                            >
                                 <span className="material-symbols-outlined">chevron_left</span>
                             </button>
                             <p className="text-gray-900 dark:text-white text-base font-bold min-w-[140px] text-center uppercase tracking-wide">October 2023</p>
-                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors">
+                            <button
+                                aria-label="Next month"
+                                className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors"
+                            >
                                 <span className="material-symbols-outlined">chevron_right</span>
                             </button>
                         </div>
@@ -164,14 +171,14 @@ const Booking = () => {
                     <span className="text-gray-500 dark:text-white/50 text-[10px] font-black uppercase tracking-widest">Total Estimated</span>
                     <span className="text-gray-900 dark:text-white text-2xl font-black">$499.00</span>
                 </div>
-                <button 
+                <Button
                   onClick={handleConfirm} 
-                  disabled={isSubmitting}
-                  className={`flex items-center gap-3 px-10 py-4 bg-primary rounded-xl text-white font-black text-lg shadow-2xl shadow-primary/40 transition-all ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:translate-y-[-2px] hover:shadow-primary/50'}`}
+                  isLoading={isSubmitting}
+                  className="gap-3 px-10 py-4 rounded-xl text-lg shadow-2xl shadow-primary/40 h-auto"
                 >
                     <span>{isSubmitting ? 'Processing...' : 'Confirm Booking'}</span>
                     {!isSubmitting && <span className="material-symbols-outlined">arrow_forward</span>}
-                </button>
+                </Button>
             </div>
         </div>
       </div>
