@@ -5,6 +5,8 @@ export const Button = ({
     variant = 'primary',
     className = '',
     onClick,
+    // eslint-disable-next-line no-unused-vars
+    as: ButtonComponent = 'button',
     ...props
 }) => {
     const baseStyles = "min-w-[220px] flex items-center justify-center h-14 px-10 rounded font-black uppercase tracking-[0.2em] text-[11px] transition-all hover:scale-105 hover:-translate-y-1";
@@ -16,13 +18,13 @@ export const Button = ({
     };
 
     return (
-        <button
+        <ButtonComponent
             className={`${baseStyles} ${variants[variant]} ${className}`}
             onClick={onClick}
             {...props}
         >
             {children}
-        </button>
+        </ButtonComponent>
     );
 };
 

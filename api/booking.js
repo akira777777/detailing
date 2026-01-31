@@ -1,4 +1,3 @@
-/* eslint-env node */
 import { neon } from '@neondatabase/serverless';
 
 export default async function handler(request, response) {
