@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-export const Button = ({
+export const Button = memo(({
     children,
     variant = 'primary',
     className = '',
@@ -39,9 +39,9 @@ export const Button = ({
             </div>
         </ButtonComponent>
     );
-};
+});
 
-export const SectionHeader = ({
+export const SectionHeader = memo(({
     label,
     title,
     description,
@@ -61,9 +61,9 @@ export const SectionHeader = ({
             )}
         </div>
     );
-};
+});
 
-export const PageHeader = ({
+export const PageHeader = memo(({
     label,
     title,
     description,
@@ -85,4 +85,4 @@ export const PageHeader = ({
             )}
         </div>
     );
-}
+});
