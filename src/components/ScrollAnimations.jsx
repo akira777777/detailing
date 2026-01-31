@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-// eslint-disable-next-line no-unused-vars
+
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 
 // Компонент с эффектом появления при скролле

@@ -1,4 +1,3 @@
-/* eslint-env node */
 import { neon } from '@neondatabase/serverless';
 import { z } from 'zod';
 

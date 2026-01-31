@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-// eslint-disable-next-line no-unused-vars
+
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ToastItem = ({ id, message, type, duration, removeToast }) => {
