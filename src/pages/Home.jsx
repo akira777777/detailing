@@ -69,17 +69,11 @@ const Home = () => {
             <div className="group relative overflow-hidden bg-white dark:bg-panel-dark border border-gray-200 dark:border-white/5 p-8 transition-all duration-500 hover:bg-gray-50 dark:hover:bg-white/5 h-[600px] flex flex-col hover:border-primary/50 hover-lift shadow-lg dark:shadow-none">
                 <div className="relative z-10 flex flex-col h-full justify-between">
                     <div>
-                        <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-12 group-hover:animate-glow">01 / Protection</div>
-                        <h4 className="text-3xl font-black uppercase tracking-tight mb-4 text-gray-900 dark:text-white group-hover:text-primary transition-colors">Ceramic Coating</h4>
-                        <p className="text-gray-600 dark:text-white/40 text-sm leading-relaxed mb-12 group-hover:text-gray-900 dark:group-hover:text-white/60 transition-colors">Next-generation molecular surface protection offering permanent hydrophobic properties and deep gloss.</p>
+                        <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-12 group-hover:animate-glow">01 / Защита</div>
+                        <h4 className="text-3xl font-black uppercase tracking-tight mb-4 text-gray-900 dark:text-white group-hover:text-primary transition-colors">Керамическое покрытие</h4>
+                        <p className="text-gray-600 dark:text-white/40 text-sm leading-relaxed mb-12 group-hover:text-gray-900 dark:group-hover:text-white/60 transition-colors">Молекулярная защита нового поколения с постоянными гидрофобными свойствами и глубоким блеском.</p>
                     </div>
                     <div className="flex items-center gap-4 text-gray-900 dark:text-white font-bold text-[10px] tracking-[0.2em] uppercase">
-                        <span>Details</span>
-                        <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-12 group-hover:animate-glow">01 / Защита</div>
-                        <h4 className="text-3xl font-black uppercase tracking-tight mb-4 group-hover:text-primary transition-colors">Керамическое покрытие</h4>
-                        <p className="text-white/40 text-sm leading-relaxed mb-12 group-hover:text-white/60 transition-colors">Молекулярная защита нового поколения с постоянными гидрофобными свойствами и глубоким блеском.</p>
-                    </div>
-                    <div className="flex items-center gap-4 text-white font-bold text-[10px] tracking-[0.2em] uppercase">
                         <span>Подробнее</span>
                         <div className="w-0 group-hover:w-8 h-[1px] bg-primary transition-all duration-500"></div>
                         <span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500">trending_flat</span>
@@ -94,10 +88,10 @@ const Home = () => {
                 <div className="relative z-10 flex flex-col h-full justify-between">
                     <div>
                         <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-12 group-hover:animate-glow">02 / Интерьер</div>
-                        <h4 className="text-3xl font-black uppercase tracking-tight mb-4 group-hover:text-primary transition-colors">Детейлинг салона</h4>
-                        <p className="text-white/40 text-sm leading-relaxed mb-12 group-hover:text-white/60 transition-colors">Глубокая очистка каждой поры и шва с использованием pH-нейтральных органических средств для кожи и карбона.</p>
+                        <h4 className="text-3xl font-black uppercase tracking-tight mb-4 text-gray-900 dark:text-white group-hover:text-primary transition-colors">Детейлинг салона</h4>
+                        <p className="text-gray-600 dark:text-white/40 text-sm leading-relaxed mb-12 group-hover:text-gray-900 dark:group-hover:text-white/60 transition-colors">Глубокая очистка каждой поры и шва с использованием pH-нейтральных органических средств для кожи и карбона.</p>
                     </div>
-                    <div className="flex items-center gap-4 text-white font-bold text-[10px] tracking-[0.2em] uppercase">
+                    <div className="flex items-center gap-4 text-gray-900 dark:text-white font-bold text-[10px] tracking-[0.2em] uppercase">
                         <span>Подробнее</span>
                         <div className="w-0 group-hover:w-8 h-[1px] bg-primary transition-all duration-500"></div>
                         <span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500">trending_flat</span>
@@ -112,10 +106,10 @@ const Home = () => {
                 <div className="relative z-10 flex flex-col h-full justify-between">
                     <div>
                         <div className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-12 group-hover:animate-glow">03 / Полировка</div>
-                        <h4 className="text-3xl font-black uppercase tracking-tight mb-4 group-hover:text-primary transition-colors">Коррекция ЛКП</h4>
-                        <p className="text-white/40 text-sm leading-relaxed mb-12 group-hover:text-white/60 transition-colors">Многоэтапная абразивная полировка для устранения дефектов, голограмм и микроцарапин до идеального блеска.</p>
+                        <h4 className="text-3xl font-black uppercase tracking-tight mb-4 text-gray-900 dark:text-white group-hover:text-primary transition-colors">Коррекция ЛКП</h4>
+                        <p className="text-gray-600 dark:text-white/40 text-sm leading-relaxed mb-12 group-hover:text-gray-900 dark:group-hover:text-white/60 transition-colors">Многоэтапная абразивная полировка для устранения дефектов, голограмм и микроцарапин до идеального блеска.</p>
                     </div>
-                    <div className="flex items-center gap-4 text-white font-bold text-[10px] tracking-[0.2em] uppercase">
+                    <div className="flex items-center gap-4 text-gray-900 dark:text-white font-bold text-[10px] tracking-[0.2em] uppercase">
                         <span>Подробнее</span>
                         <div className="w-0 group-hover:w-8 h-[1px] bg-primary transition-all duration-500"></div>
                         <span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500">trending_flat</span>

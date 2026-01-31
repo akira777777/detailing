@@ -50,7 +50,7 @@ const Navbar = () => {
           </Link>
         </motion.div>
 
-        <nav className="hidden lg:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
           {navLinks.map((link) => (
             <motion.div key={link.name} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
@@ -75,6 +75,7 @@ const Navbar = () => {
             className="p-2 rounded-lg transition-colors bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-gray-900 dark:text-white"
             whileHover={{ scale: 1.1, rotate: 20 }}
             whileTap={{ scale: 0.95 }}
+            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
           >
             {isDark ? '☀️' : '🌙'}
           </motion.button>
@@ -103,8 +104,10 @@ const Navbar = () => {
             onClick={() => setMenuOpen(!menuOpen)}
             className="lg:hidden p-2"
             whileTap={{ scale: 0.95 }}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
           >
-            <span className="material-symbols-outlined transition-colors text-gray-600 hover:text-gray-900 dark:text-white/70 dark:hover:text-white">
+            <span className="material-symbols-outlined transition-colors text-gray-600 hover:text-gray-900 dark:text-white/70 dark:hover:text-white" aria-hidden="true">
               {menuOpen ? 'close' : 'menu'}
             </span>
           </motion.button>
@@ -116,8 +119,9 @@ const Navbar = () => {
         initial={{ opacity: 0, height: 0 }}
         animate={{ opacity: menuOpen ? 1 : 0, height: menuOpen ? 'auto' : 0 }}
         className="lg:hidden overflow-hidden border-t border-gray-200 bg-white/95 dark:border-white/5 dark:bg-background-dark/95"
+        aria-hidden={!menuOpen}
       >
-        <nav className="flex flex-col gap-4 px-6 py-4">
+        <nav className="flex flex-col gap-4 px-6 py-4" aria-label="Mobile navigation">
           {navLinks.map((link) => (
             <motion.div key={link.name} whileHover={{ x: 5 }}>
               <Link

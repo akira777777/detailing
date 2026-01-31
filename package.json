@@ -10,6 +10,12 @@
     "preview": "vite preview",
     "test": "vitest run --environment jsdom"
   },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
   "dependencies": {
     "framer-motion": "^12.29.2",
     "howler": "^2.2.4",

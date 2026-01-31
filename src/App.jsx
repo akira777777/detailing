@@ -16,10 +16,10 @@ const AnimationsShowcase = lazy(() => import('./pages/AnimationsShowcase'));
 
 // Loading fallback component
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-background-dark">
+  <div className="min-h-screen flex items-center justify-center bg-background-light dark:bg-background-dark transition-colors">
     <div className="flex flex-col items-center gap-4">
       <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      <p className="text-white/60 text-sm font-medium">Loading...</p>
+      <p className="text-gray-600 dark:text-white/60 text-sm font-medium">Loading...</p>
     </div>
   </div>
 );

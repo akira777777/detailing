@@ -24,7 +24,7 @@ import {
 } from '../components/ScrollAnimations';
 
 const AnimationsShowcase = () => {
-  const { isDark } = useTheme();
+  useTheme(); // Theme context used for dark mode classes
   const [isLoading, setIsLoading] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [selectedStars, setSelectedStars] = useState([false, false, false, false, false]);
