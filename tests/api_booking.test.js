@@ -3,7 +3,7 @@ import handler from '../api/booking';
 
 // Mock the neon database
 vi.mock('@neondatabase/serverless', () => ({
-  neon: vi.fn(() => vi.fn().mockImplementation(async (strings, ...values) => {
+  neon: vi.fn(() => vi.fn().mockImplementation(async (strings) => {
     // Basic mock to simulate SQL behavior
     if (strings[0].includes('SELECT')) {
       return [{ id: 1, date: '2023-10-24', time: '10:30 AM', car_model: 'Test Car', package: 'Test Package', total_price: 100, status: 'Confirmed' }];

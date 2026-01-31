@@ -154,7 +154,10 @@ const Dashboard = () => {
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-sm text-gray-500 dark:text-white/60">search</span>
                         <input className="bg-white dark:bg-panel-dark border-gray-200 dark:border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-gray-900 dark:text-white focus:ring-primary focus:border-primary w-64 border outline-none shadow-sm dark:shadow-none" placeholder="Search history..." type="text"/>
                     </div>
-                    <button className="p-2 bg-white dark:bg-panel-dark border-gray-200 dark:border-white/10 border text-gray-500 dark:text-white/60 rounded-lg hover:text-gray-900 dark:hover:text-white transition-colors shadow-sm dark:shadow-none">
+                    <button
+                        aria-label="Filter history"
+                        className="p-2 bg-white dark:bg-panel-dark border-gray-200 dark:border-white/10 border text-gray-500 dark:text-white/60 rounded-lg hover:text-gray-900 dark:hover:text-white transition-colors shadow-sm dark:shadow-none"
+                    >
                         <span className="material-symbols-outlined text-sm">filter_list</span>
                     </button>
                 </div>
