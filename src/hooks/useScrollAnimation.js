@@ -89,17 +89,29 @@ export const useParallax = (speed = 0.5) => {
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
+    let ticking = false;
+    let frameId = null;
+
     const handleScroll = () => {
-      if (ref.current) {
-        const rect = ref.current.getBoundingClientRect();
-        const elementTop = rect.top;
-        const scrollAmount = window.innerHeight - elementTop;
-        setOffset(scrollAmount * speed);
+      if (!ticking) {
+        ticking = true;
+        frameId = requestAnimationFrame(() => {
+          if (ref.current) {
+            const rect = ref.current.getBoundingClientRect();
+            const elementTop = rect.top;
+            const scrollAmount = window.innerHeight - elementTop;
+            setOffset(scrollAmount * speed);
+          }
+          ticking = false;
+        });
       }
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (frameId) cancelAnimationFrame(frameId);
+    };
   }, [speed]);
 
   return { ref, offset };
@@ -109,12 +121,25 @@ export const useMousePosition = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
+    let ticking = false;
+    let frameId = null;
+
     const handleMouseMove = (e) => {
-      setPosition({ x: e.clientX, y: e.clientY });
+      if (!ticking) {
+        ticking = true;
+        const { clientX, clientY } = e;
+        frameId = requestAnimationFrame(() => {
+          setPosition({ x: clientX, y: clientY });
+          ticking = false;
+        });
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (frameId) cancelAnimationFrame(frameId);
+    };
   }, []);
 
   return position;
