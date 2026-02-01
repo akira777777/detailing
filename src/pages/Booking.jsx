@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
+import { Button } from '../components/ui/Components';
 import useBookingStore from '../store/useBookingStore';
 
 const Booking = () => {
@@ -76,7 +77,14 @@ const Booking = () => {
                     <p className="text-gray-600 dark:text-white text-sm font-medium">Date & Time Selection</p>
                 </div>
             </div>
-            <div className="w-full rounded-full bg-gray-200 dark:bg-white/10 h-2.5 overflow-hidden">
+            <div
+                className="w-full rounded-full bg-gray-200 dark:bg-white/10 h-2.5 overflow-hidden"
+                role="progressbar"
+                aria-valuenow="66"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-label="Booking progress"
+            >
                 <div className="h-full rounded-full bg-primary" style={{ width: '66%' }}></div>
             </div>
         </div>
@@ -97,7 +105,10 @@ const Booking = () => {
                             <p className="text-gray-900 dark:text-white text-base font-bold min-w-[140px] text-center uppercase tracking-wide">
                                 {new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(new Date())}
                             </p>
-                            <button className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors">
+                            <button
+                                className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors"
+                                aria-label="Next month"
+                            >
                                 <span className="material-symbols-outlined">chevron_right</span>
                             </button>
                         </div>
@@ -110,15 +121,21 @@ const Booking = () => {
                     <div className="grid grid-cols-7 gap-2">
                         {/* Empty cells */}
                         <div className="h-14"></div><div className="h-14"></div><div className="h-14"></div>
-                        {days.slice(0, 28).map(day => (
-                            <button
-                                key={day}
-                                onClick={() => setSelectedDate(day)}
-                                className={`h-14 flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${selectedDate === day ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}
-                            >
-                                {day}
-                            </button>
-                        ))}
+                        {days.slice(0, 28).map(day => {
+                            const dateObj = new Date(new Date().getFullYear(), new Date().getMonth(), day);
+                            const fullDate = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(dateObj);
+                            return (
+                                <button
+                                    key={day}
+                                    onClick={() => setSelectedDate(day)}
+                                    aria-label={`Select ${fullDate}`}
+                                    aria-pressed={selectedDate === day}
+                                    className={`h-14 flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${selectedDate === day ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}
+                                >
+                                    {day}
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
                 <div className="flex items-center gap-3 p-4 bg-primary/10 border border-primary/20 rounded-lg">
@@ -133,7 +150,13 @@ const Booking = () => {
                 <div className="flex flex-col gap-4 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 p-5 shadow-xl">
                     <div className="flex items-center justify-between">
                         <p className="text-gray-500 dark:text-white/50 text-xs font-bold uppercase tracking-widest">Your Selection</p>
-                        <button className="text-primary hover:underline text-xs font-bold">Change</button>
+                        <Link
+                            to="/calculator"
+                            className="text-primary hover:underline text-xs font-bold"
+                            aria-label="Change vehicle or package selection"
+                        >
+                            Change
+                        </Link>
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="size-20 bg-center bg-no-repeat bg-cover rounded-lg flex-shrink-0" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCx9wnmeST6ECJYFAvYmdB6xWlPMKPKqxTDfa-BGl1_3D16WSR-B8Pryxv90OV5_OK9TjftIlOfbeqFO-GDst3S7wTCzwgnIZHH6gJiTTJnmM4wHqO81-q0XS3FMXjLha9SNjh6lwdUgUb3LhbdKHobZCLvo0LuS1UcJGOGmqiOPJ0izUsdEgOafxBlagReXoinqiyt3Qjza9SIkUz2-dlJsU_65eGyHO5QI7Ph3TE5eEWv4witYcvKYB8ySFGTUw6sbv3fxArCrfU')" }}></div>
@@ -169,6 +192,8 @@ const Booking = () => {
                                 key={slot.time}
                                 disabled={!slot.avail}
                                 onClick={() => setSelectedTime(slot.time)}
+                                aria-label={`${slot.time} ${slot.label}${!slot.avail ? ' - Fully Booked' : ''}`}
+                                aria-pressed={selectedTime === slot.time}
                                 className={`flex flex-col items-center justify-center py-4 rounded-xl border transition-all ${!slot.avail ? 'border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-white/5 opacity-50 cursor-not-allowed' : selectedTime === slot.time ? 'border-primary bg-primary shadow-lg shadow-primary/20 transform scale-[1.02]' : 'border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 hover:border-primary/50 group'}`}
                             >
                                 <span className={`text-sm font-bold mb-1 ${!slot.avail ? 'text-gray-400 dark:text-white/40' : selectedTime === slot.time ? 'text-white' : 'text-gray-900 dark:text-white'}`}>{slot.time}</span>
