@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { motion } from 'framer-motion';
 import { useSound } from '../utils/soundManager';
 
@@ -50,7 +51,6 @@ export const AnimatedButton = ({
       <motion.span
         className="absolute inset-0 rounded-lg bg-white opacity-0"
         initial={false}
-        onClick={handleClick}
         whileTap={{
           opacity: [0.3, 0],
           scale: 2,

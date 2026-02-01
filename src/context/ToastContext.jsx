@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import { ToastContainer } from '../components/ui/Toast';
 
 const ToastContext = createContext();
@@ -15,12 +15,15 @@ export const ToastProvider = ({ children }) => {
         setToasts(prev => prev.filter(t => t.id !== id));
     }, []);
 
+    const value = useMemo(() => ({ addToast, removeToast }), [addToast, removeToast]);
+
     return (
-        <ToastContext.Provider value={{ addToast, removeToast }}>
+        <ToastContext.Provider value={value}>
             {children}
             <ToastContainer toasts={toasts} removeToast={removeToast} />
         </ToastContext.Provider>
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useToast = () => useContext(ToastContext);

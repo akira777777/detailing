@@ -1,34 +1,90 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
+import { Button } from '../components/ui/Components';
+import useBookingStore from '../store/useBookingStore';
 
 const Booking = () => {
   const navigate = useNavigate();
   const { addToast } = useToast();
-  const [selectedDate, setSelectedDate] = useState(24);
+  const { carModel, modules, totalPrice } = useBookingStore();
+  const [selectedDate, setSelectedDate] = useState(new Date().getDate());
   const [selectedTime, setSelectedTime] = useState('10:30 AM');
 
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
-  const handleConfirm = () => {
-    addToast('Booking successfully scheduled!', 'success');
-    navigate('/booking-confirmation');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Helper to get selected package name
+  const getPackageName = () => {
+    const selected = Object.keys(modules).filter(k => modules[k]);
+    if (selected.length === 0) return 'Basic Detailing';
+    if (selected.length === 1) {
+        if (selected[0] === 'coating') return 'Ceramic Coating Package';
+        if (selected[0] === 'correction') return 'Paint Correction Package';
+        return 'Interior Detail Package';
+    }
+    return 'Custom Concours Package';
+  };
+
+  const handleConfirm = async () => {
+    setIsSubmitting(true);
+
+    // Format date as ISO for the backend (YYYY-MM-DD)
+    const today = new Date();
+    const bookingDate = new Date(today.getFullYear(), today.getMonth(), selectedDate);
+    const dateStr = bookingDate.toISOString().split('T')[0];
+
+    try {
+      const response = await fetch('/api/booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          date: dateStr,
+          time: selectedTime,
+          carModel: carModel,
+          packageName: getPackageName(),
+          totalPrice: totalPrice,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to confirm booking');
+      }
+
+      addToast('Booking successfully scheduled!', 'success');
+      navigate('/booking-confirmation');
+    } catch (error) {
+      addToast(error.message, 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="pt-32 pb-24 px-4 lg:px-12 bg-background-light dark:bg-background-dark min-h-screen">
+    <div className="pt-32 pb-24 px-4 lg:px-12 bg-background-light dark:bg-background-dark min-h-screen transition-colors duration-300">
       <div className="max-w-[1100px] mx-auto flex flex-col gap-8">
 
         {/* Header & Progress */}
         <div className="flex flex-col gap-4">
             <div className="flex justify-between items-end">
-                <h1 className="text-white tracking-tight text-3xl font-extrabold">Schedule Your Detailing Session</h1>
+                <h1 className="text-gray-900 dark:text-white tracking-tight text-3xl font-extrabold">Schedule Your Detailing Session</h1>
                 <div className="flex flex-col items-end gap-1">
                     <span className="text-primary text-xs font-bold uppercase tracking-widest">Step 2 of 3</span>
-                    <p className="text-white text-sm font-medium">Date & Time Selection</p>
+                    <p className="text-gray-600 dark:text-white text-sm font-medium">Date & Time Selection</p>
                 </div>
             </div>
-            <div className="w-full rounded-full bg-white/10 h-2.5 overflow-hidden">
+            <div
+                className="w-full rounded-full bg-gray-200 dark:bg-white/10 h-2.5 overflow-hidden"
+                role="progressbar"
+                aria-valuenow="66"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-label="Booking progress"
+            >
                 <div className="h-full rounded-full bg-primary" style={{ width: '66%' }}></div>
             </div>
         </div>
@@ -36,60 +92,80 @@ const Booking = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             {/* Calendar */}
             <div className="lg:col-span-7 flex flex-col gap-6">
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm dark:shadow-none">
                     <div className="flex items-center justify-between mb-8">
-                        <h3 className="text-white text-lg font-bold">Pick a Date</h3>
+                        <h3 className="text-gray-900 dark:text-white text-lg font-bold">Pick a Date</h3>
                         <div className="flex items-center gap-2">
-                            <button className="p-2 hover:bg-white/10 rounded-lg text-white transition-colors">
+                            <button
+                                aria-label="Previous month"
+                                className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors"
+                            >
                                 <span className="material-symbols-outlined">chevron_left</span>
                             </button>
-                            <p className="text-white text-base font-bold min-w-[140px] text-center uppercase tracking-wide">October 2023</p>
-                            <button className="p-2 hover:bg-white/10 rounded-lg text-white transition-colors">
+                            <p className="text-gray-900 dark:text-white text-base font-bold min-w-[140px] text-center uppercase tracking-wide">
+                                {new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(new Date())}
+                            </p>
+                            <button
+                                className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors"
+                                aria-label="Next month"
+                            >
                                 <span className="material-symbols-outlined">chevron_right</span>
                             </button>
                         </div>
                     </div>
                     <div className="grid grid-cols-7 text-center mb-2">
                         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                            <span key={day} className={`text-[11px] font-black uppercase tracking-tighter ${day === 'Sun' ? 'text-primary opacity-80' : 'text-white/40'}`}>{day}</span>
+                            <span key={day} className={`text-[11px] font-black uppercase tracking-tighter ${day === 'Sun' ? 'text-primary opacity-80' : 'text-gray-400 dark:text-white/40'}`}>{day}</span>
                         ))}
                     </div>
                     <div className="grid grid-cols-7 gap-2">
                         {/* Empty cells */}
                         <div className="h-14"></div><div className="h-14"></div><div className="h-14"></div>
-                        {days.slice(0, 28).map(day => (
-                            <button
-                                key={day}
-                                onClick={() => setSelectedDate(day)}
-                                className={`h-14 flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${selectedDate === day ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-white/10 text-white'}`}
-                            >
-                                {day}
-                            </button>
-                        ))}
+                        {days.slice(0, 28).map(day => {
+                            const dateObj = new Date(new Date().getFullYear(), new Date().getMonth(), day);
+                            const fullDate = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(dateObj);
+                            return (
+                                <button
+                                    key={day}
+                                    onClick={() => setSelectedDate(day)}
+                                    aria-label={`Select ${fullDate}`}
+                                    aria-pressed={selectedDate === day}
+                                    className={`h-14 flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${selectedDate === day ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}
+                                >
+                                    {day}
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
                 <div className="flex items-center gap-3 p-4 bg-primary/10 border border-primary/20 rounded-lg">
                     <span className="material-symbols-outlined text-primary">info</span>
-                    <p className="text-white/90 text-sm">Appointments on weekends include a complimentary exterior foam wash.</p>
+                    <p className="text-gray-700 dark:text-white/90 text-sm">Appointments on weekends include a complimentary exterior foam wash.</p>
                 </div>
             </div>
 
             {/* Time & Summary */}
             <div className="lg:col-span-5 flex flex-col gap-6">
                 {/* Summary Card */}
-                <div className="flex flex-col gap-4 rounded-xl bg-white/5 border border-white/10 p-5 shadow-xl">
+                <div className="flex flex-col gap-4 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 p-5 shadow-xl">
                     <div className="flex items-center justify-between">
-                        <p className="text-white/50 text-xs font-bold uppercase tracking-widest">Your Selection</p>
-                        <button className="text-primary hover:underline text-xs font-bold">Change</button>
+                        <p className="text-gray-500 dark:text-white/50 text-xs font-bold uppercase tracking-widest">Your Selection</p>
+                        <Link
+                            to="/calculator"
+                            className="text-primary hover:underline text-xs font-bold"
+                            aria-label="Change vehicle or package selection"
+                        >
+                            Change
+                        </Link>
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="size-20 bg-center bg-no-repeat bg-cover rounded-lg flex-shrink-0" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCx9wnmeST6ECJYFAvYmdB6xWlPMKPKqxTDfa-BGl1_3D16WSR-B8Pryxv90OV5_OK9TjftIlOfbeqFO-GDst3S7wTCzwgnIZHH6gJiTTJnmM4wHqO81-q0XS3FMXjLha9SNjh6lwdUgUb3LhbdKHobZCLvo0LuS1UcJGOGmqiOPJ0izUsdEgOafxBlagReXoinqiyt3Qjza9SIkUz2-dlJsU_65eGyHO5QI7Ph3TE5eEWv4witYcvKYB8ySFGTUw6sbv3fxArCrfU')" }}></div>
                         <div className="flex flex-col">
-                            <p className="text-white text-base font-bold leading-tight">Tesla Model 3</p>
-                            <p className="text-primary text-sm font-bold">Ceramic Coating Package</p>
+                            <p className="text-gray-900 dark:text-white text-base font-bold leading-tight">{carModel}</p>
+                            <p className="text-primary text-sm font-bold">{getPackageName()}</p>
                             <div className="flex items-center gap-2 mt-1">
-                                <span className="material-symbols-outlined text-[16px] text-white/40">schedule</span>
-                                <p className="text-white/60 text-xs font-medium">4-5 Hours Duration</p>
+                                <span className="material-symbols-outlined text-[16px] text-gray-400 dark:text-white/40">schedule</span>
+                                <p className="text-gray-500 dark:text-white/60 text-xs font-medium">4-5 Hours Duration</p>
                             </div>
                         </div>
                     </div>
@@ -98,8 +174,10 @@ const Booking = () => {
                 {/* Time Selection */}
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between">
-                        <h3 className="text-white text-lg font-bold">Select Start Time</h3>
-                        <span className="text-white/40 text-xs font-medium">Oct {selectedDate}th, 2023</span>
+                        <h3 className="text-gray-900 dark:text-white text-lg font-bold">Select Start Time</h3>
+                        <span className="text-gray-500 dark:text-white/40 text-xs font-medium">
+                            {new Intl.DateTimeFormat('en-US', { month: 'short' }).format(new Date())} {selectedDate}, {new Date().getFullYear()}
+                        </span>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                         {[
@@ -114,10 +192,12 @@ const Booking = () => {
                                 key={slot.time}
                                 disabled={!slot.avail}
                                 onClick={() => setSelectedTime(slot.time)}
-                                className={`flex flex-col items-center justify-center py-4 rounded-xl border transition-all ${!slot.avail ? 'border-white/10 bg-white/5 opacity-50 cursor-not-allowed' : selectedTime === slot.time ? 'border-primary bg-primary shadow-lg shadow-primary/20 transform scale-[1.02]' : 'border-white/10 bg-white/5 hover:border-primary/50 group'}`}
+                                aria-label={`${slot.time} ${slot.label}${!slot.avail ? ' - Fully Booked' : ''}`}
+                                aria-pressed={selectedTime === slot.time}
+                                className={`flex flex-col items-center justify-center py-4 rounded-xl border transition-all ${!slot.avail ? 'border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-white/5 opacity-50 cursor-not-allowed' : selectedTime === slot.time ? 'border-primary bg-primary shadow-lg shadow-primary/20 transform scale-[1.02]' : 'border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 hover:border-primary/50 group'}`}
                             >
-                                <span className={`text-sm font-bold mb-1 ${!slot.avail ? 'text-white/40' : 'text-white'}`}>{slot.time}</span>
-                                <span className={`text-[10px] uppercase font-bold ${!slot.avail ? 'text-white/20' : selectedTime === slot.time ? 'text-white/70' : 'text-white/40 group-hover:text-primary transition-colors'}`}>{slot.label}</span>
+                                <span className={`text-sm font-bold mb-1 ${!slot.avail ? 'text-gray-400 dark:text-white/40' : selectedTime === slot.time ? 'text-white' : 'text-gray-900 dark:text-white'}`}>{slot.time}</span>
+                                <span className={`text-[10px] uppercase font-bold ${!slot.avail ? 'text-gray-300 dark:text-white/20' : selectedTime === slot.time ? 'text-white/70' : 'text-gray-400 dark:text-white/40 group-hover:text-primary transition-colors'}`}>{slot.label}</span>
                             </button>
                         ))}
                     </div>
@@ -126,20 +206,24 @@ const Booking = () => {
         </div>
 
         {/* Footer Actions */}
-        <div className="mt-8 pt-8 border-t border-white/10 flex items-center justify-between">
-            <Link to="/calculator" className="flex items-center gap-2 px-6 py-3 rounded-lg border border-white/10 text-white hover:bg-white/5 transition-colors">
+        <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/10 flex items-center justify-between">
+            <Link to="/calculator" className="flex items-center gap-2 px-6 py-3 rounded-lg border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
                 <span className="material-symbols-outlined">arrow_back</span>
                 <span className="font-bold">Back</span>
             </Link>
             <div className="flex items-center gap-8">
                 <div className="flex flex-col text-right">
-                    <span className="text-white/50 text-[10px] font-black uppercase tracking-widest">Total Estimated</span>
-                    <span className="text-white text-2xl font-black">$499.00</span>
+                    <span className="text-gray-500 dark:text-white/50 text-[10px] font-black uppercase tracking-widest">Total Estimated</span>
+                    <span className="text-gray-900 dark:text-white text-2xl font-black">${totalPrice.toFixed(2)}</span>
                 </div>
-                <button onClick={handleConfirm} className="flex items-center gap-3 px-10 py-4 bg-primary rounded-xl text-white font-black text-lg shadow-2xl shadow-primary/40 hover:translate-y-[-2px] hover:shadow-primary/50 transition-all">
-                    <span>Confirm Booking</span>
-                    <span className="material-symbols-outlined">arrow_forward</span>
-                </button>
+                <Button
+                  onClick={handleConfirm} 
+                  isLoading={isSubmitting}
+                  className="gap-3 px-10 py-4 rounded-xl text-lg shadow-2xl shadow-primary/40 h-auto"
+                >
+                    <span>{isSubmitting ? 'Processing...' : 'Confirm Booking'}</span>
+                    {!isSubmitting && <span className="material-symbols-outlined">arrow_forward</span>}
+                </Button>
             </div>
         </div>
       </div>

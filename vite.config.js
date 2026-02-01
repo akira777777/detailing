@@ -8,12 +8,16 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'vendor': ['react', 'react-dom', 'react-router-dom']
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'animation-vendor': ['framer-motion'],
+          'audio-vendor': ['howler'],
         }
       }
     },
     sourcemap: false,
     chunkSizeWarningLimit: 1000,
+    // Use esbuild (default) for faster minification
+    minify: 'esbuild',
   },
   server: {
     headers: {
