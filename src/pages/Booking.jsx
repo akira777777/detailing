@@ -4,6 +4,10 @@ import { useToast } from '../context/ToastContext';
 import { Button } from '../components/ui/Components';
 import useBookingStore from '../store/useBookingStore';
 
+const MONTH_YEAR_FORMATTER = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' });
+const FULL_DATE_FORMATTER = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+const MONTH_FORMATTER = new Intl.DateTimeFormat('en-US', { month: 'short' });
+
 const Booking = () => {
   const navigate = useNavigate();
   const { addToast } = useToast();
@@ -103,7 +107,7 @@ const Booking = () => {
                                 <span className="material-symbols-outlined">chevron_left</span>
                             </button>
                             <p className="text-gray-900 dark:text-white text-base font-bold min-w-[140px] text-center uppercase tracking-wide">
-                                {new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(new Date())}
+                                {MONTH_YEAR_FORMATTER.format(new Date())}
                             </p>
                             <button
                                 className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors"
@@ -123,7 +127,7 @@ const Booking = () => {
                         <div className="h-14"></div><div className="h-14"></div><div className="h-14"></div>
                         {days.slice(0, 28).map(day => {
                             const dateObj = new Date(new Date().getFullYear(), new Date().getMonth(), day);
-                            const fullDate = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(dateObj);
+                            const fullDate = FULL_DATE_FORMATTER.format(dateObj);
                             return (
                                 <button
                                     key={day}
@@ -176,7 +180,7 @@ const Booking = () => {
                     <div className="flex items-center justify-between">
                         <h3 className="text-gray-900 dark:text-white text-lg font-bold">Select Start Time</h3>
                         <span className="text-gray-500 dark:text-white/40 text-xs font-medium">
-                            {new Intl.DateTimeFormat('en-US', { month: 'short' }).format(new Date())} {selectedDate}, {new Date().getFullYear()}
+                            {MONTH_FORMATTER.format(new Date())} {selectedDate}, {new Date().getFullYear()}
                         </span>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
