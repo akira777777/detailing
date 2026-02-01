@@ -90,12 +90,11 @@ export const useParallax = (speed = 0.5) => {
 
   useEffect(() => {
     let ticking = false;
-    let frameId = null;
+    let rafId = null;
 
     const handleScroll = () => {
       if (!ticking) {
-        ticking = true;
-        frameId = requestAnimationFrame(() => {
+        rafId = window.requestAnimationFrame(() => {
           if (ref.current) {
             const rect = ref.current.getBoundingClientRect();
             const elementTop = rect.top;
@@ -104,13 +103,16 @@ export const useParallax = (speed = 0.5) => {
           }
           ticking = false;
         });
+        ticking = true;
       }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      if (frameId) cancelAnimationFrame(frameId);
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+      }
     };
   }, [speed]);
 
@@ -121,24 +123,27 @@ export const useMousePosition = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    let ticking = false;
-    let frameId = null;
+    let rafId;
+    let latestX = 0;
+    let latestY = 0;
+
+    const updatePosition = () => {
+      setPosition({ x: latestX, y: latestY });
+      rafId = null;
+    };
 
     const handleMouseMove = (e) => {
-      if (!ticking) {
-        ticking = true;
-        const { clientX, clientY } = e;
-        frameId = requestAnimationFrame(() => {
-          setPosition({ x: clientX, y: clientY });
-          ticking = false;
-        });
+      latestX = e.clientX;
+      latestY = e.clientY;
+      if (!rafId) {
+        rafId = requestAnimationFrame(updatePosition);
       }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      if (frameId) cancelAnimationFrame(frameId);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 
