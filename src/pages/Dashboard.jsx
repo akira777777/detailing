@@ -2,12 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useToast } from '../context/ToastContext';
 import { userData, dashboardMenu, activeService } from '../data/mockData';
 
-const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-});
-
 const Dashboard = () => {
   const { addToast } = useToast();
   const [bookings, setBookings] = useState([]);
@@ -201,7 +195,11 @@ const Dashboard = () => {
                                 bookings.map((booking) => (
                                     <tr key={booking.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                                         <td className="px-6 py-5 text-sm font-medium text-gray-900 dark:text-white">
-                                            {DATE_FORMATTER.format(new Date(booking.date))}
+                                            {new Intl.DateTimeFormat('en-US', {
+                                                month: 'short',
+                                                day: 'numeric',
+                                                year: 'numeric'
+                                            }).format(new Date(booking.date))}
                                         </td>
                                         <td className="px-6 py-5">
                                             <div className="flex flex-col">
