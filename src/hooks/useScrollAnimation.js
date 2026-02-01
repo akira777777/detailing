@@ -89,17 +89,31 @@ export const useParallax = (speed = 0.5) => {
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
+    let ticking = false;
+    let rafId = null;
+
     const handleScroll = () => {
-      if (ref.current) {
-        const rect = ref.current.getBoundingClientRect();
-        const elementTop = rect.top;
-        const scrollAmount = window.innerHeight - elementTop;
-        setOffset(scrollAmount * speed);
+      if (!ticking) {
+        rafId = window.requestAnimationFrame(() => {
+          if (ref.current) {
+            const rect = ref.current.getBoundingClientRect();
+            const elementTop = rect.top;
+            const scrollAmount = window.innerHeight - elementTop;
+            setOffset(scrollAmount * speed);
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+      }
+    };
   }, [speed]);
 
   return { ref, offset };
