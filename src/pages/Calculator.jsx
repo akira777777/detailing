@@ -1,18 +1,21 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
 import { PageHeader } from '../components/ui/Components';
 import { pricingConfig } from '../data/mockData';
+import useBookingStore from '../store/useBookingStore';
 
 const Calculator = () => {
   const { addToast } = useToast();
-  const [vehicle, setVehicle] = useState('sedan');
-  const [condition, setCondition] = useState('new');
-  const [modules, setModules] = useState({
-    coating: true,
-    correction: false,
-    interior: false
-  });
+  const {
+    vehicle,
+    condition,
+    modules,
+    setVehicle,
+    setCondition,
+    toggleModule,
+    setTotalPrice
+  } = useBookingStore();
 
   const total = useMemo(() => {
     let subtotal = 0;
@@ -31,10 +34,6 @@ const Calculator = () => {
 
     return subtotal;
   }, [vehicle, condition, modules]);
-
-  const toggleModule = (key) => {
-    setModules(prev => ({ ...prev, [key]: !prev[key] }));
-  };
 
   return (
     <div className="pt-32 pb-24 px-6 lg:px-12 bg-background-light dark:bg-background-dark min-h-screen transition-colors duration-300">
@@ -192,7 +191,10 @@ const Calculator = () => {
                 <div className="space-y-4">
                     <Link
                         to="/booking"
-                        onClick={() => addToast('Configuration applied to booking!', 'success')}
+                        onClick={() => {
+                            setTotalPrice(Math.floor(total));
+                            addToast('Configuration applied to booking!', 'success');
+                        }}
                         className="w-full flex items-center justify-center bg-primary text-white h-16 rounded font-black uppercase tracking-[0.2em] text-[11px] hover:bg-white hover:text-black transition-all shadow-[0_0_20px_rgba(0,145,255,0.3)]"
                     >
                         Book This Configuration

@@ -89,17 +89,31 @@ export const useParallax = (speed = 0.5) => {
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
+    let ticking = false;
+    let rafId = null;
+
     const handleScroll = () => {
-      if (ref.current) {
-        const rect = ref.current.getBoundingClientRect();
-        const elementTop = rect.top;
-        const scrollAmount = window.innerHeight - elementTop;
-        setOffset(scrollAmount * speed);
+      if (!ticking) {
+        rafId = window.requestAnimationFrame(() => {
+          if (ref.current) {
+            const rect = ref.current.getBoundingClientRect();
+            const elementTop = rect.top;
+            const scrollAmount = window.innerHeight - elementTop;
+            setOffset(scrollAmount * speed);
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+      }
+    };
   }, [speed]);
 
   return { ref, offset };
@@ -109,12 +123,28 @@ export const useMousePosition = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
+    let rafId;
+    let latestX = 0;
+    let latestY = 0;
+
+    const updatePosition = () => {
+      setPosition({ x: latestX, y: latestY });
+      rafId = null;
+    };
+
     const handleMouseMove = (e) => {
-      setPosition({ x: e.clientX, y: e.clientY });
+      latestX = e.clientX;
+      latestY = e.clientY;
+      if (!rafId) {
+        rafId = requestAnimationFrame(updatePosition);
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return position;
