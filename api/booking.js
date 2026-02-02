@@ -19,6 +19,10 @@ export default async function handler(request, response) {
 
   if (request.method === 'GET') {
     try {
+      const { limit = '10', offset = '0' } = request.query || {};
+      const limitVal = parseInt(limit);
+      const offsetVal = parseInt(offset);
+
       const bookings = await sql`
         SELECT
           id,
@@ -31,8 +35,17 @@ export default async function handler(request, response) {
           created_at
         FROM bookings
         ORDER BY date DESC, time DESC
+        LIMIT ${limitVal}
+        OFFSET ${offsetVal}
       `;
-      return response.status(200).json(bookings);
+
+      const countResult = await sql`SELECT COUNT(*) FROM bookings`;
+      const total = parseInt(countResult[0].count);
+
+      return response.status(200).json({
+        data: bookings,
+        total
+      });
     } catch (error) {
       console.error('Error fetching bookings:', error);
       return response.status(500).json({ error: 'Failed to fetch bookings' });

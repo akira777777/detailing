@@ -6,16 +6,22 @@ const Dashboard = () => {
   const { addToast } = useToast();
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalBookings, setTotalBookings] = useState(0);
+  const pageSize = 10;
 
   useEffect(() => {
     const fetchBookings = async () => {
+      setIsLoading(true);
       try {
-        const response = await fetch('/api/booking');
+        const offset = (currentPage - 1) * pageSize;
+        const response = await fetch(`/api/booking?limit=${pageSize}&offset=${offset}`);
         if (!response.ok) {
           throw new Error('Failed to fetch bookings');
         }
-        const data = await response.json();
-        setBookings(data);
+        const result = await response.json();
+        setBookings(result.data);
+        setTotalBookings(result.total);
       } catch (error) {
         console.error('Error fetching bookings:', error);
         addToast('Failed to load service history', 'error');
@@ -25,7 +31,7 @@ const Dashboard = () => {
     };
 
     fetchBookings();
-  }, [addToast]);
+  }, [addToast, currentPage]);
 
   return (
     <div className="flex min-h-screen pt-20 bg-background-light dark:bg-background-dark transition-colors duration-300">
@@ -227,12 +233,23 @@ const Dashboard = () => {
                     </table>
                 </div>
                 <div className="px-6 py-4 bg-gray-50 dark:bg-white/5 flex justify-between items-center text-gray-500 dark:text-white/60 text-xs border-t border-gray-100 dark:border-white/5">
-                    <p>Showing {bookings.length} service entries</p>
+                    <p>Showing {Math.min((currentPage - 1) * pageSize + 1, totalBookings)} to {Math.min(currentPage * pageSize, totalBookings)} of {totalBookings} service entries</p>
                     <div className="flex gap-2">
-                        <button className="px-3 py-1 bg-white dark:bg-white/10 rounded border border-gray-200 dark:border-transparent disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-white/20 transition-colors">Previous</button>
-                        <button className="px-3 py-1 bg-primary text-white rounded">1</button>
-                        <button className="px-3 py-1 bg-white dark:bg-white/10 rounded border border-gray-200 dark:border-transparent hover:bg-gray-50 dark:hover:bg-white/20 transition-colors">2</button>
-                        <button className="px-3 py-1 bg-white dark:bg-white/10 rounded border border-gray-200 dark:border-transparent hover:bg-gray-50 dark:hover:bg-white/20 transition-colors">Next</button>
+                        <button
+                            disabled={currentPage === 1 || isLoading}
+                            onClick={() => setCurrentPage(prev => prev - 1)}
+                            className="px-3 py-1 bg-white dark:bg-white/10 rounded border border-gray-200 dark:border-transparent disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-white/20 transition-colors"
+                        >
+                            Previous
+                        </button>
+                        <button className="px-3 py-1 bg-primary text-white rounded">{currentPage}</button>
+                        <button
+                            disabled={currentPage * pageSize >= totalBookings || isLoading}
+                            onClick={() => setCurrentPage(prev => prev + 1)}
+                            className="px-3 py-1 bg-white dark:bg-white/10 rounded border border-gray-200 dark:border-transparent disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-white/20 transition-colors"
+                        >
+                            Next
+                        </button>
                     </div>
                 </div>
             </div>
