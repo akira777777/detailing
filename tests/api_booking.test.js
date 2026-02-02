@@ -5,6 +5,9 @@ import handler from '../api/booking';
 vi.mock('@neondatabase/serverless', () => ({
   neon: vi.fn(() => vi.fn().mockImplementation(async (strings) => {
     // Basic mock to simulate SQL behavior
+    if (strings[0].includes('SELECT COUNT(*)')) {
+      return [{ count: '1' }];
+    }
     if (strings[0].includes('SELECT')) {
       return [{ id: 1, date: '2023-10-24', time: '10:30 AM', car_model: 'Test Car', package: 'Test Package', total_price: 100, status: 'Confirmed' }];
     }
@@ -34,10 +37,13 @@ describe('Booking API', () => {
   });
 
   it('should return 200 and list of bookings for GET', async () => {
-    req = { method: 'GET' };
+    req = { method: 'GET', query: { limit: '10', offset: '0' } };
     await handler(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(expect.any(Array));
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+      data: expect.any(Array),
+      total: expect.any(Number)
+    }));
   });
 
   it('should return 400 for invalid POST data (missing fields)', async () => {
