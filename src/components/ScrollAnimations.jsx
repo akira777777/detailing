@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 
-// Компонент с эффектом появления при скролле
+// Component with reveal effect on scroll
 export const ScrollReveal = ({ 
   children, 
   direction = 'up',
@@ -33,7 +33,7 @@ export const ScrollReveal = ({
   );
 };
 
-// Компонент с эффектом масштабирования при скролле
+// Component with scaling effect on scroll
 export const ScrollScale = ({ children, className = '' }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, amount: 0.2 });
@@ -51,7 +51,7 @@ export const ScrollScale = ({ children, className = '' }) => {
   );
 };
 
-// Компонент с эффектом вращения при скролле
+// Component with rotation effect on scroll
 export const ScrollRotate = ({ children, className = '' }) => {
   const ref = useRef(null);
   const { scrollY } = useScroll();
@@ -68,7 +68,7 @@ export const ScrollRotate = ({ children, className = '' }) => {
   );
 };
 
-// Компонент с параллакс эффектом
+// Component with parallax effect
 export const Parallax = ({ children, offset = 50, className = '' }) => {
   const ref = useRef(null);
   const { scrollY } = useScroll();
@@ -85,7 +85,7 @@ export const Parallax = ({ children, offset = 50, className = '' }) => {
   );
 };
 
-// Компонент с анимацией счётчика при скролле
+// Component with counter animation on scroll
 export const CountUp = ({ 
   from = 0, 
   to = 100, 
@@ -118,7 +118,7 @@ export const CountUp = ({
   return <span ref={ref} className={className}>{count.toLocaleString()}</span>;
 };
 
-// Компонент с анимацией линии при скролле
+// Component with line animation on scroll
 export const ScrollLine = ({ className = '' }) => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref });
@@ -134,7 +134,7 @@ export const ScrollLine = ({ className = '' }) => {
   );
 };
 
-// Компонент с эффектом размытия при скролле
+// Component with blur effect on scroll
 export const ScrollBlur = ({ children, className = '' }) => {
   const ref = useRef(null);
   const { scrollY } = useScroll();
@@ -194,7 +194,7 @@ export const AosReveal = ({
   );
 };
 
-// Компонент для стикирующих элементов с анимацией
+// Component for sticky elements with animation
 export const StickyScroll = ({ children, className = '' }) => {
   const ref = useRef(null);
   const { scrollY } = useScroll({ target: ref });

@@ -3,7 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useSound } from '../utils/soundManager';
 
-// Анимированная кнопка с микровзаимодействиями
+// Animated button with micro-interactions
 export const AnimatedButton = ({
   children,
   onClick,
@@ -47,7 +47,7 @@ export const AnimatedButton = ({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      {/* Ripple эффект */}
+      {/* Ripple effect */}
       <motion.span
         className="absolute inset-0 rounded-lg bg-white opacity-0"
         initial={false}
@@ -62,7 +62,7 @@ export const AnimatedButton = ({
   );
 };
 
-// Кнопка с пульсирующим состоянием
+// Button with pulsing state
 export const PulseButton = ({ children, onClick, className = '' }) => {
   const { playTone } = useSound();
 
@@ -92,7 +92,7 @@ export const PulseButton = ({ children, onClick, className = '' }) => {
   );
 };
 
-// Кнопка с загрузкой
+// Button with loading state
 export const LoadingButton = ({ 
   children, 
   isLoading = false, 
@@ -118,13 +118,13 @@ export const LoadingButton = ({
             className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
           />
         )}
-        <span>{isLoading ? 'Загрузка...' : children}</span>
+        <span>{isLoading ? 'Loading...' : children}</span>
       </motion.div>
     </motion.button>
   );
 };
 
-// Интерактивная кнопка с tooltip
+// Interactive button with tooltip
 export const TooltipButton = ({ 
   children, 
   tooltip, 

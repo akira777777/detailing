@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
-import { userData, dashboardMenu, activeService } from '../data/mockData';
+import { userData, dashboardMenu, activeService, serviceHistory } from '../data/mockData';
 import { shortDateFormatter } from '../utils/formatters';
 
 const Dashboard = () => {
@@ -24,8 +25,20 @@ const Dashboard = () => {
         setBookings(result.data);
         setTotalBookings(result.total);
       } catch (error) {
-        console.error('Error fetching bookings:', error);
-        addToast('Failed to load service history', 'error');
+        console.error('Error fetching bookings, using fallback data:', error);
+        // Fallback to mock data if API fails
+        const fallbackData = serviceHistory.map((item, index) => ({
+          id: `fallback-${index}`,
+          date: item.date,
+          time: '09:00 AM', // Default time for fallback
+          car_model: item.vehicle,
+          package: item.title,
+          total_price: item.cost.replace('$', '').replace(',', ''),
+          status: item.status
+        }));
+        setBookings(fallbackData);
+        setTotalBookings(fallbackData.length);
+        addToast('Showing offline service history', 'info');
       } finally {
         setIsLoading(false);
       }
@@ -72,13 +85,13 @@ const Dashboard = () => {
                 </div>
                 <p className="text-[10px] text-gray-500 dark:text-white/60 mt-2 italic">{userData.nextReward - userData.loyaltyPoints} pts to next reward</p>
             </div>
-            <button
-                onClick={() => addToast('Redirecting to booking studio...', 'info')}
+            <Link
+                to="/booking"
                 className="w-full py-3 px-4 bg-primary hover:bg-primary/90 text-white text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2"
             >
                 <span className="material-symbols-outlined text-sm">add_circle</span>
                 Book New Service
-            </button>
+            </Link>
         </div>
       </aside>
 
@@ -91,7 +104,10 @@ const Dashboard = () => {
                 <p className="text-gray-600 dark:text-white/60 text-base font-normal">Manage your premium detailing services and loyalty rewards.</p>
             </div>
             <div className="flex gap-3">
-                <button className="px-5 py-2.5 bg-gray-800 dark:bg-panel-dark hover:bg-gray-700 dark:hover:bg-white/10 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2 border border-white/5">
+                <button
+                    aria-label="View your exclusive membership perks and benefits"
+                    className="px-5 py-2.5 bg-gray-800 dark:bg-panel-dark hover:bg-gray-700 dark:hover:bg-white/10 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2 border border-white/5"
+                >
                     <span className="material-symbols-outlined text-sm">card_membership</span>
                     View Membership Perks
                 </button>
@@ -121,6 +137,7 @@ const Dashboard = () => {
                             </div>
                             <button
                                 onClick={() => addToast('Connecting to live feed... (Demo)', 'warning')}
+                                aria-label="Open live camera feed of your vehicle"
                                 className="px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary text-sm font-bold rounded-lg transition-colors flex items-center gap-2 border border-primary/20"
                             >
                                 <span className="material-symbols-outlined text-sm">videocam</span>
@@ -218,7 +235,10 @@ const Dashboard = () => {
                                             </span>
                                         </td>
                                         <td className="px-6 py-5 text-right">
-                                            <button className="text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1 text-sm font-bold">
+                                            <button
+                                                aria-label={`Download PDF invoice for service on ${booking.date}`}
+                                                className="text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1 text-sm font-bold"
+                                            >
                                                 <span className="material-symbols-outlined text-sm">download</span>
                                                 PDF
                                             </button>
@@ -235,14 +255,21 @@ const Dashboard = () => {
                         <button
                             disabled={currentPage === 1 || isLoading}
                             onClick={() => setCurrentPage(prev => prev - 1)}
+                            aria-label="Go to previous page of service history"
                             className="px-3 py-1 bg-white dark:bg-white/10 rounded border border-gray-200 dark:border-transparent disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-white/20 transition-colors"
                         >
                             Previous
                         </button>
-                        <button className="px-3 py-1 bg-primary text-white rounded">{currentPage}</button>
+                        <button
+                            aria-label={`Current page ${currentPage}`}
+                            className="px-3 py-1 bg-primary text-white rounded"
+                        >
+                            {currentPage}
+                        </button>
                         <button
                             disabled={currentPage * pageSize >= totalBookings || isLoading}
                             onClick={() => setCurrentPage(prev => prev + 1)}
+                            aria-label="Go to next page of service history"
                             className="px-3 py-1 bg-white dark:bg-white/10 rounded border border-gray-200 dark:border-transparent disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-white/20 transition-colors"
                         >
                             Next

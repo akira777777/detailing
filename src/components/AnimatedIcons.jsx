@@ -34,7 +34,7 @@ export const AnimatedLogo = ({ className = '' }) => {
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
     >
-      {/* Основной круг */}
+      {/* Main circle */}
       <motion.circle
         cx="50"
         cy="50"
@@ -45,14 +45,14 @@ export const AnimatedLogo = ({ className = '' }) => {
         variants={itemVariants}
       />
 
-      {/* Внутренний элемент */}
+      {/* Inner element */}
       <motion.g variants={itemVariants}>
         <motion.circle cx="50" cy="30" r="8" fill="currentColor" />
         <motion.circle cx="35" cy="55" r="8" fill="currentColor" />
         <motion.circle cx="65" cy="55" r="8" fill="currentColor" />
       </motion.g>
 
-      {/* Линии соединения */}
+      {/* Connection lines */}
       <motion.g
         stroke="currentColor"
         strokeWidth="1.5"
@@ -67,7 +67,7 @@ export const AnimatedLogo = ({ className = '' }) => {
   );
 };
 
-// Анимированная иконка сердца
+// Animated heart icon
 export const AnimatedHeartIcon = ({ className = '', filled = false }) => {
   return (
     <motion.svg
@@ -91,7 +91,7 @@ export const AnimatedHeartIcon = ({ className = '', filled = false }) => {
   );
 };
 
-// Анимированная звёздочка
+// Animated star icon
 export const AnimatedStarIcon = ({ className = '', active = false }) => {
   return (
     <motion.svg
@@ -113,7 +113,7 @@ export const AnimatedStarIcon = ({ className = '', active = false }) => {
   );
 };
 
-// Анимированная стрелка
+// Animated arrow icon
 export const AnimatedArrowIcon = ({ className = '', direction = 'right' }) => {
   const rotations = {
     right: 0,

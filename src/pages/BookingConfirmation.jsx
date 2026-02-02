@@ -1,7 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import useBookingStore from '../store/useBookingStore';
+import { fullDateFormatter } from '../utils/formatters';
+import { getPackageName } from '../utils/bookingUtils';
 
 const BookingConfirmation = () => {
+  const { carModel, totalPrice, modules } = useBookingStore();
+  const today = new Date();
   return (
     <div className="pt-32 pb-24 px-4 lg:px-12 bg-background-light dark:bg-background-dark min-h-screen flex flex-col items-center">
       <div className="max-w-[800px] w-full flex flex-col items-center gap-6">
@@ -18,11 +23,11 @@ const BookingConfirmation = () => {
         {/* Order Summary Card */}
         <div className="w-full bg-white dark:bg-panel-dark rounded-xl overflow-hidden shadow-xl border border-gray-200 dark:border-white/5 mt-4">
             {/* Vehicle Hero */}
-            <div className="relative h-48 md:h-64 bg-center bg-cover" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuB-IWre4oh1LHb7FGs-uLuETJM77NRbDSYGTXPQ8dXOtePnz-CsFX_GfhRqu9iASxLFnhMkmyWE5woOCOT5MHmDxfQSSUIqi8iAd2CMtM5WAOdvqOG7nYCyt0t4f2uNP5clGUTdyxCFzCEYlzMNeYC4bBVUkkfgccPJzYixR5ayp0sLJQKC-Hl4jFXC9hjAfHI4R3I7QBnc0270_OL_LGC8HnzGn8-lCMKnixbX00pVwHWibEmnZ6k2eUjOWVQcVin8vj2-eNbFdvE')" }}>
+            <div className="relative h-48 md:h-64 bg-center bg-cover" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCx9wnmeST6ECJYFAvYmdB6xWlPMKPKqxTDfa-BGl1_3D16WSR-B8Pryxv90OV5_OK9TjftIlOfbeqFO-GDst3S7wTCzwgnIZHH6gJiTTJnmM4wHqO81-q0XS3FMXjLha9SNjh6lwdUgUb3LhbdKHobZCLvo0LuS1UcJGOGmqiOPJ0izUsdEgOafxBlagReXoinqiyt3Qjza9SIkUz2-dlJsU_65eGyHO5QI7Ph3TE5eEWv4witYcvKYB8ySFGTUw6sbv3fxArCrfU')" }}>
                 <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-panel-dark to-transparent"></div>
                 <div className="absolute bottom-4 left-6">
-                    <h2 className="text-gray-900 dark:text-white text-2xl font-bold">Porsche 911 Carrera S</h2>
-                    <p className="text-primary font-medium">Plate: P911-DETL</p>
+                    <h2 className="text-gray-900 dark:text-white text-2xl font-bold">{carModel}</h2>
+                    <p className="text-primary font-medium">Luxe Detailing Approved</p>
                 </div>
             </div>
 
@@ -35,8 +40,8 @@ const BookingConfirmation = () => {
                             Appointment Details
                         </h3>
                         <div className="bg-gray-100 dark:bg-background-dark/50 p-4 rounded-lg border border-gray-200 dark:border-white/5">
-                            <p className="text-gray-900 dark:text-white text-lg font-bold">October 24, 2023</p>
-                            <p className="text-gray-600 dark:text-white/60">10:00 AM — 04:00 PM</p>
+                            <p className="text-gray-900 dark:text-white text-lg font-bold">{fullDateFormatter.format(today)}</p>
+                            <p className="text-gray-600 dark:text-white/60">Selected Time Appointment</p>
                         </div>
                     </div>
                     <div className="flex flex-col gap-4">
@@ -46,12 +51,8 @@ const BookingConfirmation = () => {
                         </h3>
                         <ul className="space-y-3">
                             <li className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600 dark:text-white/60">Ceramic Coating (Gold Package)</span>
-                                <span className="text-gray-900 dark:text-white font-semibold">$850.00</span>
-                            </li>
-                            <li className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600 dark:text-white/60">Interior Deep Clean & Leather Care</span>
-                                <span className="text-gray-900 dark:text-white font-semibold">$150.00</span>
+                                <span className="text-gray-600 dark:text-white/60">{getPackageName(modules)}</span>
+                                <span className="text-gray-900 dark:text-white font-semibold">${totalPrice.toFixed(2)}</span>
                             </li>
                         </ul>
                     </div>
@@ -60,7 +61,7 @@ const BookingConfirmation = () => {
                 <div className="border-t border-gray-200 dark:border-white/5 pt-6 flex justify-between items-center">
                     <div>
                         <p className="text-gray-500 dark:text-white/40 text-xs uppercase font-bold tracking-widest">Total Investment</p>
-                        <p className="text-3xl font-extrabold text-primary">$1,000.00</p>
+                        <p className="text-3xl font-extrabold text-primary">${totalPrice.toFixed(2)}</p>
                     </div>
                     <button className="h-10 px-4 flex items-center gap-2 rounded-lg bg-gray-100 dark:bg-background-dark/50 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-white/5 transition-all text-sm font-bold border border-gray-200 dark:border-white/5">
                         <span className="material-symbols-outlined text-[18px]">receipt_long</span>
