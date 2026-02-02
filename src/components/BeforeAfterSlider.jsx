@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useMotionValueEvent } from 'framer-motion';
 
 /**
  * BeforeAfterSlider - High-performance slider component for comparing two images.
@@ -10,8 +10,23 @@ const BeforeAfterSlider = ({ beforeImage, afterImage, alt }) => {
   // Use MotionValue for position to update DOM directly without triggering component re-renders
   const sliderPosition = useMotionValue(50);
   const [isDragging, setIsDragging] = useState(false);
+  const [ariaValueNow, setAriaValueNow] = useState(50);
   const containerRef = useRef(null);
   const rectRef = useRef(null);
+
+  // Sync motion value with accessibility attributes.
+  // When dragging, we update the DOM directly to maintain 60fps.
+  // When not dragging (keyboard use), we use React state for clean updates.
+  useMotionValueEvent(sliderPosition, "change", (latest) => {
+    const rounded = Math.round(latest);
+    if (isDragging) {
+      if (containerRef.current) {
+        containerRef.current.setAttribute('aria-valuenow', rounded.toString());
+      }
+    } else {
+      setAriaValueNow(rounded);
+    }
+  });
 
   // Derive clipPath and handle position from the motion value
   // This allows the browser to handle the reveal effect efficiently
@@ -40,6 +55,26 @@ const BeforeAfterSlider = ({ beforeImage, afterImage, alt }) => {
   const handleMouseDown = (e) => handleDragStart(e.clientX);
   const handleTouchStart = (e) => handleDragStart(e.touches[0].clientX);
 
+  const handleKeyDown = (e) => {
+    const step = e.shiftKey ? 10 : 2;
+    switch (e.key) {
+      case 'ArrowLeft':
+        sliderPosition.set(Math.max(0, sliderPosition.get() - step));
+        break;
+      case 'ArrowRight':
+        sliderPosition.set(Math.min(100, sliderPosition.get() + step));
+        break;
+      case 'Home':
+        sliderPosition.set(0);
+        break;
+      case 'End':
+        sliderPosition.set(100);
+        break;
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (isDragging) handleMove(e.clientX);
@@ -49,7 +84,10 @@ const BeforeAfterSlider = ({ beforeImage, afterImage, alt }) => {
       if (isDragging) handleMove(e.touches[0].clientX);
     };
 
-    const handleStopDragging = () => setIsDragging(false);
+    const handleStopDragging = () => {
+      setIsDragging(false);
+      setAriaValueNow(Math.round(sliderPosition.get()));
+    };
 
     if (isDragging) {
       window.addEventListener('mouseup', handleStopDragging);
@@ -64,14 +102,21 @@ const BeforeAfterSlider = ({ beforeImage, afterImage, alt }) => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('touchmove', handleTouchMove);
     };
-  }, [isDragging, handleMove]);
+  }, [isDragging, handleMove, sliderPosition]);
 
   return (
-    <div
+    <motion.div
       ref={containerRef}
-      className="relative w-full h-full overflow-hidden select-none cursor-ew-resize group"
+      className="relative w-full h-full overflow-hidden select-none cursor-ew-resize group outline-none focus-visible:ring-4 focus-visible:ring-primary/50 rounded-lg transition-shadow"
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="slider"
+      aria-label={`Before and after comparison for ${alt}. Use arrow keys to slide.`}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={ariaValueNow}
     >
       {/* After Image (Background) */}
       <img
@@ -116,7 +161,7 @@ const BeforeAfterSlider = ({ beforeImage, afterImage, alt }) => {
         <div className="absolute inset-y-0 left-1/4 w-px bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
         <div className="absolute inset-y-0 right-1/4 w-px bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
-    </div>
+    </motion.div>
   );
 };
 
