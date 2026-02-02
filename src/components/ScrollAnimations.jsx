@@ -138,12 +138,16 @@ export const ScrollLine = ({ className = '' }) => {
 export const ScrollBlur = ({ children, className = '' }) => {
   const ref = useRef(null);
   const { scrollY } = useScroll();
-  const blur = useTransform(scrollY, [0, 500], [0, 10]);
+  const filter = useTransform(
+    scrollY,
+    [0, 500],
+    ['blur(0px)', 'blur(10px)']
+  );
 
   return (
     <motion.div
       ref={ref}
-      style={{ filter: blur.get() !== 0 ? `blur(${blur}px)` : 'blur(0px)' }}
+      style={{ filter }}
       className={className}
     >
       {children}
