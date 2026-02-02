@@ -68,10 +68,10 @@ const AnimationsShowcase = () => {
       <ScrollReveal direction="up">
         <div className="max-w-5xl mx-auto text-center mb-20">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
-            🎨 Система анимаций & Микровзаимодействия
+            🎨 Animation System & Micro-interactions
           </h1>
           <p className="text-lg text-gray-600 dark:text-white/60">
-            Демонстрация всех возможностей Framer Motion, AOS, SVG анимаций и звуков
+            Showcasing Framer Motion, AOS-style reveals, SVG animations, and interactive sound effects
           </p>
         </div>
       </ScrollReveal>
@@ -81,7 +81,7 @@ const AnimationsShowcase = () => {
         <ScrollReveal direction="left">
           <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
             <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
-              ✨ SVG Анимированные иконки
+              ✨ SVG Animated Icons
             </h2>
 
             <motion.div
@@ -110,12 +110,12 @@ const AnimationsShowcase = () => {
                   />
                 </motion.div>
                 <p className="text-sm text-gray-600 dark:text-white/60">
-                  Лайки: {likeCount}
+                  Likes: {likeCount}
                 </p>
               </motion.div>
 
               <motion.div className="flex flex-col items-center gap-4" variants={itemVariants}>
-                <p className="text-sm text-gray-600 dark:text-white/60">Рейтинг:</p>
+                <p className="text-sm text-gray-600 dark:text-white/60">Rating:</p>
                 <div className="flex gap-1">
                   {selectedStars.map((active, idx) => (
                     <motion.button
@@ -145,7 +145,7 @@ const AnimationsShowcase = () => {
         <ScrollReveal direction="right">
           <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
             <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
-              🔘 Анимированные кнопки
+              🔘 Animated Buttons
             </h2>
 
             <motion.div
@@ -179,13 +179,13 @@ const AnimationsShowcase = () => {
 
               <motion.div variants={itemVariants} className="flex justify-center">
                 <LoadingButton isLoading={isLoading} onClick={handleLoadingButton}>
-                  {isLoading ? 'Отправка...' : 'Загрузить'}
+                  {isLoading ? 'Sending...' : 'Load'}
                 </LoadingButton>
               </motion.div>
 
               <motion.div variants={itemVariants} className="flex justify-center">
-                <TooltipButton tooltip="Это подсказка!" onClick={() => soundManager.playTone(600, 100, 0.2)}>
-                  Подсказка
+                <TooltipButton tooltip="This is a tooltip!" onClick={() => soundManager.playTone(600, 100, 0.2)}>
+                  Tooltip
                 </TooltipButton>
               </motion.div>
 
@@ -206,7 +206,7 @@ const AnimationsShowcase = () => {
         <ScrollReveal direction="up">
           <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
             <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
-              📜 Scroll-trigger анимации
+              📜 Scroll-trigger Animations
             </h2>
 
             <motion.div className="space-y-12">
@@ -217,7 +217,7 @@ const AnimationsShowcase = () => {
                     Scale Animation
                   </h3>
                   <p className="text-gray-600 dark:text-white/60">
-                    Этот элемент масштабируется при скролле
+                    This element scales up as it enters the viewport
                   </p>
                 </div>
               </ScrollScale>
@@ -232,7 +232,7 @@ const AnimationsShowcase = () => {
                     <CountUp from={0} to={5000} duration={3} />+
                   </div>
                   <p className="mt-2 text-gray-600 dark:text-white/60">
-                    Счётчик с анимацией
+                    Animated counter on reveal
                   </p>
                 </div>
               </AosReveal>
@@ -244,7 +244,7 @@ const AnimationsShowcase = () => {
                     Parallax Effect
                   </h3>
                   <p className="text-gray-600 dark:text-white/60">
-                    Элемент движется параллельно при скролле
+                    Elements moving at different speeds on scroll
                   </p>
                 </div>
               </Parallax>
@@ -256,7 +256,7 @@ const AnimationsShowcase = () => {
         <ScrollReveal direction="left">
           <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
             <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
-              🎯 Особенности
+              🎯 Features
             </h2>
 
             <motion.div
@@ -267,12 +267,12 @@ const AnimationsShowcase = () => {
               viewport={{ once: false, amount: 0.2 }}
             >
               {[
-                { icon: '🌙', title: 'Dark/Light режим', desc: 'Переключение тем с сохранением' },
-                { icon: '🔊', title: 'Звуковые эффекты', desc: 'Интерактивные звуки при клике' },
-                { icon: '✨', title: 'SVG анимации', desc: 'Анимированные логотипы и иконки' },
-                { icon: '📜', title: 'Scroll-trigger', desc: 'Анимации при скролле страницы' },
-                { icon: '🎭', title: 'Micro-interactions', desc: 'Ripple эффекты и переходы' },
-                { icon: '⚡', title: 'Производительность', desc: 'Оптимизирована для всех устройств' },
+                { icon: '🌙', title: 'Dark/Light Mode', desc: 'Seamless theme switching with persistence' },
+                { icon: '🔊', title: 'Sound Effects', desc: 'Interactive UI feedback with audio tones' },
+                { icon: '✨', title: 'SVG Animations', desc: 'Smooth, scalable animated vector graphics' },
+                { icon: '📜', title: 'Scroll-trigger', desc: 'Dynamic animations triggered by scrolling' },
+                { icon: '🎭', title: 'Micro-interactions', desc: 'Ripple effects and smooth state transitions' },
+                { icon: '⚡', title: 'Performance', desc: 'Optimized for 60fps across all devices' },
               ].map((feature, idx) => (
                 <motion.div
                   key={idx}
@@ -297,7 +297,7 @@ const AnimationsShowcase = () => {
         <ScrollReveal direction="right">
           <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
             <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
-              🎪 Интерактивная демонстрация
+              🎪 Interactive Demo
             </h2>
 
             <motion.div
@@ -320,8 +320,8 @@ const AnimationsShowcase = () => {
                 variants={itemVariants}
                 className="text-lg text-center max-w-2xl text-gray-600 dark:text-white/60"
               >
-                Наведите на элементы и нажимайте кнопки, чтобы увидеть полный спектр анимаций и звуковых эффектов.
-                Попробуйте включить/отключить тёмный режим!
+                Hover over elements and click buttons to experience the full range of animations and sound effects.
+                Try toggling the dark mode in the header!
               </motion.p>
 
               <motion.button
@@ -335,7 +335,7 @@ const AnimationsShowcase = () => {
                   soundManager.playTone(800, 200, 0.2);
                 }}
               >
-                🎵 Воспроизведи мелодию!
+                🎵 Play a Melody!
               </motion.button>
             </motion.div>
           </div>
