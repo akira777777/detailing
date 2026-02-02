@@ -5,3 +5,7 @@
 ## 2025-05-15 - [Bypassing React for High-Frequency Interactions]
 **Learning:** For components with high-frequency interactions (like drag-to-reveal sliders), React's state-based rendering is a bottleneck due to reconciliation overhead on every mouse move.
 **Action:** Use `framer-motion`'s `MotionValue` or direct DOM manipulation to update styles (e.g., `clip-path`, `transform`) outside of the React render loop. Cache layout dimensions (`getBoundingClientRect`) on interaction start to avoid layout thrashing during moves.
+
+## 2026-02-02 - [Expensive Intl Objects in Render Loops]
+**Learning:** `Intl.DateTimeFormat` (and other Intl constructors) are significantly expensive to instantiate. Doing so inside React component bodies, especially within `.map()` loops (like a calendar), can lead to noticeable UI stutter during re-renders.
+**Action:** Always move `Intl` formatters to module-level constants or a centralized utility file to ensure they are instantiated only once. For date parts used in loops, pre-calculate values using `useMemo` at the component root to further reduce redundant object allocations.
