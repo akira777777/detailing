@@ -19,7 +19,7 @@ class SoundManager {
     return this.audioContext;
   }
 
-  // Инициализация звуков
+  // Initialize sounds
   init() {
     this.sounds.click = new Howl({
       src: ['data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAAA='],
@@ -94,7 +94,7 @@ class SoundManager {
 
 export const soundManager = new SoundManager();
 
-// Hook для использования звуков
+// Hook for using sounds
 export const useSound = () => {
   return {
     play: (soundName) => soundManager.play(soundName),

@@ -26,7 +26,7 @@ const PageLoader = () => (
 
 function App() {
   useEffect(() => {
-    // Инициализация звуков
+    // Initialize sounds
     soundManager.init();
   }, []);
 

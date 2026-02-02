@@ -10,6 +10,8 @@ const useBookingStore = create((set) => ({
   },
   totalPrice: 1250,
   carModel: 'Tesla Model 3', // Default or user specified later
+  bookingDate: null,
+  bookingTime: null,
 
   setVehicle: (vehicle) => set({ vehicle }),
   setCondition: (condition) => set({ condition }),
@@ -21,6 +23,7 @@ const useBookingStore = create((set) => ({
   })),
   setTotalPrice: (totalPrice) => set({ totalPrice }),
   setCarModel: (carModel) => set({ carModel }),
+  setBookingDetails: (date, time) => set({ bookingDate: date, bookingTime: time }),
 
   // Helper to set multiple fields from calculator
   setConfiguration: (config) => set((state) => ({

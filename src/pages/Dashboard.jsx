@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
-import { userData, dashboardMenu, activeService } from '../data/mockData';
+import { userData, dashboardMenu, activeService, serviceHistory } from '../data/mockData';
 import { shortDateFormatter } from '../utils/formatters';
 
 const Dashboard = () => {
   const { addToast } = useToast();
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showCamera, setShowCamera] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalBookings, setTotalBookings] = useState(0);
   const pageSize = 10;
@@ -16,7 +19,7 @@ const Dashboard = () => {
       setIsLoading(true);
       try {
         const offset = (currentPage - 1) * pageSize;
-        const response = await fetch(`/api/booking?limit=${pageSize}&offset=${offset}`);
+        const response = await fetch(`/api/booking?limit=${pageSize}&offset=${offset}&search=${encodeURIComponent(searchQuery)}`);
         if (!response.ok) {
           throw new Error('Failed to fetch bookings');
         }
@@ -24,15 +27,27 @@ const Dashboard = () => {
         setBookings(result.data);
         setTotalBookings(result.total);
       } catch (error) {
-        console.error('Error fetching bookings:', error);
-        addToast('Failed to load service history', 'error');
+        console.error('Error fetching bookings, using fallback data:', error);
+        // Fallback to mock data if API fails
+        const fallbackData = serviceHistory.map((item, index) => ({
+          id: `fallback-${index}`,
+          date: item.date,
+          time: '09:00 AM', // Default time for fallback
+          car_model: item.vehicle,
+          package: item.title,
+          total_price: item.cost.replace('$', '').replace(',', ''),
+          status: item.status
+        }));
+        setBookings(fallbackData);
+        setTotalBookings(fallbackData.length);
+        addToast('Showing offline service history', 'info');
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchBookings();
-  }, [addToast, currentPage]);
+  }, [addToast, currentPage, searchQuery]);
 
   return (
     <div className="flex min-h-screen pt-20 bg-background-light dark:bg-background-dark transition-colors duration-300">
@@ -72,13 +87,13 @@ const Dashboard = () => {
                 </div>
                 <p className="text-[10px] text-gray-500 dark:text-white/60 mt-2 italic">{userData.nextReward - userData.loyaltyPoints} pts to next reward</p>
             </div>
-            <button
-                onClick={() => addToast('Redirecting to booking studio...', 'info')}
+            <Link
+                to="/booking"
                 className="w-full py-3 px-4 bg-primary hover:bg-primary/90 text-white text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2"
             >
                 <span className="material-symbols-outlined text-sm">add_circle</span>
                 Book New Service
-            </button>
+            </Link>
         </div>
       </aside>
 
@@ -91,7 +106,10 @@ const Dashboard = () => {
                 <p className="text-gray-600 dark:text-white/60 text-base font-normal">Manage your premium detailing services and loyalty rewards.</p>
             </div>
             <div className="flex gap-3">
-                <button className="px-5 py-2.5 bg-gray-800 dark:bg-panel-dark hover:bg-gray-700 dark:hover:bg-white/10 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2 border border-white/5">
+                <button
+                    aria-label="View your exclusive membership perks and benefits"
+                    className="px-5 py-2.5 bg-gray-800 dark:bg-panel-dark hover:bg-gray-700 dark:hover:bg-white/10 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2 border border-white/5"
+                >
                     <span className="material-symbols-outlined text-sm">card_membership</span>
                     View Membership Perks
                 </button>
@@ -120,7 +138,8 @@ const Dashboard = () => {
                                 <p className="text-gray-600 dark:text-white/60 text-base mt-2">Vehicle: <span className="text-gray-900 dark:text-white font-medium">{activeService.vehicle}</span></p>
                             </div>
                             <button
-                                onClick={() => addToast('Connecting to live feed... (Demo)', 'warning')}
+                                onClick={() => setShowCamera(true)}
+                                aria-label="Open live camera feed of your vehicle"
                                 className="px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary text-sm font-bold rounded-lg transition-colors flex items-center gap-2 border border-primary/20"
                             >
                                 <span className="material-symbols-outlined text-sm">videocam</span>
@@ -159,7 +178,13 @@ const Dashboard = () => {
                 <div className="flex gap-2">
                     <div className="relative group">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-sm text-gray-500 dark:text-white/60">search</span>
-                        <input className="bg-white dark:bg-panel-dark border-gray-200 dark:border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-gray-900 dark:text-white focus:ring-primary focus:border-primary w-64 border outline-none shadow-sm dark:shadow-none" placeholder="Search history..." type="text"/>
+                        <input
+                            className="bg-white dark:bg-panel-dark border-gray-200 dark:border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-gray-900 dark:text-white focus:ring-primary focus:border-primary w-64 border outline-none shadow-sm dark:shadow-none"
+                            placeholder="Search history..."
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
                     </div>
                     <button
                         aria-label="Filter history"
@@ -218,7 +243,10 @@ const Dashboard = () => {
                                             </span>
                                         </td>
                                         <td className="px-6 py-5 text-right">
-                                            <button className="text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1 text-sm font-bold">
+                                            <button
+                                                aria-label={`Download PDF invoice for service on ${booking.date}`}
+                                                className="text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1 text-sm font-bold"
+                                            >
                                                 <span className="material-symbols-outlined text-sm">download</span>
                                                 PDF
                                             </button>
@@ -235,14 +263,21 @@ const Dashboard = () => {
                         <button
                             disabled={currentPage === 1 || isLoading}
                             onClick={() => setCurrentPage(prev => prev - 1)}
+                            aria-label="Go to previous page of service history"
                             className="px-3 py-1 bg-white dark:bg-white/10 rounded border border-gray-200 dark:border-transparent disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-white/20 transition-colors"
                         >
                             Previous
                         </button>
-                        <button className="px-3 py-1 bg-primary text-white rounded">{currentPage}</button>
+                        <button
+                            aria-label={`Current page ${currentPage}`}
+                            className="px-3 py-1 bg-primary text-white rounded"
+                        >
+                            {currentPage}
+                        </button>
                         <button
                             disabled={currentPage * pageSize >= totalBookings || isLoading}
                             onClick={() => setCurrentPage(prev => prev + 1)}
+                            aria-label="Go to next page of service history"
                             className="px-3 py-1 bg-white dark:bg-white/10 rounded border border-gray-200 dark:border-transparent disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-white/20 transition-colors"
                         >
                             Next
@@ -252,6 +287,63 @@ const Dashboard = () => {
             </div>
         </section>
       </div>
+
+      {/* Live Camera Modal */}
+      {showCamera && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white dark:bg-[#111418] rounded-2xl overflow-hidden w-full max-w-4xl border border-white/10 shadow-2xl animate-in zoom-in-95 duration-300">
+            <div className="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="size-3 rounded-full bg-red-500 animate-pulse"></div>
+                <h3 className="text-gray-900 dark:text-white font-bold uppercase tracking-widest text-sm">Live Studio Feed: Bay 4</h3>
+              </div>
+              <button
+                onClick={() => setShowCamera(false)}
+                className="size-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 dark:text-white transition-colors"
+                aria-label="Close camera feed"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div className="aspect-video bg-gray-900 relative group">
+              <img
+                src="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&q=80&w=2000"
+                alt="Live camera feed"
+                className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700"
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                  <span className="material-symbols-outlined text-white text-6xl animate-pulse">videocam</span>
+                  <p className="text-white font-bold tracking-widest uppercase text-xs">Synchronizing Stream...</p>
+                </div>
+              </div>
+              {/* Camera Overlays */}
+              <div className="absolute top-4 left-4 flex flex-col gap-1">
+                <p className="text-[10px] font-mono text-white/60 bg-black/40 px-2 py-0.5 rounded">CAM_04_NORTH</p>
+                <p className="text-[10px] font-mono text-white/60 bg-black/40 px-2 py-0.5 rounded">ISO_800 | 60FPS</p>
+              </div>
+              <div className="absolute bottom-4 right-4 text-right">
+                <p className="text-[10px] font-mono text-white/80 bg-black/40 px-2 py-0.5 rounded">{new Date().toLocaleTimeString()}</p>
+              </div>
+            </div>
+            <div className="p-6 bg-gray-50 dark:bg-white/[0.02] flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="flex items-center gap-4">
+                <div className="size-10 rounded-full border-2 border-primary/30 overflow-hidden shrink-0">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=100" alt="Marcus V." className="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 dark:text-white/40 font-bold uppercase tracking-wider">Currently Detailing</p>
+                  <p className="text-gray-900 dark:text-white font-bold text-sm">Marcus Valerius</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button className="px-4 py-2 text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-white hover:text-primary transition-colors">Switch Angle</button>
+                <button className="px-6 py-2 bg-primary text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-lg shadow-primary/20">Snapshot</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

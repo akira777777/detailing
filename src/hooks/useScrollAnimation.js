@@ -123,12 +123,26 @@ export const useMousePosition = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
+    let ticking = false;
+    let rafId = null;
+
     const handleMouseMove = (e) => {
-      setPosition({ x: e.clientX, y: e.clientY });
+      if (!ticking) {
+        rafId = window.requestAnimationFrame(() => {
+          setPosition({ x: e.clientX, y: e.clientY });
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+      }
+    };
   }, []);
 
   return position;

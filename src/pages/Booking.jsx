@@ -4,11 +4,12 @@ import { useToast } from '../context/ToastContext';
 import { Button } from '../components/ui/Components';
 import useBookingStore from '../store/useBookingStore';
 import { monthYearFormatter, fullDateFormatter, shortMonthFormatter } from '../utils/formatters';
+import { getPackageName } from '../utils/bookingUtils';
 
 const Booking = () => {
   const navigate = useNavigate();
   const { addToast } = useToast();
-  const { carModel, modules, totalPrice } = useBookingStore();
+  const { carModel, modules, totalPrice, setBookingDetails } = useBookingStore();
 
   // Pre-calculate date values once to avoid repeated calls in render/loops
   const { today, currentYear, currentMonth, currentDay } = useMemo(() => {
@@ -24,29 +25,18 @@ const Booking = () => {
   const [selectedDate, setSelectedDate] = useState(currentDay);
   const [selectedTime, setSelectedTime] = useState('10:30 AM');
 
-  const days = useMemo(() => Array.from({ length: 31 }, (_, i) => i + 1), []);
+  const days = useMemo(() => {
+    const numDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+    return Array.from({ length: numDays }, (_, i) => i + 1);
+  }, [currentYear, currentMonth]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Helper to get selected package name
-  const getPackageName = () => {
-    const selected = Object.keys(modules).filter(k => modules[k]);
-    if (selected.length === 0) return 'Basic Detailing';
-    if (selected.length === 1) {
-        if (selected[0] === 'coating') return 'Ceramic Coating Package';
-        if (selected[0] === 'correction') return 'Paint Correction Package';
-        return 'Interior Detail Package';
-    }
-    return 'Custom Concours Package';
-  };
 
   const handleConfirm = async () => {
     setIsSubmitting(true);
 
-    // Format date as ISO for the backend (YYYY-MM-DD)
-    const today = new Date();
-    const bookingDate = new Date(today.getFullYear(), today.getMonth(), selectedDate);
-    const dateStr = bookingDate.toISOString().split('T')[0];
+    // Format date as YYYY-MM-DD in local time
+    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}`;
 
     try {
       const response = await fetch('/api/booking', {
@@ -58,7 +48,7 @@ const Booking = () => {
           date: dateStr,
           time: selectedTime,
           carModel: carModel,
-          packageName: getPackageName(),
+          packageName: getPackageName(modules),
           totalPrice: totalPrice,
         }),
       });
@@ -68,6 +58,7 @@ const Booking = () => {
         throw new Error(errorData.error || 'Failed to confirm booking');
       }
 
+      setBookingDetails(dateStr, selectedTime);
       addToast('Booking successfully scheduled!', 'success');
       navigate('/booking-confirmation');
     } catch (error) {
@@ -132,9 +123,11 @@ const Booking = () => {
                         ))}
                     </div>
                     <div className="grid grid-cols-7 gap-2">
-                        {/* Empty cells */}
-                        <div className="h-14"></div><div className="h-14"></div><div className="h-14"></div>
-                        {days.slice(0, 28).map(day => {
+                        {/* Empty cells - dynamic based on first day of month */}
+                        {Array.from({ length: new Date(currentYear, currentMonth, 1).getDay() }).map((_, i) => (
+                            <div key={`empty-${i}`} className="h-14"></div>
+                        ))}
+                        {days.map(day => {
                             const dateObj = new Date(currentYear, currentMonth, day);
                             const fullDate = fullDateFormatter.format(dateObj);
                             return (
@@ -175,7 +168,7 @@ const Booking = () => {
                         <div className="size-20 bg-center bg-no-repeat bg-cover rounded-lg flex-shrink-0" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCx9wnmeST6ECJYFAvYmdB6xWlPMKPKqxTDfa-BGl1_3D16WSR-B8Pryxv90OV5_OK9TjftIlOfbeqFO-GDst3S7wTCzwgnIZHH6gJiTTJnmM4wHqO81-q0XS3FMXjLha9SNjh6lwdUgUb3LhbdKHobZCLvo0LuS1UcJGOGmqiOPJ0izUsdEgOafxBlagReXoinqiyt3Qjza9SIkUz2-dlJsU_65eGyHO5QI7Ph3TE5eEWv4witYcvKYB8ySFGTUw6sbv3fxArCrfU')" }}></div>
                         <div className="flex flex-col">
                             <p className="text-gray-900 dark:text-white text-base font-bold leading-tight">{carModel}</p>
-                            <p className="text-primary text-sm font-bold">{getPackageName()}</p>
+                            <p className="text-primary text-sm font-bold">{getPackageName(modules)}</p>
                             <div className="flex items-center gap-2 mt-1">
                                 <span className="material-symbols-outlined text-[16px] text-gray-400 dark:text-white/40">schedule</span>
                                 <p className="text-gray-500 dark:text-white/60 text-xs font-medium">4-5 Hours Duration</p>
@@ -220,7 +213,11 @@ const Booking = () => {
 
         {/* Footer Actions */}
         <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/10 flex items-center justify-between">
-            <Link to="/calculator" className="flex items-center gap-2 px-6 py-3 rounded-lg border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
+            <Link
+                to="/calculator"
+                aria-label="Go back to the service calculator"
+                className="flex items-center gap-2 px-6 py-3 rounded-lg border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+            >
                 <span className="material-symbols-outlined">arrow_back</span>
                 <span className="font-bold">Back</span>
             </Link>

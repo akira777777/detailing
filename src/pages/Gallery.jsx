@@ -30,7 +30,9 @@ const Gallery = () => {
                 </div>
 
                 <div className="grid grid-cols-1 gap-12 stagger-animation">
-                    {transformations.map((item, index) => (
+                    {transformations
+                      .filter(item => filter === 'All' || item.category.includes(filter) || item.services.some(s => s.includes(filter)))
+                      .map((item, index) => (
                         <AnimatedSection key={item.id} delay={index * 100} className="hover-lift">
                           <div className="group bg-white dark:bg-panel-dark rounded-xl overflow-hidden border border-gray-200 dark:border-white/5 hover:border-primary/50 transition-all shadow-lg dark:shadow-2xl hover:shadow-[0_0_40px_rgba(0,145,255,0.2)]">
                             <div className="grid grid-cols-1 lg:grid-cols-2">

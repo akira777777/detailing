@@ -19,28 +19,57 @@ export default async function handler(request, response) {
 
   if (request.method === 'GET') {
     try {
-      const { limit = '10', offset = '0' } = request.query || {};
+      const { limit = '10', offset = '0', search = '' } = request.query || {};
       const limitVal = parseInt(limit);
       const offsetVal = parseInt(offset);
 
-      const bookings = await sql`
-        SELECT
-          id,
-          date::text,
-          time,
-          car_model,
-          package,
-          total_price,
-          status,
-          created_at
-        FROM bookings
-        ORDER BY date DESC, time DESC
-        LIMIT ${limitVal}
-        OFFSET ${offsetVal}
-      `;
+      let bookings;
+      let total;
 
-      const countResult = await sql`SELECT COUNT(*) FROM bookings`;
-      const total = parseInt(countResult[0].count);
+      if (search) {
+        const searchPattern = `%${search}%`;
+        bookings = await sql`
+          SELECT
+            id,
+            date::text,
+            time,
+            car_model,
+            package,
+            total_price,
+            status,
+            created_at
+          FROM bookings
+          WHERE car_model ILIKE ${searchPattern} OR package ILIKE ${searchPattern}
+          ORDER BY date DESC, time DESC
+          LIMIT ${limitVal}
+          OFFSET ${offsetVal}
+        `;
+
+        const countResult = await sql`
+          SELECT COUNT(*) FROM bookings
+          WHERE car_model ILIKE ${searchPattern} OR package ILIKE ${searchPattern}
+        `;
+        total = parseInt(countResult[0].count);
+      } else {
+        bookings = await sql`
+          SELECT
+            id,
+            date::text,
+            time,
+            car_model,
+            package,
+            total_price,
+            status,
+            created_at
+          FROM bookings
+          ORDER BY date DESC, time DESC
+          LIMIT ${limitVal}
+          OFFSET ${offsetVal}
+        `;
+
+        const countResult = await sql`SELECT COUNT(*) FROM bookings`;
+        total = parseInt(countResult[0].count);
+      }
 
       return response.status(200).json({
         data: bookings,
