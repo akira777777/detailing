@@ -9,3 +9,7 @@
 ## 2026-02-02 - [Expensive Intl Objects in Render Loops]
 **Learning:** `Intl.DateTimeFormat` (and other Intl constructors) are significantly expensive to instantiate. Doing so inside React component bodies, especially within `.map()` loops (like a calendar), can lead to noticeable UI stutter during re-renders.
 **Action:** Always move `Intl` formatters to module-level constants or a centralized utility file to ensure they are instantiated only once. For date parts used in loops, pre-calculate values using `useMemo` at the component root to further reduce redundant object allocations.
+
+## 2026-02-03 - [Pre-calculating Calendar Grid Data]
+**Learning:** React render loops for calendars often contain redundant `new Date()` allocations and expensive `Intl.format()` calls (e.g., for `aria-label` or cell labels). These run ~30 times per render and re-trigger on every micro-interaction (like selecting a time slot) even if the month hasn't changed.
+**Action:** Move calendar day generation, including all localized strings and padding offsets, into a `useMemo` hook keyed to the month/year. This ensures the render loop only performs lightweight JSX generation using pre-calculated data.
