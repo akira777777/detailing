@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 
-import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView, useMotionValue, animate } from 'framer-motion';
 
 // Component with reveal effect on scroll
 export const ScrollReveal = ({ 
@@ -85,7 +85,7 @@ export const Parallax = ({ children, offset = 50, className = '' }) => {
   );
 };
 
-// Component with counter animation on scroll
+// Component with counter animation on scroll - Optimized with MotionValue to bypass React re-renders
 export const CountUp = ({ 
   from = 0, 
   to = 100, 
@@ -93,29 +93,21 @@ export const CountUp = ({
   className = ''
 }) => {
   const ref = useRef(null);
-  const [count, setCount] = React.useState(from);
+  const count = useMotionValue(from);
+  const rounded = useTransform(count, (latest) => Math.round(latest).toLocaleString());
   const isInView = useInView(ref, { once: true });
 
   React.useEffect(() => {
-    if (!isInView) return;
+    if (isInView) {
+      const controls = animate(count, to, {
+        duration,
+        ease: "easeOut"
+      });
+      return controls.stop;
+    }
+  }, [isInView, count, to, duration]);
 
-    let startTime;
-    const animate = (timestamp) => {
-      if (!startTime) startTime = timestamp;
-      const progress = (timestamp - startTime) / (duration * 1000);
-
-      if (progress < 1) {
-        setCount(Math.floor(from + (to - from) * progress));
-        requestAnimationFrame(animate);
-      } else {
-        setCount(to);
-      }
-    };
-
-    requestAnimationFrame(animate);
-  }, [isInView, from, to, duration]);
-
-  return <span ref={ref} className={className}>{count.toLocaleString()}</span>;
+  return <motion.span ref={ref} className={className}>{rounded}</motion.span>;
 };
 
 // Component with line animation on scroll
