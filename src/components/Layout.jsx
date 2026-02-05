@@ -299,12 +299,18 @@ const Footer = () => {
 const Layout = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col font-sans transition-colors bg-background-light text-gray-900 dark:bg-background-dark dark:text-white">
+      {/* Skip to main content link for accessibility */}
+      <a href="#main-content" className="skip-to-main">
+        Skip to main content
+      </a>
       <Navbar />
       <motion.main
-        className="flex-grow"
+        id="main-content"
+        className="flex-grow outline-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
+        tabIndex={-1}
       >
         {children}
       </motion.main>

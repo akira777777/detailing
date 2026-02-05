@@ -2,9 +2,128 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========== CSS Reset & Normalize ========== */
+/* Modern CSS Reset with cross-browser compatibility */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  line-height: 1.5;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Remove default button styles on iOS */
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  -webkit-appearance: button;
+}
+
+/* Remove inner border and padding on iOS */
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/* Correct the outline style in Safari */
+[type="search"] {
+  -webkit-appearance: textfield;
+  outline-offset: -2px;
+}
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/* Correct the cursor style of increment and decrement buttons in Chrome */
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/* Fix iOS tap highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Improve text rendering */
+body {
+  -webkit-font-feature-settings: "kern" 1;
+  font-feature-settings: "kern" 1;
+  font-kerning: normal;
+}
+
 @layer base {
   body {
     @apply bg-background-light text-gray-900 dark:bg-background-dark dark:text-white selection:bg-primary selection:text-white antialiased font-sans transition-colors duration-300;
+  }
+  
+  /* Improved focus states for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark;
+  }
+  
+  /* Skip link for accessibility */
+  .skip-link {
+    @apply absolute -top-10 left-0 bg-primary text-white px-4 py-2 z-50 transition-all;
+  }
+  
+  .skip-link:focus {
+    @apply top-0;
   }
 }
 
@@ -17,16 +136,31 @@
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: #1a1a1a;
+  border-radius: 2px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #0091FF;
 }
 
-/* Glass panel utility */
+/* Glass panel utility with cross-browser support */
 .glass-panel {
   background: rgba(13, 13, 13, 0.8);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not (backdrop-filter: blur(20px)) {
+  .glass-panel {
+    background: rgba(13, 13, 13, 0.95);
+  }
+}
+
+@supports not (-webkit-backdrop-filter: blur(20px)) {
+  .glass-panel {
+    background: rgba(13, 13, 13, 0.95);
+  }
 }
 
 .text-stroke {
@@ -235,11 +369,25 @@
   @apply transition-all duration-300 ease-out;
 }
 
-/* Glass morphism effect */
+/* Glass morphism effect with cross-browser support */
 .glass-effect {
   background: rgba(5, 5, 5, 0.4);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not (backdrop-filter: blur(20px)) {
+  .glass-effect {
+    background: rgba(5, 5, 5, 0.95);
+  }
+}
+
+@supports not (-webkit-backdrop-filter: blur(20px)) {
+  .glass-effect {
+    background: rgba(5, 5, 5, 0.95);
+  }
 }
 
 /* Gradient text */
@@ -273,6 +421,61 @@
 .stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
 .stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
 .stagger-animation > *:nth-child(n+6) { animation-delay: 0.6s; }
+
+/* ==================== ACCESSIBILITY IMPROVEMENTS ==================== */
+
+/* Better focus rings for interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible {
+  @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark;
+}
+
+/* Skip to main content link */
+.skip-to-main {
+  @apply absolute -top-10 left-0 bg-primary text-white px-4 py-2 z-50 transition-all font-bold;
+}
+
+.skip-to-main:focus {
+  @apply top-0;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .glass-panel,
+  .glass-effect {
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid white;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
 
 /* Accessibility: Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
