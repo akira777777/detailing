@@ -1,4 +1,7 @@
 // Migration system for database schema updates
+// This module handles database schema versioning and migrations
+
+import { DatabaseError } from './database.js';
 
 const migrations = [
   {
@@ -130,7 +133,7 @@ const migrations = [
   },
   {
     version: 4,
-    name: 'Add authentication sessions',
+    name: 'Add authentication sessions and indexes',
     up: `
       CREATE TABLE IF NOT EXISTS sessions (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -159,76 +162,184 @@ const migrations = [
       DROP INDEX IF EXISTS idx_vehicles_user_id;
       DROP TABLE IF EXISTS sessions;
     `
+  },
+  {
+    version: 5,
+    name: 'Add seed data for services',
+    up: `
+      INSERT INTO service_packages (name, description, base_price, duration_hours, category) VALUES
+        ('Basic Detail', 'Complete exterior wash and interior vacuum', 150.00, 2, 'basic'),
+        ('Premium Detail', 'Full interior and exterior detail with wax', 350.00, 4, 'premium'),
+        ('Concierge Detail', 'Complete restoration with paint correction', 850.00, 8, 'concierge');
+      
+      INSERT INTO service_modules (name, description, price, duration_hours, category) VALUES
+        ('Ceramic Coating', 'Professional ceramic coating application', 1250.00, 6, 'protection'),
+        ('Paint Correction', 'Multi-stage paint defect removal', 850.00, 8, 'correction'),
+        ('Interior Detail', 'Complete interior cleaning and conditioning', 450.00, 4, 'interior'),
+        ('Engine Bay Clean', 'Professional engine compartment cleaning', 150.00, 2, 'engine'),
+        ('Headlight Restoration', 'Headlight lens polishing and sealing', 200.00, 2, 'restoration');
+      
+      INSERT INTO package_modules (package_id, module_id) 
+      SELECT sp.id, sm.id 
+      FROM service_packages sp, service_modules sm 
+      WHERE sp.name = 'Premium Detail' AND sm.name IN ('Interior Detail');
+      
+      INSERT INTO package_modules (package_id, module_id) 
+      SELECT sp.id, sm.id 
+      FROM service_packages sp, service_modules sm 
+      WHERE sp.name = 'Concierge Detail' AND sm.name IN ('Paint Correction', 'Ceramic Coating');
+    `,
+    down: `
+      DELETE FROM package_modules;
+      DELETE FROM service_modules;
+      DELETE FROM service_packages;
+    `
   }
 ];
 
-export async function runMigrations(dbClient, targetVersion = null) {
-  const currentVersion = await getCurrentVersion(dbClient);
+/**
+ * Run migrations to bring database to target version
+ * @param {Function} dbQuery - Database query function
+ * @param {number|null} targetVersion - Target version (null = latest)
+ */
+export async function runMigrations(dbQuery, targetVersion = null) {
+  if (!dbQuery) {
+    throw new DatabaseError('Database query function not provided', 'MISSING_DB_QUERY');
+  }
+  
+  const currentVersion = await getCurrentVersion(dbQuery);
   const target = targetVersion || migrations.length;
   
   if (currentVersion >= target) {
-    console.log(`Database is already at version ${currentVersion}`);
-    return;
+    console.log(`✅ Database is already at version ${currentVersion}`);
+    return { success: true, currentVersion, targetVersion: target, migrationsRun: 0 };
   }
 
-  console.log(`Running migrations from version ${currentVersion} to ${target}`);
+  console.log(`🔄 Running migrations from version ${currentVersion} to ${target}`);
+  let migrationsRun = 0;
   
   for (let i = currentVersion; i < target; i++) {
     const migration = migrations[i];
-    console.log(`Running migration ${migration.version}: ${migration.name}`);
+    console.log(`  → Running migration ${migration.version}: ${migration.name}`);
     
     try {
-      await dbClient`${migration.up}`;
-      await dbClient`INSERT INTO schema_migrations (version) VALUES (${migration.version}) 
-                     ON CONFLICT (version) DO UPDATE SET version = ${migration.version}`;
-      console.log(`Migration ${migration.version} completed successfully`);
+      // Execute migration SQL
+      await dbQuery(migration.up);
+      
+      // Record migration
+      await dbQuery`
+        INSERT INTO schema_migrations (version, name, applied_at) 
+        VALUES (${migration.version}, ${migration.name}, CURRENT_TIMESTAMP)
+        ON CONFLICT (version) DO UPDATE 
+        SET applied_at = CURRENT_TIMESTAMP, name = ${migration.name}
+      `;
+      
+      migrationsRun++;
+      console.log(`  ✅ Migration ${migration.version} completed`);
     } catch (error) {
-      console.error(`Migration ${migration.version} failed:`, error);
-      throw error;
+      console.error(`  ❌ Migration ${migration.version} failed:`, error);
+      throw new DatabaseError(
+        `Migration ${migration.version} failed: ${error.message}`,
+        'MIGRATION_FAILED'
+      );
     }
   }
+  
+  console.log(`✅ All migrations completed. Database is now at version ${target}`);
+  return { success: true, currentVersion: target, targetVersion: target, migrationsRun };
 }
 
-export async function rollbackMigrations(dbClient, targetVersion = 0) {
-  const currentVersion = await getCurrentVersion(dbClient);
+/**
+ * Rollback migrations to target version
+ * @param {Function} dbQuery - Database query function
+ * @param {number} targetVersion - Target version to rollback to
+ */
+export async function rollbackMigrations(dbQuery, targetVersion = 0) {
+  if (!dbQuery) {
+    throw new DatabaseError('Database query function not provided', 'MISSING_DB_QUERY');
+  }
+  
+  const currentVersion = await getCurrentVersion(dbQuery);
   
   if (currentVersion <= targetVersion) {
-    console.log(`Database is already at version ${currentVersion}`);
-    return;
+    console.log(`✅ Database is already at version ${currentVersion}`);
+    return { success: true, currentVersion, targetVersion, rollbacksRun: 0 };
   }
 
-  console.log(`Rolling back migrations from version ${currentVersion} to ${targetVersion}`);
+  console.log(`🔄 Rolling back migrations from version ${currentVersion} to ${targetVersion}`);
+  let rollbacksRun = 0;
   
   for (let i = currentVersion - 1; i >= targetVersion; i--) {
     const migration = migrations[i];
-    console.log(`Rolling back migration ${migration.version}: ${migration.name}`);
+    console.log(`  → Rolling back migration ${migration.version}: ${migration.name}`);
     
     try {
-      await dbClient`${migration.down}`;
-      await dbClient`DELETE FROM schema_migrations WHERE version = ${migration.version}`;
-      console.log(`Rollback of migration ${migration.version} completed successfully`);
+      // Execute rollback SQL
+      await dbQuery(migration.down);
+      
+      // Remove migration record
+      await dbQuery`DELETE FROM schema_migrations WHERE version = ${migration.version}`;
+      
+      rollbacksRun++;
+      console.log(`  ✅ Rollback of migration ${migration.version} completed`);
     } catch (error) {
-      console.error(`Rollback of migration ${migration.version} failed:`, error);
-      throw error;
+      console.error(`  ❌ Rollback of migration ${migration.version} failed:`, error);
+      throw new DatabaseError(
+        `Rollback of migration ${migration.version} failed: ${error.message}`,
+        'ROLLBACK_FAILED'
+      );
     }
   }
+  
+  console.log(`✅ All rollbacks completed. Database is now at version ${targetVersion}`);
+  return { success: true, currentVersion: targetVersion, targetVersion, rollbacksRun };
 }
 
-async function getCurrentVersion(dbClient) {
+/**
+ * Get current migration version
+ * @param {Function} dbQuery - Database query function
+ */
+async function getCurrentVersion(dbQuery) {
   try {
     // Create schema_migrations table if it doesn't exist
-    await dbClient`
+    await dbQuery`
       CREATE TABLE IF NOT EXISTS schema_migrations (
         version INTEGER PRIMARY KEY,
+        name VARCHAR(255),
         applied_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       )
     `;
     
-    const result = await dbClient`SELECT MAX(version) as version FROM schema_migrations`;
+    const result = await dbQuery`SELECT MAX(version) as version FROM schema_migrations`;
     return result[0]?.version || 0;
   } catch (error) {
     console.error('Error getting current migration version:', error);
     return 0;
+  }
+}
+
+/**
+ * Get migration status
+ * @param {Function} dbQuery - Database query function
+ */
+export async function getMigrationStatus(dbQuery) {
+  if (!dbQuery) {
+    return { error: 'Database query function not provided' };
+  }
+  
+  try {
+    const currentVersion = await getCurrentVersion(dbQuery);
+    const pendingMigrations = migrations.filter(m => m.version > currentVersion);
+    
+    return {
+      currentVersion,
+      latestVersion: migrations.length,
+      pendingCount: pendingMigrations.length,
+      pendingMigrations: pendingMigrations.map(m => ({ version: m.version, name: m.name })),
+      isUpToDate: currentVersion >= migrations.length
+    };
+  } catch (error) {
+    return { error: error.message };
   }
 }
 
