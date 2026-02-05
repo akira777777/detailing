@@ -58,13 +58,12 @@ const ToastItem = memo(({ id, message, type, duration, removeToast }) => {
                 <span className="material-symbols-outlined text-sm" aria-hidden="true">close</span>
             </button>
 
-            {/* Progress bar */}
+            {/* Progress bar indicator */}
             <motion.div
                 initial={{ scaleX: 1 }}
                 animate={{ scaleX: 0 }}
                 transition={{ duration: duration / 1000, ease: "linear" }}
-                className={`absolute bottom-0 left-0 right-0 h-1 ${progressColors[type]} origin-left opacity-30`}
-                aria-hidden="true"
+                className={`absolute bottom-0 left-0 h-1 w-full origin-left ${progressColors[type]} opacity-60`}
             />
         </motion.div>
     );
