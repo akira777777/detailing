@@ -25,9 +25,23 @@ const Booking = () => {
   const [selectedDate, setSelectedDate] = useState(currentDay);
   const [selectedTime, setSelectedTime] = useState('10:30 AM');
 
-  const days = useMemo(() => {
+  const { days, emptyDays } = useMemo(() => {
     const numDays = new Date(currentYear, currentMonth + 1, 0).getDate();
-    return Array.from({ length: numDays }, (_, i) => i + 1);
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+
+    const daysArray = Array.from({ length: numDays }, (_, i) => {
+      const day = i + 1;
+      const dateObj = new Date(currentYear, currentMonth, day);
+      return {
+        day,
+        fullDate: fullDateFormatter.format(dateObj)
+      };
+    });
+
+    return {
+      days: daysArray,
+      emptyDays: Array.from({ length: firstDayOfMonth })
+    };
   }, [currentYear, currentMonth]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -124,25 +138,21 @@ const Booking = () => {
                         ))}
                     </div>
                     <div className="grid grid-cols-7 gap-2">
-                        {/* Empty cells - dynamic based on first day of month */}
-                        {Array.from({ length: new Date(currentYear, currentMonth, 1).getDay() }).map((_, i) => (
+                        {/* Empty cells - pre-calculated to avoid redundant new Date() calls */}
+                        {emptyDays.map((_, i) => (
                             <div key={`empty-${i}`} className="h-14"></div>
                         ))}
-                        {days.map(day => {
-                            const dateObj = new Date(currentYear, currentMonth, day);
-                            const fullDate = fullDateFormatter.format(dateObj);
-                            return (
-                                <button
-                                    key={day}
-                                    onClick={() => setSelectedDate(day)}
-                                    aria-label={`Select ${fullDate}`}
-                                    aria-pressed={selectedDate === day}
-                                    className={`h-14 flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${selectedDate === day ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}
-                                >
-                                    {day}
-                                </button>
-                            );
-                        })}
+                        {days.map(({ day, fullDate }) => (
+                            <button
+                                key={day}
+                                onClick={() => setSelectedDate(day)}
+                                aria-label={`Select ${fullDate}`}
+                                aria-pressed={selectedDate === day}
+                                className={`h-14 flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${selectedDate === day ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}
+                            >
+                                {day}
+                            </button>
+                        ))}
                     </div>
                 </div>
                 <div className="flex items-center gap-3 p-4 bg-primary/10 border border-primary/20 rounded-lg">
