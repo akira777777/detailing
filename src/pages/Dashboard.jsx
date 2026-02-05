@@ -13,27 +13,44 @@ const Dashboard = () => {
   const pageSize = 10;
 
   useEffect(() => {
+    // Optimization: Use AbortController to cancel pending requests on unmount or dependency change.
+    // This prevents race conditions and memory leaks.
+    const controller = new AbortController();
+
     const fetchBookings = async () => {
       setIsLoading(true);
       try {
         const offset = (currentPage - 1) * pageSize;
-        const response = await fetch(`/api/booking?limit=${pageSize}&offset=${offset}`);
+        const response = await fetch(`/api/booking?limit=${pageSize}&offset=${offset}`, {
+            signal: controller.signal
+        });
         if (!response.ok) {
           throw new Error('Failed to fetch bookings');
         }
         const result = await response.json();
-        setBookings(result.data);
+
+        // Optimization: Pre-calculate formatted date and price strings once when data is fetched.
+        // This avoids expensive 'new Date()' allocations and 'Intl.format()' calls in the render loop.
+        const formattedData = result.data.map(booking => ({
+            ...booking,
+            displayDate: shortDateFormatter.format(new Date(booking.date)),
+            displayPrice: `$${parseFloat(booking.total_price).toFixed(2)}`
+        }));
+
+        setBookings(formattedData);
         setTotalBookings(result.total);
       } catch (error) {
+        if (error.name === 'AbortError') return;
+
         console.error('Error fetching bookings, using fallback data:', error);
         // Fallback to mock data if API fails
         const fallbackData = serviceHistory.map((item, index) => ({
           id: `fallback-${index}`,
-          date: item.date,
+          displayDate: item.date,
           time: '09:00 AM', // Default time for fallback
           car_model: item.vehicle,
           package: item.title,
-          total_price: item.cost.replace('$', '').replace(',', ''),
+          displayPrice: item.cost,
           status: item.status
         }));
         setBookings(fallbackData);
@@ -45,6 +62,8 @@ const Dashboard = () => {
     };
 
     fetchBookings();
+
+    return () => controller.abort();
   }, [addToast, currentPage]);
 
   return (
@@ -176,12 +195,7 @@ const Dashboard = () => {
                 <div className="flex gap-2">
                     <div className="relative group">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-sm text-gray-500 dark:text-white/60">search</span>
-                        <input
-                            aria-label="Search service history"
-                            className="bg-white dark:bg-panel-dark border-gray-200 dark:border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-gray-900 dark:text-white focus:ring-primary focus:border-primary w-64 border outline-none shadow-sm dark:shadow-none"
-                            placeholder="Search history..."
-                            type="text"
-                        />
+                        <input className="bg-white dark:bg-panel-dark border-gray-200 dark:border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-gray-900 dark:text-white focus:ring-primary focus:border-primary w-64 border outline-none shadow-sm dark:shadow-none" placeholder="Search history..." type="text" aria-label="Search service history"/>
                     </div>
                     <button
                         aria-label="Filter history"
@@ -224,7 +238,7 @@ const Dashboard = () => {
                                 bookings.map((booking) => (
                                     <tr key={booking.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                                         <td className="px-6 py-5 text-sm font-medium text-gray-900 dark:text-white">
-                                            {shortDateFormatter.format(new Date(booking.date))}
+                                            {booking.displayDate}
                                         </td>
                                         <td className="px-6 py-5">
                                             <div className="flex flex-col">
@@ -233,7 +247,7 @@ const Dashboard = () => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-5 text-gray-600 dark:text-white/60 text-sm">{booking.car_model}</td>
-                                        <td className="px-6 py-5 text-gray-900 dark:text-white text-sm font-bold">${parseFloat(booking.total_price).toFixed(2)}</td>
+                                        <td className="px-6 py-5 text-gray-900 dark:text-white text-sm font-bold">{booking.displayPrice}</td>
                                         <td className="px-6 py-5">
                                             <span className={`px-2 py-1 ${booking.status === 'Completed' ? 'bg-green-500/10 text-green-500' : 'bg-primary/10 text-primary'} text-[10px] font-bold uppercase rounded`}>
                                                 {booking.status}
