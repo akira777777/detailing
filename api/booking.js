@@ -9,41 +9,54 @@ const bookingSchema = z.object({
   totalPrice: z.number().positive("Total price must be positive"),
 });
 
+// Initialize the SQL client outside the handler to leverage connection reuse
+// across multiple warm invocations of the serverless function.
+const sql = process.env.DATABASE_URL ? neon(process.env.DATABASE_URL) : null;
+
 export default async function handler(request, response) {
-  if (!process.env.DATABASE_URL) {
+  if (!sql) {
     console.error('DATABASE_URL is missing');
     return response.status(500).json({ error: 'Server configuration error' });
   }
 
-  const sql = neon(process.env.DATABASE_URL);
-
   if (request.method === 'GET') {
     try {
       const { limit = '10', offset = '0' } = request.query || {};
-      const limitVal = parseInt(limit);
-      const offsetVal = parseInt(offset);
 
-      const bookings = await sql`
+      // Validate and clamp pagination parameters to prevent invalid or overly large queries
+      const limitVal = Math.max(1, Math.min(parseInt(limit, 10) || 10, 100));
+      const offsetVal = Math.max(0, parseInt(offset, 10) || 0);
+
+      // Optimization: Fetch both the total count and the paginated data in a single round-trip.
+      // We use a subquery for the paginated data and JSON_AGG to ensure we get a result row
+      // even if the LIMIT/OFFSET returns no rows (handling the edge case of requesting a non-existent page).
+      const result = await sql`
         SELECT
-          id,
-          date::text,
-          time,
-          car_model,
-          package,
-          total_price,
-          status,
-          created_at
-        FROM bookings
-        ORDER BY date DESC, time DESC
-        LIMIT ${limitVal}
-        OFFSET ${offsetVal}
+          (SELECT COUNT(*) FROM bookings)::int AS total,
+          (
+            SELECT JSON_AGG(sub.*) FROM (
+              SELECT
+                id,
+                date::text,
+                time,
+                car_model,
+                package,
+                total_price,
+                status,
+                created_at
+              FROM bookings
+              ORDER BY date DESC, time DESC
+              LIMIT ${limitVal}
+              OFFSET ${offsetVal}
+            ) sub
+          ) AS data
       `;
 
-      const countResult = await sql`SELECT COUNT(*) FROM bookings`;
-      const total = parseInt(countResult[0].count);
+      const total = result[0]?.total || 0;
+      const data = result[0]?.data || [];
 
       return response.status(200).json({
-        data: bookings,
+        data,
         total
       });
     } catch (error) {
@@ -57,16 +70,16 @@ export default async function handler(request, response) {
       const validatedData = bookingSchema.parse(request.body);
       const { date, time, carModel, packageName, totalPrice } = validatedData;
 
-      const result = await sql`
+      const postResult = await sql`
         INSERT INTO bookings (date, time, car_model, package, total_price)
         VALUES (${date}, ${time}, ${carModel}, ${packageName}, ${totalPrice})
         RETURNING id
       `;
 
-      console.log(`New booking created with ID: ${result[0].id}`);
+      console.log(`New booking created with ID: ${postResult[0].id}`);
       return response.status(201).json({
         message: 'Booking confirmed successfully',
-        id: result[0].id
+        id: postResult[0].id
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
