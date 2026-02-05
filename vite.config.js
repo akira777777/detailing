@@ -22,6 +22,15 @@ export default defineConfig({
   server: {
     headers: {
       'Cache-Control': 'public, max-age=3600'
+    },
+    // Proxy API requests to the Express server during development
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        // Don't rewrite paths - server.js expects /api/booking
+        // rewrite: (path) => path.replace(/^\/api/, '')
+      }
     }
   }
 })
