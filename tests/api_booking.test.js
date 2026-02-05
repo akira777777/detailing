@@ -3,7 +3,23 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 // Mock @neondatabase/serverless
 const mockSql = vi.fn();
 vi.mock('@neondatabase/serverless', () => ({
-  neon: vi.fn(() => mockSql)
+  neon: vi.fn(() => vi.fn().mockImplementation(async (strings) => {
+    // Basic mock to simulate SQL behavior for the new robust single-query approach
+    if (strings[0].includes('SELECT') && strings[0].includes('JSON_AGG')) {
+      return [{
+        total: 1,
+        data: [{ id: 1, date: '2023-10-24', time: '10:30 AM', car_model: 'Test Car', package: 'Test Package', total_price: 100, status: 'Confirmed' }]
+      }];
+    }
+    // Fallback for other SELECT queries (if any)
+    if (strings[0].includes('SELECT')) {
+      return [{ id: 1, date: '2023-10-24', time: '10:30 AM', car_model: 'Test Car', package: 'Test Package', total_price: 100, status: 'Confirmed' }];
+    }
+    if (strings[0].includes('INSERT')) {
+        return [{ id: 1 }];
+    }
+    return [];
+  })),
 }));
 
 // Mock zod
