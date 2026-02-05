@@ -31,6 +31,13 @@ const ToastItem = memo(({ id, message, type, duration, removeToast }) => {
         warning: 'warning'
     };
 
+    const progressColors = {
+        info: 'bg-blue-500',
+        success: 'bg-green-500',
+        error: 'bg-red-500',
+        warning: 'bg-yellow-500'
+    };
+
     return (
         <motion.div
             role="alert"
@@ -38,7 +45,7 @@ const ToastItem = memo(({ id, message, type, duration, removeToast }) => {
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className={`${bgColors[type]} text-white px-4 py-3 rounded-lg shadow-2xl flex items-center gap-3 min-w-[300px] border backdrop-blur-md`}
+            className={`${bgColors[type]} text-white px-4 py-3 rounded-lg shadow-2xl flex items-center gap-3 min-w-[300px] border backdrop-blur-md relative overflow-hidden`}
             layout
         >
             <span className={`material-symbols-outlined text-xl ${iconColors[type]}`} aria-hidden="true">{icons[type]}</span>
@@ -50,6 +57,15 @@ const ToastItem = memo(({ id, message, type, duration, removeToast }) => {
             >
                 <span className="material-symbols-outlined text-sm" aria-hidden="true">close</span>
             </button>
+
+            {/* Progress bar */}
+            <motion.div
+                initial={{ scaleX: 1 }}
+                animate={{ scaleX: 0 }}
+                transition={{ duration: duration / 1000, ease: "linear" }}
+                className={`absolute bottom-0 left-0 right-0 h-1 ${progressColors[type]} origin-left opacity-30`}
+                aria-hidden="true"
+            />
         </motion.div>
     );
 });
