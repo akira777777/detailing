@@ -35,6 +35,14 @@ export const AnimatedButton = ({
     onClick?.(e);
   };
 
+  const rippleVariants = {
+    tap: {
+      opacity: [0.3, 0],
+      scale: 2,
+      transition: { duration: 0.6 },
+    },
+  };
+
   return (
     <motion.button
       className={`relative font-semibold rounded-lg transition-colors ${sizeClasses[size]} ${variantClasses[variant]} ${className} ${
@@ -43,19 +51,18 @@ export const AnimatedButton = ({
       onClick={handleClick}
       disabled={disabled}
       whileHover={!disabled ? { scale: 1.05 } : {}}
-      whileTap={!disabled ? { scale: 0.98 } : {}}
+      whileTap={!disabled ? 'tap' : undefined}
+      variants={{
+        tap: { scale: 0.98 }
+      }}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      {/* Ripple effect */}
+      {/* Ripple effect - pointer-events-none prevents double invocation issues */}
       <motion.span
-        className="absolute inset-0 rounded-lg bg-white opacity-0"
+        className="absolute inset-0 rounded-lg bg-white opacity-0 pointer-events-none"
+        variants={rippleVariants}
         initial={false}
-        whileTap={{
-          opacity: [0.3, 0],
-          scale: 2,
-          transition: { duration: 0.6 },
-        }}
       />
       <span className="relative z-10">{children}</span>
     </motion.button>
@@ -73,6 +80,8 @@ export const PulseButton = ({ children, onClick, className = '' }) => {
         playTone(800, 100, 0.3);
         onClick?.(e);
       }}
+      whileHover="hover"
+      whileTap="tap"
       animate={{
         boxShadow: [
           '0 0 0 0 rgba(168, 85, 247, 0.7)',
@@ -82,9 +91,11 @@ export const PulseButton = ({ children, onClick, className = '' }) => {
       transition={{ duration: 2, repeat: Infinity }}
     >
       <motion.span
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="block"
+        variants={{
+          hover: { scale: 1.05 },
+          tap: { scale: 0.95 }
+        }}
+        className="block pointer-events-none"
       >
         {children}
       </motion.span>
