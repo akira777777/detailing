@@ -13,3 +13,7 @@
 ## 2026-02-03 - [Pre-calculating Calendar Grid Data]
 **Learning:** React render loops for calendars often contain redundant `new Date()` allocations and expensive `Intl.format()` calls (e.g., for `aria-label` or cell labels). These run ~30 times per render and re-trigger on every micro-interaction (like selecting a time slot) even if the month hasn't changed.
 **Action:** Move calendar day generation, including all localized strings and padding offsets, into a `useMemo` hook keyed to the month/year. This ensures the render loop only performs lightweight JSX generation using pre-calculated data.
+
+## 2025-05-20 - [Bypassing React for Counter Animations]
+**Learning:** Using `useState` within a `requestAnimationFrame` loop for counter animations triggers a full React render cycle (including reconciliation) on every frame. For simple text updates, this is extremely inefficient.
+**Action:** Use `framer-motion`'s `useMotionValue`, `useTransform`, and `animate` function to update the DOM directly. Passing a `MotionValue` (or a derived one) as a child to a `motion.span` allows Framer Motion to sync the value to `textContent` without triggering component re-renders.
