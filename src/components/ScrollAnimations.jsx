@@ -1,16 +1,17 @@
 import React, { useRef } from 'react';
 
 import { motion, useScroll, useTransform, useInView, useMotionValue, animate } from 'framer-motion';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
-// Component with reveal effect on scroll
+// Component with reveal effect on scroll - Optimized with shared IntersectionObserver
 export const ScrollReveal = ({ 
   children, 
   direction = 'up',
   delay = 0,
+  once = true,
   className = ''
 }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, amount: 0.2 });
+  const { ref, isVisible } = useScrollAnimation({ once, amount: 0.2 });
 
   const directions = {
     up: { hidden: { opacity: 0, y: 100 }, visible: { opacity: 1, y: 0 } },
@@ -23,7 +24,7 @@ export const ScrollReveal = ({
     <motion.div
       ref={ref}
       initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
+      animate={isVisible ? 'visible' : 'hidden'}
       variants={directions[direction]}
       transition={{ duration: 0.8, delay }}
       className={className}
@@ -33,16 +34,15 @@ export const ScrollReveal = ({
   );
 };
 
-// Component with scaling effect on scroll
-export const ScrollScale = ({ children, className = '' }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, amount: 0.2 });
+// Component with scaling effect on scroll - Optimized with shared IntersectionObserver
+export const ScrollScale = ({ children, once = true, className = '' }) => {
+  const { ref, isVisible } = useScrollAnimation({ once, amount: 0.2 });
 
   return (
     <motion.div
       ref={ref}
       initial={{ opacity: 0, scale: 0.8 }}
-      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+      animate={isVisible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
       transition={{ duration: 0.6 }}
       className={className}
     >
@@ -147,16 +147,16 @@ export const ScrollBlur = ({ children, className = '' }) => {
   );
 };
 
-// AosReveal - refactored to use Framer Motion instead of AOS
+// AosReveal - refactored to use shared IntersectionObserver and Framer Motion
 export const AosReveal = ({ 
   children, 
   animation = 'fade-up',
   duration = 800,
   delay = 0,
+  once = true,
   className = ''
 }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, amount: 0.2 });
+  const { ref, isVisible } = useScrollAnimation({ once, amount: 0.2 });
 
   // Map AOS animation names to Framer Motion variants
   const animations = {
@@ -177,7 +177,7 @@ export const AosReveal = ({
       ref={ref}
       className={className}
       initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
+      animate={isVisible ? 'visible' : 'hidden'}
       variants={variant}
       transition={{ duration: duration / 1000, delay: delay / 1000 }}
     >

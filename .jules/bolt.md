@@ -17,3 +17,7 @@
 ## 2025-05-20 - [Bypassing React for Counter Animations]
 **Learning:** Using `useState` within a `requestAnimationFrame` loop for counter animations triggers a full React render cycle (including reconciliation) on every frame. For simple text updates, this is extremely inefficient.
 **Action:** Use `framer-motion`'s `useMotionValue`, `useTransform`, and `animate` function to update the DOM directly. Passing a `MotionValue` (or a derived one) as a child to a `motion.span` allows Framer Motion to sync the value to `textContent` without triggering component re-renders.
+
+## 2026-02-07 - [Shared IntersectionObservers for Scroll Animations]
+**Learning:** Creating individual `IntersectionObserver` instances for every element with a scroll animation (e.g., in a long list or gallery) leads to significant main-thread overhead as the browser must track hundreds of separate observers.
+**Action:** Implement a centralized observer pool that shares `IntersectionObserver` instances based on unique configuration options (threshold, rootMargin). This consolidates multiple observers into a single instance per config, reducing memory usage and CPU cycles during scroll events. Ensure the hook handles both `once` (unobserve after trigger) and repeatable behaviors correctly within the shared architecture.
