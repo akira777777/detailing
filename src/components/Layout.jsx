@@ -1,9 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import { AnimatedLogo } from './AnimatedIcons';
 import { soundManager } from '../utils/soundManager';
+
+// Optimization: Static navigation data moved outside component to prevent recreation on every render
+const NAV_LINKS = [
+  { name: 'Home', path: '/' },
+  { name: 'Gallery', path: '/gallery' },
+  { name: 'Calculator', path: '/calculator' },
+  { name: 'Booking', path: '/booking' },
+  { name: 'Dashboard', path: '/dashboard' },
+  { name: 'Animations', path: '/animations' },
+];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -11,27 +21,29 @@ const Navbar = () => {
   const location = useLocation();
   const { isDark, toggleTheme } = useTheme();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Optimization: Use framer-motion's useScroll for throttled scroll handling
+  const { scrollY } = useScroll();
 
-  const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Gallery', path: '/gallery' },
-    { name: 'Calculator', path: '/calculator' },
-    { name: 'Booking', path: '/booking' },
-    { name: 'Dashboard', path: '/dashboard' },
-    { name: 'Animations', path: '/animations' },
-  ];
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const isScrolled = latest > 50;
+    if (isScrolled !== scrolled) {
+      setScrolled(isScrolled);
+    }
+  });
 
-  const handleThemeToggle = () => {
+  const handleThemeToggle = useCallback(() => {
     soundManager.playTone(440, 100, 0.2);
     toggleTheme();
-  };
+  }, [toggleTheme]);
+
+  const handleLinkClick = useCallback((name) => {
+    if (name === 'MobileMenu') {
+      setMenuOpen(prev => !prev);
+    } else {
+      setMenuOpen(false);
+    }
+    soundManager.playTone(500, 50, 0.15);
+  }, []);
 
   return (
     <header className={`fixed top-0 w-full z-50 border-b transition-all duration-300 ${
@@ -50,7 +62,7 @@ const Navbar = () => {
         </motion.div>
 
         <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
-          {navLinks.map((link) => (
+          {NAV_LINKS.map((link) => (
             <motion.div key={link.name} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 to={link.path}
@@ -100,7 +112,7 @@ const Navbar = () => {
           </motion.div>
 
           <motion.button
-            onClick={() => setMenuOpen(!menuOpen)}
+            onClick={() => handleLinkClick('MobileMenu')}
             className="lg:hidden p-2"
             whileTap={{ scale: 0.95 }}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -125,7 +137,7 @@ const Navbar = () => {
             aria-hidden={!menuOpen}
           >
             <nav className="flex flex-col gap-4 px-6 py-4" aria-label="Mobile navigation">
-              {navLinks.map((link, index) => (
+              {NAV_LINKS.map((link, index) => (
                 <motion.div
                   key={link.name}
                   initial={{ opacity: 0, x: -20 }}
@@ -136,10 +148,7 @@ const Navbar = () => {
                   <Link
                     to={link.path}
                     className="block text-sm font-bold uppercase tracking-[0.1em] transition-colors text-gray-600 hover:text-gray-900 dark:text-white/70 dark:hover:text-white"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      soundManager.playTone(500, 50, 0.15);
-                    }}
+                    onClick={() => handleLinkClick(link.name)}
                   >
                     {link.name}
                   </Link>
@@ -153,36 +162,38 @@ const Navbar = () => {
   );
 };
 
+// Optimization: Static variants moved outside component
+const FOOTER_VARIANTS = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const ITEM_VARIANTS = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0 },
+};
+
 const Footer = () => {
   const { isDark } = useTheme();
-  const footerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0 },
-  };
 
   return (
     <footer className="border-t transition-colors bg-gray-50 border-gray-200 dark:bg-background-dark dark:border-white/10 pt-20 pb-10 px-6 lg:px-12">
       <div className="max-w-[1440px] mx-auto">
         <motion.div
           className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20"
-          variants={footerVariants}
+          variants={FOOTER_VARIANTS}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false, amount: 0.2 }}
         >
-          <motion.div className="md:col-span-4" variants={itemVariants}>
+          <motion.div className="md:col-span-4" variants={ITEM_VARIANTS}>
             <div className="flex items-center gap-4 mb-8">
               <div className="size-6 bg-primary flex items-center justify-center rounded-sm">
                 <div className="size-3 bg-white transform rotate-45"></div>
@@ -216,7 +227,7 @@ const Footer = () => {
             { title: 'Company', links: ['Studio', 'Our Work', 'Pricing'] },
             { title: 'Services', links: ['Coatings', 'Correction', 'Protection'] },
           ].map((section) => (
-            <motion.div key={section.title} className="md:col-span-2" variants={itemVariants}>
+            <motion.div key={section.title} className="md:col-span-2" variants={ITEM_VARIANTS}>
               <h6 className="text-[11px] font-black uppercase tracking-[0.3em] mb-8 text-gray-900 dark:text-white transition-colors">
                 {section.title}
               </h6>
@@ -236,7 +247,7 @@ const Footer = () => {
             </motion.div>
           ))}
 
-          <motion.div className="md:col-span-4" variants={itemVariants}>
+          <motion.div className="md:col-span-4" variants={ITEM_VARIANTS}>
             <h6 className={`text-[11px] font-black uppercase tracking-[0.3em] mb-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
               Newsletter
             </h6>
@@ -264,7 +275,7 @@ const Footer = () => {
 
         <motion.div
           className="flex flex-col md:flex-row justify-between items-center pt-12 border-t gap-8 border-gray-200 dark:border-white/5 transition-colors"
-          variants={itemVariants}
+          variants={ITEM_VARIANTS}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false, amount: 0.5 }}

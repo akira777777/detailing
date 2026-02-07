@@ -92,7 +92,7 @@ if (typeof window !== 'undefined' && !('CSS' in window)) {
 }
 
 if (typeof window !== 'undefined' && window.CSS && !window.CSS.supports) {
-  window.CSS.supports = (prop, value) => {
+  window.CSS.supports = () => {
     // Basic fallback - returns true for unknown properties
     return true;
   };

@@ -2,33 +2,34 @@ import React from 'react';
 
 import { motion } from 'framer-motion';
 
+// Optimization: Static variants moved outside component
+const LOGO_CONTAINER_VARIANTS = {
+  hidden: { opacity: 0, scale: 0.5 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const LOGO_ITEM_VARIANTS = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 100 },
+  },
+};
+
 export const AnimatedLogo = ({ className = '' }) => {
-  const containerVariants = {
-    hidden: { opacity: 0, scale: 0.5 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { type: 'spring', stiffness: 100 },
-    },
-  };
-
   return (
     <motion.svg
       viewBox="0 0 100 100"
       className={`w-12 h-12 ${className}`}
-      variants={containerVariants}
+      variants={LOGO_CONTAINER_VARIANTS}
       initial="hidden"
       animate="visible"
       whileHover={{ scale: 1.1 }}
@@ -42,11 +43,11 @@ export const AnimatedLogo = ({ className = '' }) => {
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        variants={itemVariants}
+        variants={LOGO_ITEM_VARIANTS}
       />
 
       {/* Inner element */}
-      <motion.g variants={itemVariants}>
+      <motion.g variants={LOGO_ITEM_VARIANTS}>
         <motion.circle cx="50" cy="30" r="8" fill="currentColor" />
         <motion.circle cx="35" cy="55" r="8" fill="currentColor" />
         <motion.circle cx="65" cy="55" r="8" fill="currentColor" />
@@ -57,7 +58,7 @@ export const AnimatedLogo = ({ className = '' }) => {
         stroke="currentColor"
         strokeWidth="1.5"
         opacity="0.6"
-        variants={itemVariants}
+        variants={LOGO_ITEM_VARIANTS}
       >
         <motion.line x1="50" y1="38" x2="35" y2="47" />
         <motion.line x1="50" y1="38" x2="65" y2="47" />
@@ -113,22 +114,22 @@ export const AnimatedStarIcon = ({ className = '', active = false }) => {
   );
 };
 
+const ARROW_ROTATIONS = {
+  right: 0,
+  down: 90,
+  left: 180,
+  up: 270,
+};
+
 // Animated arrow icon
 export const AnimatedArrowIcon = ({ className = '', direction = 'right' }) => {
-  const rotations = {
-    right: 0,
-    down: 90,
-    left: 180,
-    up: 270,
-  };
-
   return (
     <motion.svg
       viewBox="0 0 24 24"
       className={className}
       animate={{ x: [0, 4, 0] }}
       transition={{ duration: 1.5, repeat: Infinity }}
-      style={{ rotate: rotations[direction] }}
+      style={{ rotate: ARROW_ROTATIONS[direction] }}
     >
       <motion.path
         d="M5 12h14M12 5l7 7-7 7"
