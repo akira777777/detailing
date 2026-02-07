@@ -1,17 +1,36 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), visualizer({
+    filename: 'dist/stats.html',
+    open: true,
+    gzipSize: true
+  })],
   build: {
-    target: ['es2020', 'edge88', 'firefox78', 'chrome87', 'safari14'],
+    target: ['es2020'],
     rollupOptions: {
       output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'animation-vendor': ['framer-motion'],
-          'audio-vendor': ['howler'],
+        manualChunks: (id) => {
+          // Split vendor chunks more aggressively
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'react-vendor';
+            }
+            if (id.includes('framer-motion')) {
+              return 'animation-vendor';
+            }
+            if (id.includes('howler')) {
+              return 'audio-vendor';
+            }
+            if (id.includes('zustand')) {
+              return 'state-vendor';
+            }
+            // Group other dependencies
+            return 'vendor-other';
+          }
         }
       },
       // Externalize optional polyfills that are dynamically imported
@@ -30,7 +49,7 @@ export default defineConfig({
         warn(warning);
       }
     },
-    sourcemap: true,
+    sourcemap: process.env.NODE_ENV === 'development',
     chunkSizeWarningLimit: 1000,
     minify: 'esbuild',
     cssMinify: true,
@@ -52,6 +71,8 @@ export default defineConfig({
   },
   esbuild: {
     drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
+    pure: ['console.log', 'console.info', 'console.debug'],
+    legalComments: 'none'
   },
   resolve: {
     alias: {
@@ -64,6 +85,14 @@ export default defineConfig({
       'intersection-observer',
       'resize-observer-polyfill',
       'smoothscroll-polyfill'
+    ]
+  },
+  test: {
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/e2e/**',  // Exclude Playwright E2E tests
+      '**/*.spec.js',
     ]
   }
 })

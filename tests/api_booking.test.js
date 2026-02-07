@@ -1,9 +1,22 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock @neondatabase/serverless
-const mockSql = vi.fn();
-vi.mock('@neondatabase/serverless', () => ({
-  neon: vi.fn(() => vi.fn().mockImplementation(async (strings) => {
+let mockDbResponse = null;
+let shouldThrowError = false;
+
+const createMockSql = () => {
+  return vi.fn().mockImplementation(async (strings, ...values) => {
+    if (shouldThrowError) {
+      throw new Error('Database error');
+    }
+    
+    // Allow tests to override response
+    if (mockDbResponse !== null) {
+      const response = mockDbResponse;
+      mockDbResponse = null; // Reset after use
+      return response;
+    }
+    
     // Basic mock to simulate SQL behavior for the new robust single-query approach
     if (strings[0].includes('SELECT') && strings[0].includes('JSON_AGG')) {
       return [{
@@ -16,10 +29,16 @@ vi.mock('@neondatabase/serverless', () => ({
       return [{ id: 1, date: '2023-10-24', time: '10:30 AM', car_model: 'Test Car', package: 'Test Package', total_price: 100, status: 'Confirmed' }];
     }
     if (strings[0].includes('INSERT')) {
-        return [{ id: 1 }];
+        return [{ id: 'booking-123' }];
     }
     return [];
-  })),
+  });
+};
+
+let mockSql = createMockSql();
+
+vi.mock('@neondatabase/serverless', () => ({
+  neon: vi.fn(() => mockSql),
 }));
 
 // Mock zod
@@ -38,6 +57,11 @@ describe('Booking API', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     
+    // Reset mock state
+    mockSql = createMockSql();
+    mockDbResponse = null;
+    shouldThrowError = false;
+    
     // Reset environment
     process.env.DATABASE_URL = 'postgres://test:test@localhost/test';
     
@@ -49,6 +73,7 @@ describe('Booking API', () => {
     };
 
     // Import handler fresh for each test
+    vi.resetModules();
     const module = await import('../api/booking.js');
     handler = module.default;
   });
@@ -82,21 +107,6 @@ describe('Booking API', () => {
 
   describe('GET /bookings', () => {
     it('should return 200 and list of bookings for GET', async () => {
-      const mockBookings = [
-        { 
-          id: 1, 
-          date: '2023-10-24', 
-          time: '10:30 AM', 
-          car_model: 'Test Car', 
-          package: 'Test Package', 
-          total_price: 100, 
-          status: 'Confirmed' 
-        }
-      ];
-
-      mockSql.mockResolvedValueOnce(mockBookings); // bookings query
-      mockSql.mockResolvedValueOnce([{ count: '1' }]); // count query
-
       req = { method: 'GET', query: { limit: '10', offset: '0' } };
       await handler(req, res);
       
@@ -108,8 +118,11 @@ describe('Booking API', () => {
     });
 
     it('should handle empty bookings list', async () => {
-      mockSql.mockResolvedValueOnce([]); // bookings query
-      mockSql.mockResolvedValueOnce([{ count: '0' }]); // count query
+      // Set mock to return empty data
+      mockDbResponse = [{
+        total: 0,
+        data: []
+      }];
 
       req = { method: 'GET', query: { limit: '10', offset: '0' } };
       await handler(req, res);
@@ -122,7 +135,8 @@ describe('Booking API', () => {
     });
 
     it('should handle database errors on GET', async () => {
-      mockSql.mockRejectedValueOnce(new Error('Database error'));
+      // Set flag to throw error
+      shouldThrowError = true;
 
       req = { method: 'GET', query: { limit: '10', offset: '0' } };
       await handler(req, res);
@@ -134,9 +148,6 @@ describe('Booking API', () => {
     });
 
     it('should use default pagination values', async () => {
-      mockSql.mockResolvedValueOnce([]);
-      mockSql.mockResolvedValueOnce([{ count: '0' }]);
-
       req = { method: 'GET', query: {} };
       await handler(req, res);
       
@@ -144,9 +155,6 @@ describe('Booking API', () => {
     });
 
     it('should handle missing query parameter', async () => {
-      mockSql.mockResolvedValueOnce([]);
-      mockSql.mockResolvedValueOnce([{ count: '0' }]);
-
       req = { method: 'GET' };
       await handler(req, res);
       
@@ -252,8 +260,6 @@ describe('Booking API', () => {
     });
 
     it('should return 201 for valid POST data', async () => {
-      mockSql.mockResolvedValueOnce([{ id: 1 }]);
-
       req = {
         method: 'POST',
         body: {
@@ -273,8 +279,6 @@ describe('Booking API', () => {
     });
 
     it('should return booking id on successful creation', async () => {
-      mockSql.mockResolvedValueOnce([{ id: 'booking-123' }]);
-
       req = {
         method: 'POST',
         body: {
@@ -293,7 +297,8 @@ describe('Booking API', () => {
     });
 
     it('should handle database errors on POST', async () => {
-      mockSql.mockRejectedValueOnce(new Error('Database connection failed'));
+      // Set flag to throw error
+      shouldThrowError = true;
 
       req = {
         method: 'POST',
@@ -354,8 +359,6 @@ describe('Booking API', () => {
     });
 
     it('should handle very large price values', async () => {
-      mockSql.mockResolvedValueOnce([{ id: 1 }]);
-
       req = {
         method: 'POST',
         body: {
@@ -372,8 +375,6 @@ describe('Booking API', () => {
     });
 
     it('should handle special characters in car model', async () => {
-      mockSql.mockResolvedValueOnce([{ id: 1 }]);
-
       req = {
         method: 'POST',
         body: {
@@ -390,8 +391,6 @@ describe('Booking API', () => {
     });
 
     it('should handle unicode characters in package name', async () => {
-      mockSql.mockResolvedValueOnce([{ id: 1 }]);
-
       req = {
         method: 'POST',
         body: {

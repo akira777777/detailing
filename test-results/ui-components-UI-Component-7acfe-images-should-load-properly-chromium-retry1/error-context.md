@@ -1,0 +1,159 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - link "Skip to main content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e5]:
+    - generic [ref=e6]:
+      - link "LUXEDETAIL" [ref=e8] [cursor=pointer]:
+        - /url: /
+        - img [ref=e9]
+        - heading "LUXEDETAIL" [level=2] [ref=e18]
+      - navigation "Main navigation" [ref=e19]:
+        - link "Home" [ref=e21] [cursor=pointer]:
+          - /url: /
+        - link "Gallery" [ref=e23] [cursor=pointer]:
+          - /url: /gallery
+        - link "Calculator" [ref=e25] [cursor=pointer]:
+          - /url: /calculator
+        - link "Booking" [ref=e27] [cursor=pointer]:
+          - /url: /booking
+        - link "Dashboard" [ref=e29] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Animations" [ref=e31] [cursor=pointer]:
+          - /url: /animations
+      - generic [ref=e32]:
+        - button "Switch to dark mode" [ref=e33] [cursor=pointer]: 🌙
+        - link "Login" [ref=e35] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Book Now" [ref=e37] [cursor=pointer]:
+          - /url: /booking
+  - main [ref=e38]:
+    - generic [ref=e40]:
+      - generic [ref=e41]:
+        - generic [ref=e42]: The Results
+        - heading "Transformation Gallery" [level=1] [ref=e44]:
+          - text: Transformation
+          - text: Gallery
+        - paragraph [ref=e45]: Witness the professional precision and showroom-quality results. Our gallery highlights the level of care we put into every vehicle that enters our studio.
+      - generic [ref=e46]:
+        - generic [ref=e47]: "Filter By:"
+        - button "All" [ref=e48] [cursor=pointer]
+        - button "Luxury" [ref=e49] [cursor=pointer]
+        - button "SUV" [ref=e50] [cursor=pointer]
+        - button "Correction" [ref=e51] [cursor=pointer]
+        - button "Protection" [ref=e52] [cursor=pointer]
+      - generic [ref=e53]:
+        - generic [ref=e56]:
+          - slider "Before and after comparison for Porsche 911 Carrera S. Use arrow keys to slide." [ref=e58]:
+            - img "After Porsche 911 Carrera S" [ref=e59]
+            - generic [ref=e60]: After
+            - generic [ref=e61]:
+              - img "Before Porsche 911 Carrera S" [ref=e62]
+              - generic [ref=e63]: Before
+            - generic:
+              - generic:
+                - generic: unfold_more
+          - generic [ref=e64]:
+            - generic [ref=e65]:
+              - generic [ref=e67]: Luxury
+              - heading "Porsche 911 Carrera S" [level=3] [ref=e68]
+              - generic [ref=e69]:
+                - generic [ref=e70]:
+                  - generic [ref=e71]: check_circle
+                  - paragraph [ref=e72]: Stage 2 Paint Correction
+                - generic [ref=e73]:
+                  - generic [ref=e74]: check_circle
+                  - paragraph [ref=e75]: Gold Ceramic Package
+                - generic [ref=e76]:
+                  - generic [ref=e77]: check_circle
+                  - paragraph [ref=e78]: Wheel Decontamination
+            - generic [ref=e79]:
+              - generic [ref=e80]:
+                - generic [ref=e81]: Total Time
+                - generic [ref=e82]: 18 Hours
+              - button "Case Study arrow_forward" [ref=e83] [cursor=pointer]:
+                - text: Case Study
+                - generic [ref=e84]: arrow_forward
+        - generic [ref=e87]:
+          - slider "Before and after comparison for Land Rover Defender. Use arrow keys to slide." [ref=e89]:
+            - img "After Land Rover Defender" [ref=e90]
+            - generic [ref=e91]: After
+            - generic [ref=e92]:
+              - img "Before Land Rover Defender" [ref=e93]
+              - generic [ref=e94]: Before
+            - generic:
+              - generic:
+                - generic: unfold_more
+          - generic [ref=e95]:
+            - generic [ref=e96]:
+              - generic [ref=e98]: SUV
+              - heading "Land Rover Defender" [level=3] [ref=e99]
+              - generic [ref=e100]:
+                - generic [ref=e101]:
+                  - generic [ref=e102]: check_circle
+                  - paragraph [ref=e103]: Iron Decontamination
+                - generic [ref=e104]:
+                  - generic [ref=e105]: check_circle
+                  - paragraph [ref=e106]: Trim Restoration
+                - generic [ref=e107]:
+                  - generic [ref=e108]: check_circle
+                  - paragraph [ref=e109]: Interior Deep Clean
+            - generic [ref=e110]:
+              - generic [ref=e111]:
+                - generic [ref=e112]: Total Time
+                - generic [ref=e113]: 12 Hours
+              - button "Case Study arrow_forward" [ref=e114] [cursor=pointer]:
+                - text: Case Study
+                - generic [ref=e115]: arrow_forward
+  - contentinfo [ref=e116]:
+    - generic [ref=e117]:
+      - generic [ref=e118]:
+        - generic [ref=e119]:
+          - heading "LUXEDETAIL" [level=2] [ref=e123]
+          - paragraph [ref=e124]: The final word in automotive surface preservation. We don't just detail, we re-engineer the aesthetic experience.
+          - generic [ref=e125]:
+            - link "share" [ref=e126] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e127]: share
+            - link "public" [ref=e128] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e129]: public
+        - generic [ref=e130]:
+          - heading "Company" [level=6] [ref=e131]
+          - list [ref=e132]:
+            - listitem [ref=e133]:
+              - link "Studio" [ref=e134] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e135]:
+              - link "Our Work" [ref=e136] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e137]:
+              - link "Pricing" [ref=e138] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e139]:
+          - heading "Services" [level=6] [ref=e140]
+          - list [ref=e141]:
+            - listitem [ref=e142]:
+              - link "Coatings" [ref=e143] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e144]:
+              - link "Correction" [ref=e145] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e146]:
+              - link "Protection" [ref=e147] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e148]:
+          - heading "Newsletter" [level=6] [ref=e149]
+          - generic [ref=e150]:
+            - textbox "Email address" [ref=e151]
+            - button "Subscribe" [ref=e152] [cursor=pointer]
+      - generic [ref=e153]:
+        - paragraph [ref=e154]: © 2024 LUXE DETAIL STUDIO. ENGINEERED FOR PERFECTION.
+        - generic [ref=e155]:
+          - link "Privacy" [ref=e156] [cursor=pointer]:
+            - /url: "#"
+          - link "Terms" [ref=e157] [cursor=pointer]:
+            - /url: "#"
+```

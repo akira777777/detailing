@@ -1,0 +1,166 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - link "Skip to main content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e5]:
+    - generic [ref=e6]:
+      - link "LUXEDETAIL" [ref=e8] [cursor=pointer]:
+        - /url: /
+        - img
+        - heading "LUXEDETAIL" [level=2] [ref=e17]
+      - generic [ref=e18]:
+        - button "Switch to dark mode" [ref=e19] [cursor=pointer]: 🌙
+        - link "Book Now" [ref=e21] [cursor=pointer]:
+          - /url: /booking
+        - button "Open menu" [ref=e22] [cursor=pointer]:
+          - generic [ref=e23]: menu
+  - main [ref=e24]:
+    - generic [ref=e25]:
+      - generic [ref=e27]:
+        - paragraph [ref=e31]: Excellence since 2012
+        - heading "The Art of Perfection" [level=1] [ref=e32]:
+          - text: The Art of
+          - text: Perfection
+        - paragraph [ref=e33]: Premium detailing for true connoisseurs. Precision care for elite vehicles.
+        - generic [ref=e34]:
+          - link "Our Services" [ref=e35] [cursor=pointer]:
+            - /url: /gallery
+            - generic [ref=e36]: Our Services
+          - link "Book Now" [ref=e37] [cursor=pointer]:
+            - /url: /booking
+            - generic [ref=e38]: Book Now
+      - generic [ref=e39]:
+        - generic [ref=e40]: Status
+        - generic [ref=e44]: 01 / 04
+      - generic [ref=e46]: south
+    - generic [ref=e48]:
+      - generic [ref=e50]:
+        - heading "Core Services" [level=2] [ref=e52]
+        - heading "Precision Procedures" [level=3] [ref=e53]:
+          - text: Precision
+          - text: Procedures
+        - paragraph [ref=e54]: Our studio utilizes advanced technologies and professional care methods to ensure your vehicle exceeds factory standards.
+      - generic [ref=e55]:
+        - generic [ref=e57]:
+          - generic [ref=e58]:
+            - generic [ref=e59]:
+              - generic [ref=e60]: 01 / Protection
+              - heading "Ceramic Coating" [level=4] [ref=e61]
+              - paragraph [ref=e62]: Next-generation molecular protection with permanent hydrophobic properties and deep gloss.
+            - generic [ref=e63]:
+              - generic [ref=e64]: Learn More
+              - generic [ref=e65]: trending_flat
+          - generic:
+            - img "Ceramic Coating"
+        - generic [ref=e67]:
+          - generic [ref=e68]:
+            - generic [ref=e69]:
+              - generic [ref=e70]: 02 / Interior
+              - heading "Interior Detailing" [level=4] [ref=e71]
+              - paragraph [ref=e72]: Deep cleaning of every pore and seam using pH-neutral organic agents for leather and carbon.
+            - generic [ref=e73]:
+              - generic [ref=e74]: Learn More
+              - generic [ref=e75]: trending_flat
+          - generic:
+            - img "Interior Detailing"
+        - generic [ref=e77]:
+          - generic [ref=e78]:
+            - generic [ref=e79]:
+              - generic [ref=e80]: 03 / Polishing
+              - heading "Paint Correction" [level=4] [ref=e81]
+              - paragraph [ref=e82]: Multi-stage abrasive polishing to eliminate defects, holograms, and micro-scratches to an ideal shine.
+            - generic [ref=e83]:
+              - generic [ref=e84]: Learn More
+              - generic [ref=e85]: trending_flat
+          - generic:
+            - img "Paint Correction"
+    - generic [ref=e88]:
+      - generic [ref=e89]:
+        - heading "Luxe Club" [level=2] [ref=e90]
+        - heading "Membership" [level=3] [ref=e91]
+        - paragraph [ref=e92]: Automated maintenance schedules and priority booking for dedicated automotive enthusiasts.
+      - generic [ref=e93]:
+        - generic [ref=e94]:
+          - generic [ref=e96]:
+            - generic [ref=e97]: ac_unit
+            - heading "Climate-Controlled Storage" [level=5] [ref=e98]
+            - paragraph [ref=e99]: Specialized moisture-controlled bays with 24/7 monitoring of your vehicle's condition.
+          - generic [ref=e101]:
+            - generic [ref=e102]: analytics
+            - heading "Digital Logbook" [level=5] [ref=e103]
+            - paragraph [ref=e104]: Verified service history and HD photography of every procedure.
+          - generic [ref=e106]:
+            - generic [ref=e107]: smart_toy
+            - heading "Precision Monitoring" [level=5] [ref=e108]
+            - paragraph [ref=e109]: Regular battery maintenance and tire rotation on an automated schedule.
+          - generic [ref=e111]:
+            - generic [ref=e112]: hub
+            - heading "Exclusive Circle" [level=5] [ref=e113]
+            - paragraph [ref=e114]: VIP access to private rallies, track days, and exclusive automotive offers.
+        - generic [ref=e117]:
+          - generic [ref=e118]: Limited
+          - generic [ref=e119]:
+            - heading "Prestige" [level=4] [ref=e120]
+            - generic [ref=e121]:
+              - generic [ref=e122]: $499
+              - generic [ref=e123]: / month
+          - generic [ref=e124]:
+            - generic [ref=e127]: Ceramic maintenance 2x per month
+            - generic [ref=e130]: Monthly interior deep clean
+            - generic [ref=e133]: Door-to-door vehicle delivery
+            - generic [ref=e136]: Priority booking without wait
+          - button "Request Invitation" [ref=e137] [cursor=pointer]:
+            - generic [ref=e138]: Request Invitation
+          - generic [ref=e140]: "Available spots: 04"
+  - contentinfo [ref=e147]:
+    - generic [ref=e148]:
+      - generic [ref=e149]:
+        - generic [ref=e150]:
+          - heading "LUXEDETAIL" [level=2] [ref=e154]
+          - paragraph [ref=e155]: The final word in automotive surface preservation. We don't just detail, we re-engineer the aesthetic experience.
+          - generic [ref=e156]:
+            - link "share" [ref=e157] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e158]: share
+            - link "public" [ref=e159] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e160]: public
+        - generic [ref=e161]:
+          - heading "Company" [level=6] [ref=e162]
+          - list [ref=e163]:
+            - listitem [ref=e164]:
+              - link "Studio" [ref=e165] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e166]:
+              - link "Our Work" [ref=e167] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e168]:
+              - link "Pricing" [ref=e169] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e170]:
+          - heading "Services" [level=6] [ref=e171]
+          - list [ref=e172]:
+            - listitem [ref=e173]:
+              - link "Coatings" [ref=e174] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e175]:
+              - link "Correction" [ref=e176] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e177]:
+              - link "Protection" [ref=e178] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e179]:
+          - heading "Newsletter" [level=6] [ref=e180]
+          - generic [ref=e181]:
+            - textbox "Email address" [ref=e182]
+            - button "Subscribe" [ref=e183] [cursor=pointer]
+      - generic [ref=e184]:
+        - paragraph [ref=e185]: © 2024 LUXE DETAIL STUDIO. ENGINEERED FOR PERFECTION.
+        - generic [ref=e186]:
+          - link "Privacy" [ref=e187] [cursor=pointer]:
+            - /url: "#"
+          - link "Terms" [ref=e188] [cursor=pointer]:
+            - /url: "#"
+```
