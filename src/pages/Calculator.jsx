@@ -35,6 +35,8 @@ const Calculator = () => {
     return subtotal;
   }, [vehicle, condition, modules]);
 
+  const ringClass = "focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-background-light dark:focus-within:ring-offset-background-dark";
+
   return (
     <div className="pt-32 pb-24 px-6 lg:px-12 bg-background-light dark:bg-background-dark min-h-screen transition-colors duration-300">
       <div className="max-w-[1440px] mx-auto">
@@ -54,7 +56,7 @@ const Calculator = () => {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {['sedan', 'suv', 'sport', 'luxury'].map((type) => (
-                    <label key={type} className="group relative cursor-pointer">
+                    <label key={type} className={`group relative cursor-pointer rounded-xl ${ringClass}`}>
                         <input
                             type="radio"
                             name="vehicle"
@@ -88,7 +90,7 @@ const Calculator = () => {
                     { id: 'used', label: 'Light Wear', desc: 'Swirl marks, minor oxidation, daily use.', bar: 'w-2/4' },
                     { id: 'bad', label: 'Heavy Correction', desc: 'Deep scratches, etching, dull finish.', bar: 'w-full' }
                 ].map((item) => (
-                    <label key={item.id} className="cursor-pointer">
+                    <label key={item.id} className={`cursor-pointer rounded-xl ${ringClass}`}>
                         <input
                             type="radio"
                             name="condition"
@@ -124,27 +126,34 @@ const Calculator = () => {
                     { id: 'correction', title: 'Precision Paint Correction', desc: 'Optical refinement for a swirl-free mirror finish.', icon: 'auto_fix_high', cost: pricingConfig.modules.correction },
                     { id: 'interior', title: 'Interior Concours Detail', desc: 'Deep pore cleaning and leather preservation treatment.', icon: 'vacuum', cost: pricingConfig.modules.interior }
                  ].map((mod) => (
-                    <div key={mod.id} className={`bg-white dark:bg-panel-dark border p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all rounded-xl shadow-sm dark:shadow-none ${modules[mod.id] ? 'border-primary/30 bg-primary/5' : 'border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/20'}`}>
+                    <label key={mod.id} className={`group cursor-pointer block bg-white dark:bg-panel-dark border p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all rounded-xl shadow-sm dark:shadow-none ${ringClass} ${modules[mod.id] ? 'border-primary/30 bg-primary/5' : 'border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/20'}`}>
                         <div className="flex gap-6 items-start md:items-center">
-                            <div className="size-12 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center shrink-0 rounded-lg">
-                                <span className={`material-symbols-outlined ${modules[mod.id] ? 'text-primary' : 'text-gray-500 dark:text-white'}`}>{mod.icon}</span>
+                            <div className={`size-12 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center shrink-0 rounded-lg transition-colors ${modules[mod.id] ? 'border-primary/30' : 'group-hover:border-primary/30'}`}>
+                                <span className={`material-symbols-outlined transition-colors ${modules[mod.id] ? 'text-primary' : 'text-gray-500 dark:text-white group-hover:text-primary'}`}>{mod.icon}</span>
                             </div>
                             <div>
-                                <h4 className="text-lg font-black uppercase tracking-tight text-gray-900 dark:text-white">{mod.title}</h4>
-                                <p className="text-gray-500 dark:text-white/40 text-[11px] font-medium tracking-wide">{mod.desc}</p>
+                                <h4 className="text-lg font-black uppercase tracking-tight text-gray-900 dark:text-white transition-colors">{mod.title}</h4>
+                                <p className="text-gray-500 dark:text-white/40 text-[11px] font-medium tracking-wide transition-colors">{mod.desc}</p>
                             </div>
                         </div>
                         <div className="flex items-center justify-between md:justify-end gap-8">
-                            <div className="text-right">
+                            <div className="text-right transition-transform duration-300">
                                 <span className="text-gray-400 dark:text-white/40 text-[10px] uppercase font-bold tracking-widest block">Est. Cost</span>
                                 <span className="text-xl font-black text-gray-900 dark:text-white">${mod.cost}</span>
                             </div>
-                            <label className="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" className="sr-only peer" checked={modules[mod.id]} onChange={() => toggleModule(mod.id)} />
-                                <div className="w-14 h-7 bg-gray-200 dark:bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-white after:border after:rounded-full after:h-5 after:w-6 after:transition-all peer-checked:bg-primary"></div>
-                            </label>
+                            <div className="relative inline-flex items-center pointer-events-none">
+                                <input
+                                    type="checkbox"
+                                    checked={modules[mod.id]}
+                                    onChange={() => toggleModule(mod.id)}
+                                    className="sr-only peer"
+                                />
+                                <div
+                                    className="w-14 h-7 bg-gray-200 dark:bg-white/10 rounded-full peer-checked:bg-primary transition-colors after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-5 after:w-6 after:transition-all peer-checked:after:translate-x-full"
+                                ></div>
+                            </div>
                         </div>
-                    </div>
+                    </label>
                  ))}
               </div>
             </section>

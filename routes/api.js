@@ -36,7 +36,7 @@ const apiLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => process.env.NODE_ENV === 'test' // Skip rate limiting in tests
+  skip: () => process.env.NODE_ENV === 'test' // Skip rate limiting in tests
 });
 
 const bookingLimiter = rateLimit({
@@ -113,6 +113,7 @@ function sanitizeInput(req, res, next) {
   // Remove null bytes and trim strings
   const sanitize = (obj) => {
     if (typeof obj === 'string') {
+      // eslint-disable-next-line no-control-regex
       return obj.replace(/\x00/g, '').trim().substring(0, 10000); // Limit string length
     }
     if (Array.isArray(obj)) {
@@ -616,7 +617,7 @@ router.get('/ready', async (req, res) => {
     
     await db.query`SELECT 1`;
     res.json({ ready: true });
-  } catch (error) {
+  } catch {
     res.status(503).json({
       ready: false,
       reason: 'Database connection failed'
