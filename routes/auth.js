@@ -126,6 +126,7 @@ function sanitizeInput(req, res, next) {
     const sanitize = (value) => {
       if (typeof value === 'string') {
         return value
+          // eslint-disable-next-line no-control-regex
           .replace(/\x00/g, '')
           .trim()
           .substring(0, 10000);
