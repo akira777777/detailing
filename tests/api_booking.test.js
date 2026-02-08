@@ -3,15 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 // Set env var before anything else
 process.env.DATABASE_URL = 'postgres://mock:mock@mock.com/mock';
 
-const mockQuery = vi.fn();
-vi.mock('@neondatabase/serverless', () => ({
-  neon: vi.fn(() => mockQuery),
-}));
-
-describe('Booking API', () => {
-// Single mock function to control SQL queries
 const mockSql = vi.fn();
-
 vi.mock('@neondatabase/serverless', () => ({
   neon: vi.fn(() => mockSql),
 }));
@@ -19,7 +11,7 @@ vi.mock('@neondatabase/serverless', () => ({
 describe('Booking API', () => {
   let res;
   let handler;
-  let req, res;
+  let req;
 
   const validBooking = {
     carModel: 'Tesla Model 3',
@@ -40,7 +32,6 @@ describe('Booking API', () => {
       query: {},
       body: {},
     };
-    vi.resetAllMocks();
     
     // Set default implementation
     mockSql.mockImplementation(async (strings) => {
@@ -48,7 +39,7 @@ describe('Booking API', () => {
       const query = strings[0];
 
       if (query.includes('INSERT')) {
-        return [{ id: 1 }];
+        return [{ id: 123 }];
       }
 
       if (query.includes('SELECT') && query.includes('JSON_AGG')) {
@@ -81,19 +72,9 @@ describe('Booking API', () => {
     };
   });
 
-  describe('Method Validation', () => {
-    it('should return 405 for unsupported methods', async () => {
-      req.method = 'PUT';
-
-    // Import handler fresh for each test to ensure it uses the mock
-    vi.resetModules();
-    const module = await import('../api/booking.js');
-    handler = module.default;
-  });
-
   describe('HTTP Method Handling', () => {
     it('should return 405 for unsupported methods', async () => {
-      const req = { method: 'PUT' };
+      req.method = 'PUT';
       await handler(req, res);
       expect(res.status).toHaveBeenCalledWith(405);
     });
@@ -116,12 +97,13 @@ describe('Booking API', () => {
       const mockBookings = [
         { id: 1, car_model: 'Test Car', package: 'Test Package', date: '2023-10-24', time: '10:30 AM', total_price: 100, status: 'Confirmed' }
       ];
-      mockQuery.mockResolvedValueOnce([{
+      mockSql.mockResolvedValueOnce([{
         data: mockBookings,
         total: 1
       }]);
 
-      const req = { method: 'GET', query: { limit: '10', offset: '0' } };
+      req.method = 'GET';
+      req.query = { limit: '10', offset: '0' };
       await handler(req, res);
 
       expect(res.status).toHaveBeenCalledWith(200);
@@ -132,21 +114,10 @@ describe('Booking API', () => {
     });
 
     it('should handle empty bookings list', async () => {
-      mockQuery.mockResolvedValueOnce([{
-        data: [],
-        total: 0
-      }]);
-
-      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-        data: expect.any(Array),
-        total: 1
-      }));
-    });
-
-    it('should handle empty bookings list', async () => {
       mockSql.mockResolvedValueOnce([{ total: 0, data: [] }]);
 
-      const req = { method: 'GET', query: { limit: '10', offset: '0' } };
+      req.method = 'GET';
+      req.query = { limit: '10', offset: '0' };
       await handler(req, res);
 
       expect(res.status).toHaveBeenCalledWith(200);
@@ -157,11 +128,10 @@ describe('Booking API', () => {
     });
 
     it('should handle database errors on GET', async () => {
-      mockQuery.mockRejectedValueOnce(new Error('Database error'));
-
       mockSql.mockImplementationOnce(() => { throw new Error('Database error'); });
 
-      const req = { method: 'GET', query: { limit: '10', offset: '0' } };
+      req.method = 'GET';
+      req.query = { limit: '10', offset: '0' };
       await handler(req, res);
 
       expect(res.status).toHaveBeenCalledWith(500);
@@ -178,48 +148,23 @@ describe('Booking API', () => {
     });
 
     it('should return 201 for valid POST data', async () => {
-      mockQuery.mockResolvedValueOnce([{ id: 1 }]);
-    it('should return 201 for valid POST data', async () => {
       mockSql.mockResolvedValueOnce([{ id: 123 }]);
 
-      const req = {
-        method: 'POST',
-        body: {
-          date: '2023-10-24',
-          time: '10:30 AM',
-          carModel: 'Tesla Model 3',
-          packageName: 'Ceramic Coating',
-          totalPrice: 499.00,
-        },
-      };
       await handler(req, res);
       expect(res.status).toHaveBeenCalledWith(201);
     });
 
     it('should return booking id on successful creation', async () => {
-      mockQuery.mockResolvedValueOnce([{ id: 1 }]);
+      mockSql.mockResolvedValueOnce([{ id: 123 }]);
       await handler(req, res);
-      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ 
-        id: 1
       expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ 
         id: 123
       }));
     });
 
     it('should handle database errors on POST', async () => {
-      mockQuery.mockRejectedValueOnce(new Error('Database error'));
       mockSql.mockImplementationOnce(() => { throw new Error('DB Error'); });
 
-      const req = {
-        method: 'POST',
-        body: {
-          date: '2023-10-24',
-          time: '10:30 AM',
-          carModel: 'Tesla Model 3',
-          packageName: 'Ceramic Coating',
-          totalPrice: 499.00,
-        },
-      };
       await handler(req, res);
       expect(res.status).toHaveBeenCalledWith(500);
     });
@@ -261,7 +206,7 @@ describe('Booking API', () => {
     it('should handle very large totalPrice values', async () => {
       req.method = 'POST';
       req.body = { ...validBooking, totalPrice: 1000000 };
-      mockQuery.mockResolvedValueOnce([{ id: 1 }]);
+      mockSql.mockResolvedValueOnce([{ id: 1 }]);
       await handler(req, res);
       expect(res.status).toHaveBeenCalledWith(201);
     });
@@ -269,7 +214,7 @@ describe('Booking API', () => {
     it('should handle special characters in carModel', async () => {
       req.method = 'POST';
       req.body = { ...validBooking, carModel: 'Model S P100D (Ludicrous+)' };
-      mockQuery.mockResolvedValueOnce([{ id: 1 }]);
+      mockSql.mockResolvedValueOnce([{ id: 1 }]);
       await handler(req, res);
       expect(res.status).toHaveBeenCalledWith(201);
     });
@@ -277,9 +222,12 @@ describe('Booking API', () => {
     it('should handle unicode characters in packageName', async () => {
       req.method = 'POST';
       req.body = { ...validBooking, packageName: 'Premium ✨ Detail' };
-      mockQuery.mockResolvedValueOnce([{ id: 1 }]);
+      mockSql.mockResolvedValueOnce([{ id: 1 }]);
       await handler(req, res);
       expect(res.status).toHaveBeenCalledWith(201);
+    });
+  });
+
   describe('Environment Configuration', () => {
     it('should return 500 when DATABASE_URL is missing', async () => {
       delete process.env.DATABASE_URL;
