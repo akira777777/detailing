@@ -21,18 +21,24 @@ export default async function handler(request, response) {
 
   if (request.method === 'GET') {
     try {
-      const { limit = '10', offset = '0' } = request.query || {};
+      const { limit = '10', offset = '0', search = '' } = request.query || {};
 
       // Validate and clamp pagination parameters to prevent invalid or overly large queries
       const limitVal = Math.max(1, Math.min(parseInt(limit, 10) || 10, 100));
       const offsetVal = Math.max(0, parseInt(offset, 10) || 0);
 
-      // Optimization: Fetch both the total count and the paginated data in a single round-trip.
-      // We use a subquery for the paginated data and JSON_AGG to ensure we get a result row
-      // even if the LIMIT/OFFSET returns no rows (handling the edge case of requesting a non-existent page).
+      // Optimization: Use a single query to fetch both the total count (reflecting filters)
+      // and the paginated data. This reduces round-trips to the database.
+      // We use ILIKE for case-insensitive search on car model and package name.
+      const searchPattern = search ? `%${search}%` : null;
+
       const result = await sql`
         SELECT
-          (SELECT COUNT(*) FROM bookings)::int AS total,
+          (
+            SELECT COUNT(*)
+            FROM bookings
+            WHERE (${searchPattern} IS NULL OR car_model ILIKE ${searchPattern} OR package ILIKE ${searchPattern})
+          )::int AS total,
           (
             SELECT JSON_AGG(sub.*) FROM (
               SELECT
@@ -45,6 +51,7 @@ export default async function handler(request, response) {
                 status,
                 created_at
               FROM bookings
+              WHERE (${searchPattern} IS NULL OR car_model ILIKE ${searchPattern} OR package ILIKE ${searchPattern})
               ORDER BY date DESC, time DESC
               LIMIT ${limitVal}
               OFFSET ${offsetVal}

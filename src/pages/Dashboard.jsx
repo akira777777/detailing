@@ -10,7 +10,18 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalBookings, setTotalBookings] = useState(0);
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const pageSize = 10;
+
+  // Optimization: Debounce search input to avoid excessive API calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+        setDebouncedSearch(search);
+        setCurrentPage(1); // Reset to first page on search
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   useEffect(() => {
     // Optimization: Use AbortController to cancel pending requests on unmount or dependency change.
@@ -21,7 +32,7 @@ const Dashboard = () => {
       setIsLoading(true);
       try {
         const offset = (currentPage - 1) * pageSize;
-        const response = await fetch(`/api/booking?limit=${pageSize}&offset=${offset}`, {
+        const response = await fetch(`/api/booking?limit=${pageSize}&offset=${offset}&search=${encodeURIComponent(debouncedSearch)}`, {
             signal: controller.signal
         });
         if (!response.ok) {
@@ -44,7 +55,7 @@ const Dashboard = () => {
 
         console.error('Error fetching bookings, using fallback data:', error);
         // Fallback to mock data if API fails
-        const fallbackData = serviceHistory.map((item, index) => ({
+        let fallbackData = serviceHistory.map((item, index) => ({
           id: `fallback-${index}`,
           displayDate: item.date,
           time: '09:00 AM', // Default time for fallback
@@ -53,6 +64,15 @@ const Dashboard = () => {
           displayPrice: item.cost,
           status: item.status
         }));
+
+        if (debouncedSearch) {
+            const query = debouncedSearch.toLowerCase();
+            fallbackData = fallbackData.filter(item =>
+                item.car_model.toLowerCase().includes(query) ||
+                item.package.toLowerCase().includes(query)
+            );
+        }
+
         setBookings(fallbackData);
         setTotalBookings(fallbackData.length);
         addToast('Showing offline service history', 'info');
@@ -64,7 +84,7 @@ const Dashboard = () => {
     fetchBookings();
 
     return () => controller.abort();
-  }, [addToast, currentPage]);
+  }, [addToast, currentPage, debouncedSearch]);
 
   return (
     <div className="flex min-h-screen pt-20 bg-background-light dark:bg-background-dark transition-colors duration-300">
@@ -195,7 +215,14 @@ const Dashboard = () => {
                 <div className="flex gap-2">
                     <div className="relative group">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-sm text-gray-500 dark:text-white/60">search</span>
-                        <input className="bg-white dark:bg-panel-dark border-gray-200 dark:border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-gray-900 dark:text-white focus:ring-primary focus:border-primary w-64 border outline-none shadow-sm dark:shadow-none" placeholder="Search history..." type="text" aria-label="Search service history"/>
+                        <input
+                            className="bg-white dark:bg-panel-dark border-gray-200 dark:border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-gray-900 dark:text-white focus:ring-primary focus:border-primary w-64 border outline-none shadow-sm dark:shadow-none"
+                            placeholder="Search history..."
+                            type="text"
+                            aria-label="Search service history"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
                     </div>
                     <button
                         aria-label="Filter history"
