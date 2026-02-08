@@ -24,3 +24,7 @@
 ## 2024-05-22 - Mocking Module-Level State
 **Learning:** Modules that initialize state (like database clients) at the top level are hard to test with standard `vi.mock` if the mock state needs to change per test.
 **Action:** Use `vi.resetModules()` and `vi.resetAllMocks()` in `beforeEach` to ensure a clean state for every test case when mocking module-level initializations.
+
+## 2026-02-08 - [Debounced Search and Server-Side Filtering]
+**Learning:** Implementing a search feature without debouncing can lead to a "thundering herd" of API requests, especially on mobile or slow connections. Combining debouncing with server-side SQL-level filtering (`ILIKE`) significantly reduces both network payload and database CPU time compared to client-side filtering of large datasets.
+**Action:** Always implement debouncing (e.g., 500ms) for real-time search inputs and prefer server-side filtering for paginated datasets to ensure the application remains scalable.
