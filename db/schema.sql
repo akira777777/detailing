@@ -120,6 +120,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 
 -- Indexes for performance optimization
 CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date);
+CREATE INDEX IF NOT EXISTS idx_bookings_date_time ON bookings(date DESC, time DESC);
 CREATE INDEX IF NOT EXISTS idx_bookings_status ON bookings(status);
 CREATE INDEX IF NOT EXISTS idx_bookings_user_id ON bookings(user_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(token);

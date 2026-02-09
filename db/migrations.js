@@ -194,6 +194,16 @@ const migrations = [
       DELETE FROM service_modules;
       DELETE FROM service_packages;
     `
+  },
+  {
+    version: 6,
+    name: 'Add composite index for booking queries',
+    up: `
+      CREATE INDEX IF NOT EXISTS idx_bookings_date_time ON bookings(date DESC, time DESC);
+    `,
+    down: `
+      DROP INDEX IF EXISTS idx_bookings_date_time;
+    `
   }
 ];
 

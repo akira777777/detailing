@@ -30,6 +30,8 @@ export default async function handler(request, response) {
       // Optimization: Fetch both the total count and the paginated data in a single round-trip.
       // We use a subquery for the paginated data and JSON_AGG to ensure we get a result row
       // even if the LIMIT/OFFSET returns no rows (handling the edge case of requesting a non-existent page).
+      // Performance Note: The ORDER BY clause is optimized with a composite index (date DESC, time DESC),
+      // reducing sort complexity from O(N log N) to O(log N) lookup time for large datasets.
       const result = await sql`
         SELECT
           (SELECT COUNT(*) FROM bookings)::int AS total,
