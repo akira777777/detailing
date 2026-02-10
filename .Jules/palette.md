@@ -9,3 +9,7 @@
 ## 2025-05-16 - [Visual progress feedback for auto-dismissing notifications]
 **Learning:** Purely time-based notifications without visual feedback can be frustrating for users who don't know how long they have to read or act. A shrinking progress bar provides an intuitive, non-obtrusive way to communicate remaining time.
 **Action:** Implemented a `framer-motion` based progress bar in `ToastItem`. Using `scaleX` and `origin-left` is more performant than animating `width` as it avoids layout reflows. Added `relative overflow-hidden` to the toast container to ensure the bar is contained and correctly positioned at the bottom.
+
+## 2025-05-17 - [Bypassing Vite resolution errors for missing optional polyfills]
+**Learning:** Vite's eager import analysis can cause dev-server or build failures if an application uses dynamic `import()` for optional packages that are not present in `node_modules`. Using `/* @vite-ignore */` alone may not be enough if the path is a static string.
+**Action:** Combine `/* @vite-ignore */` with a dynamic variable for the package name (e.g., `const pkg = 'name'; import(pkg)`) to successfully bypass Vite's build-time resolution, allowing the application to gracefully fall back to inline polyfills without failing the build.

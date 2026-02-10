@@ -25,8 +25,9 @@ export async function loadPolyfills() {
 
   // IntersectionObserver polyfill for Safari < 12.1
   if (!window.IntersectionObserver) {
+    const ioPkg = 'intersection-observer';
     polyfills.push(
-      import('intersection-observer')
+      import(/* @vite-ignore */ ioPkg)
         .then(() => console.log('Loaded IntersectionObserver polyfill'))
         .catch(() => {
           // Polyfill package not installed - provide minimal fallback
@@ -45,8 +46,9 @@ export async function loadPolyfills() {
 
   // ResizeObserver polyfill for Safari < 13.1
   if (!window.ResizeObserver) {
+    const roPkg = 'resize-observer-polyfill';
     polyfills.push(
-      import('resize-observer-polyfill')
+      import(/* @vite-ignore */ roPkg)
         .then(module => {
           window.ResizeObserver = module.default || module;
           console.log('Loaded ResizeObserver polyfill');
@@ -68,8 +70,9 @@ export async function loadPolyfills() {
 
   // Smooth scroll polyfill for older browsers
   if (!('scrollBehavior' in document.documentElement.style)) {
+    const ssPkg = 'smoothscroll-polyfill';
     polyfills.push(
-      import('smoothscroll-polyfill')
+      import(/* @vite-ignore */ ssPkg)
         .then(module => {
           module.polyfill();
           console.log('Loaded smooth scroll polyfill');
