@@ -29,21 +29,6 @@ export default defineConfig({
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
       },
-      // Externalize optional polyfills that are dynamically imported
-      external: [
-        'intersection-observer',
-        'resize-observer-polyfill',
-        'smoothscroll-polyfill'
-      ],
-      onwarn(warning, warn) {
-        // Ignore warnings about externalized polyfills
-        if (warning.message?.includes('intersection-observer') ||
-          warning.message?.includes('resize-observer-polyfill') ||
-          warning.message?.includes('smoothscroll-polyfill')) {
-          return;
-        }
-        warn(warning);
-      }
     },
     sourcemap: process.env.NODE_ENV !== 'production',
     chunkSizeWarningLimit: 1000,
@@ -63,6 +48,7 @@ export default defineConfig({
     cssCodeSplit: true,
   },
   server: {
+    host: true, // Listen on all addresses including IPv4
     headers: {
       'Cache-Control': 'public, max-age=3600'
     },
@@ -87,12 +73,6 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    // Exclude optional polyfills from optimization
-    exclude: [
-      'intersection-observer',
-      'resize-observer-polyfill',
-      'smoothscroll-polyfill'
-    ],
     include: [
       'react',
       'react-dom',

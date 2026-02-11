@@ -1,6 +1,6 @@
 /**
  * Polyfills for cross-browser compatibility
- * These are loaded dynamically only when needed by the browser
+ * These are inline implementations to avoid external dependencies
  */
 
 // Check if polyfills are needed
@@ -12,8 +12,7 @@ const needsPolyfills = () => {
 };
 
 /**
- * Load polyfills dynamically only when needed
- * Uses dynamic imports that gracefully fail if packages aren't available
+ * Load polyfills - now using inline implementations only
  */
 export async function loadPolyfills() {
   // Skip if all features are natively supported
@@ -21,67 +20,33 @@ export async function loadPolyfills() {
     return Promise.resolve();
   }
 
-  const polyfills = [];
-
   // IntersectionObserver polyfill for Safari < 12.1
   if (!window.IntersectionObserver) {
-    polyfills.push(
-      import('intersection-observer')
-        .then(() => console.log('Loaded IntersectionObserver polyfill'))
-        .catch(() => {
-          // Polyfill package not installed - provide minimal fallback
-          console.warn('IntersectionObserver polyfill not available, using fallback');
-          window.IntersectionObserver = class IntersectionObserver {
-            constructor(callback) {
-              this.callback = callback;
-            }
-            observe() {}
-            unobserve() {}
-            disconnect() {}
-          };
-        })
-    );
+    console.warn('IntersectionObserver not available, using fallback');
+    window.IntersectionObserver = class IntersectionObserver {
+      constructor(callback) {
+        this.callback = callback;
+      }
+      observe() { }
+      unobserve() { }
+      disconnect() { }
+    };
   }
 
   // ResizeObserver polyfill for Safari < 13.1
   if (!window.ResizeObserver) {
-    polyfills.push(
-      import('resize-observer-polyfill')
-        .then(module => {
-          window.ResizeObserver = module.default || module;
-          console.log('Loaded ResizeObserver polyfill');
-        })
-        .catch(() => {
-          // Polyfill package not installed - provide minimal fallback
-          console.warn('ResizeObserver polyfill not available, using fallback');
-          window.ResizeObserver = class ResizeObserver {
-            constructor(callback) {
-              this.callback = callback;
-            }
-            observe() {}
-            unobserve() {}
-            disconnect() {}
-          };
-        })
-    );
+    console.warn('ResizeObserver not available, using fallback');
+    window.ResizeObserver = class ResizeObserver {
+      constructor(callback) {
+        this.callback = callback;
+      }
+      observe() { }
+      unobserve() { }
+      disconnect() { }
+    };
   }
 
-  // Smooth scroll polyfill for older browsers
-  if (!('scrollBehavior' in document.documentElement.style)) {
-    polyfills.push(
-      import('smoothscroll-polyfill')
-        .then(module => {
-          module.polyfill();
-          console.log('Loaded smooth scroll polyfill');
-        })
-        .catch(() => {
-          // Polyfill not critical - scroll will just be instant
-          console.warn('Smooth scroll polyfill not available');
-        })
-    );
-  }
-
-  return Promise.all(polyfills);
+  return Promise.resolve();
 }
 
 /**
