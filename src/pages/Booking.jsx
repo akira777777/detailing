@@ -1,10 +1,31 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, memo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
 import { Button } from '../components/ui/Components';
 import useBookingStore from '../store/useBookingStore';
 import { monthYearFormatter, fullDateFormatter, shortMonthFormatter } from '../utils/formatters';
 import { getPackageName } from '../utils/bookingUtils';
+
+// Optimization: Extracted CalendarDay to a memoized component to prevent
+// redundant re-renders of ~30 day buttons when selection changes.
+const CalendarDay = memo(({ day, fullDate, isSelected, onClick }) => {
+  const handleClick = () => onClick(day);
+
+  return (
+    <button
+      onClick={handleClick}
+      aria-label={`Select ${fullDate}`}
+      aria-pressed={isSelected}
+      className={`h-14 flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${
+        isSelected
+          ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105'
+          : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'
+      }`}
+    >
+      {day}
+    </button>
+  );
+});
 
 const Booking = () => {
   const navigate = useNavigate();
@@ -24,6 +45,10 @@ const Booking = () => {
 
   const [selectedDate, setSelectedDate] = useState(currentDay);
   const [selectedTime, setSelectedTime] = useState('10:30 AM');
+
+  const handleDayClick = React.useCallback((day) => {
+    setSelectedDate(day);
+  }, []);
 
   const { days, emptyDays } = useMemo(() => {
     const numDays = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -143,15 +168,13 @@ const Booking = () => {
                             <div key={`empty-${i}`} className="h-14"></div>
                         ))}
                         {days.map(({ day, fullDate }) => (
-                            <button
+                            <CalendarDay
                                 key={day}
-                                onClick={() => setSelectedDate(day)}
-                                aria-label={`Select ${fullDate}`}
-                                aria-pressed={selectedDate === day}
-                                className={`h-14 flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${selectedDate === day ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}
-                            >
-                                {day}
-                            </button>
+                                day={day}
+                                fullDate={fullDate}
+                                isSelected={selectedDate === day}
+                                onClick={handleDayClick}
+                            />
                         ))}
                     </div>
                 </div>
