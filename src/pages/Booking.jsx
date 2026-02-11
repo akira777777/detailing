@@ -1,10 +1,31 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, memo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
 import { Button } from '../components/ui/Components';
 import useBookingStore from '../store/useBookingStore';
 import { monthYearFormatter, fullDateFormatter, shortMonthFormatter } from '../utils/formatters';
 import { getPackageName } from '../utils/bookingUtils';
+
+// Optimization: Extracted CalendarDay to a memoized component to prevent
+// redundant re-renders of ~30 day buttons when selection changes.
+const CalendarDay = memo(({ day, fullDate, isSelected, onClick }) => {
+  const handleClick = () => onClick(day);
+
+  return (
+    <button
+      onClick={handleClick}
+      aria-label={`Select ${fullDate}`}
+      aria-pressed={isSelected}
+      className={`h-14 flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${
+        isSelected
+          ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105'
+          : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'
+      }`}
+    >
+      {day}
+    </button>
+  );
+});
 
 const Booking = () => {
   const navigate = useNavigate();
@@ -14,6 +35,10 @@ const Booking = () => {
   const [viewDate, setViewDate] = useState(new Date());
   const [selectedFullDate, setSelectedFullDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState('10:30 AM');
+
+  const handleDayClick = React.useCallback((day) => {
+    setSelectedDate(day);
+  }, []);
 
   const { days, emptyDays } = useMemo(() => {
     const year = viewDate.getFullYear(), month = viewDate.getMonth();
@@ -111,6 +136,19 @@ const Booking = () => {
                         ))}
                     </div>
                     <div className="grid grid-cols-7 gap-2">
+                        {/* Empty cells - pre-calculated to avoid redundant new Date() calls */}
+                        {emptyDays.map((_, i) => (
+                            <div key={`empty-${i}`} className="h-14"></div>
+                        ))}
+                        {days.map(({ day, fullDate }) => (
+                            <CalendarDay
+                                key={day}
+                                day={day}
+                                fullDate={fullDate}
+                                isSelected={selectedDate === day}
+                                onClick={handleDayClick}
+                            />
+                        ))}
                         {emptyDays.map((_, i) => <div key={`empty-${i}`} className="h-14"></div>)}
                         {days.map(({ day, fullDate, isWeekend }) => {
                             const isSel = selectedFullDate.getDate() === day && selectedFullDate.getMonth() === viewDate.getMonth() && selectedFullDate.getFullYear() === viewDate.getFullYear();
