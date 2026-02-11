@@ -23,62 +23,23 @@ export async function loadPolyfills() {
 
   const polyfills = [];
 
-  // IntersectionObserver polyfill for Safari < 12.1
+  // Fallbacks for legacy browsers - defined inline to avoid missing dependency errors in Vite
   if (!window.IntersectionObserver) {
-    polyfills.push(
-      import('intersection-observer')
-        .then(() => console.log('Loaded IntersectionObserver polyfill'))
-        .catch(() => {
-          // Polyfill package not installed - provide minimal fallback
-          console.warn('IntersectionObserver polyfill not available, using fallback');
-          window.IntersectionObserver = class IntersectionObserver {
-            constructor(callback) {
-              this.callback = callback;
-            }
-            observe() {}
-            unobserve() {}
-            disconnect() {}
-          };
-        })
-    );
+    window.IntersectionObserver = class IntersectionObserver {
+      constructor() {}
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    };
   }
 
-  // ResizeObserver polyfill for Safari < 13.1
   if (!window.ResizeObserver) {
-    polyfills.push(
-      import('resize-observer-polyfill')
-        .then(module => {
-          window.ResizeObserver = module.default || module;
-          console.log('Loaded ResizeObserver polyfill');
-        })
-        .catch(() => {
-          // Polyfill package not installed - provide minimal fallback
-          console.warn('ResizeObserver polyfill not available, using fallback');
-          window.ResizeObserver = class ResizeObserver {
-            constructor(callback) {
-              this.callback = callback;
-            }
-            observe() {}
-            unobserve() {}
-            disconnect() {}
-          };
-        })
-    );
-  }
-
-  // Smooth scroll polyfill for older browsers
-  if (!('scrollBehavior' in document.documentElement.style)) {
-    polyfills.push(
-      import('smoothscroll-polyfill')
-        .then(module => {
-          module.polyfill();
-          console.log('Loaded smooth scroll polyfill');
-        })
-        .catch(() => {
-          // Polyfill not critical - scroll will just be instant
-          console.warn('Smooth scroll polyfill not available');
-        })
-    );
+    window.ResizeObserver = class ResizeObserver {
+      constructor() {}
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    };
   }
 
   return Promise.all(polyfills);

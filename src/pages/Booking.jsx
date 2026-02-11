@@ -34,7 +34,8 @@ const Booking = () => {
       const dateObj = new Date(currentYear, currentMonth, day);
       return {
         day,
-        fullDate: fullDateFormatter.format(dateObj)
+        fullDate: fullDateFormatter.format(dateObj),
+        isWeekend: dateObj.getDay() === 0 || dateObj.getDay() === 6
       };
     });
 
@@ -134,7 +135,7 @@ const Booking = () => {
                     </div>
                     <div className="grid grid-cols-7 text-center mb-2">
                         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                            <span key={day} className={`text-[11px] font-black uppercase tracking-tighter ${day === 'Sun' ? 'text-primary opacity-80' : 'text-gray-400 dark:text-white/40'}`}>{day}</span>
+                            <span key={day} className={`text-[11px] font-black uppercase tracking-tighter ${day === 'Sun' || day === 'Sat' ? 'text-primary opacity-80' : 'text-gray-400 dark:text-white/40'}`}>{day}</span>
                         ))}
                     </div>
                     <div className="grid grid-cols-7 gap-2">
@@ -142,15 +143,18 @@ const Booking = () => {
                         {emptyDays.map((_, i) => (
                             <div key={`empty-${i}`} className="h-14"></div>
                         ))}
-                        {days.map(({ day, fullDate }) => (
+                        {days.map(({ day, fullDate, isWeekend }) => (
                             <button
                                 key={day}
                                 onClick={() => setSelectedDate(day)}
-                                aria-label={`Select ${fullDate}`}
+                                aria-label={`Select ${fullDate}${isWeekend ? ' - Weekend Special' : ''}`}
                                 aria-pressed={selectedDate === day}
-                                className={`h-14 flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${selectedDate === day ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}
+                                className={`h-14 flex items-center justify-center rounded-lg text-sm font-semibold transition-all relative ${selectedDate === day ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}
                             >
                                 {day}
+                                {isWeekend && (
+                                    <span className={`absolute bottom-2 size-1 rounded-full ${selectedDate === day ? 'bg-white' : 'bg-primary'}`}></span>
+                                )}
                             </button>
                         ))}
                     </div>
