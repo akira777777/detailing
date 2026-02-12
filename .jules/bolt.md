@@ -24,3 +24,7 @@
 ## 2024-05-22 - Mocking Module-Level State
 **Learning:** Modules that initialize state (like database clients) at the top level are hard to test with standard `vi.mock` if the mock state needs to change per test.
 **Action:** Use `vi.resetModules()` and `vi.resetAllMocks()` in `beforeEach` to ensure a clean state for every test case when mocking module-level initializations.
+
+## 2026-02-15 - [Sub-component Memoization for Interactive Grids]
+**Learning:** In interactive components with large grids (like calendars or time slot pickers), parent state updates (like selecting a date) trigger a full re-render of every grid item by default. This creates a performance bottleneck proportional to the number of items.
+**Action:** Extract grid items into standalone components and wrap them in `React.memo`. Stabilize their props (especially `onClick` handlers) using `useCallback` in the parent. This ensures only the items that actually changed (e.g., from 'unselected' to 'selected') undergo React's reconciliation, keeping the UI responsive.

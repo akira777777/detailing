@@ -24,3 +24,16 @@ export const formatShortMonth = (date, locale = 'en-US') => {
 export const formatShortDate = (date, locale = 'en-US') => {
   return getCachedFormatter(locale, { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
 };
+
+export const formatDateWithWeekday = (date, locale = 'en-US') => {
+  return getCachedFormatter(locale, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  }).format(date);
+};
+
+export const formatWeekdayShort = (date, locale = 'en-US') => {
+  return getCachedFormatter(locale, { weekday: 'short' }).format(date);
+};
