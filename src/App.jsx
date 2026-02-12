@@ -4,6 +4,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
 import { soundManager } from './utils/soundManager';
 import Layout from './components/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Lazy load all page components for code splitting
 const Home = lazy(() => import('./pages/Home'));
@@ -35,17 +36,19 @@ function App() {
       <ToastProvider>
         <Router>
           <Layout>
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/gallery" element={<Gallery />} />
-                <Route path="/calculator" element={<Calculator />} />
-                <Route path="/booking" element={<Booking />} />
-                <Route path="/booking-confirmation" element={<BookingConfirmation />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/animations" element={<AnimationsShowcase />} />
-              </Routes>
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/gallery" element={<Gallery />} />
+                  <Route path="/calculator" element={<Calculator />} />
+                  <Route path="/booking" element={<Booking />} />
+                  <Route path="/booking-confirmation" element={<BookingConfirmation />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/animations" element={<AnimationsShowcase />} />
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
           </Layout>
         </Router>
       </ToastProvider>
