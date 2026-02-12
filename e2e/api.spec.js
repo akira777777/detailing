@@ -57,7 +57,7 @@ test.describe('API Interaction Tests', () => {
 
       if (response.ok()) {
         const body = await response.json();
-        expect(Array.isArray(body)).toBe(true);
+        expect(Array.isArray(body.data)).toBe(true);
       }
     });
 

@@ -11,6 +11,10 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.json({ message: 'API Service', version: '1.0.0' });
+});
+
 // Mock database for development
 let nextId = 1;
 
@@ -147,13 +151,8 @@ app.post('/api/v1/auth/register', (req, res) => {
   res.status(201).json({ message: 'User registered successfully', user: { id: 2, ...req.body } });
 });
 
-// Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString(), uptime: process.uptime() });
-});
-
-app.get('/', (req, res) => {
-  res.json({ message: 'API Service', version: '1.0.0' });
 });
 
 app.listen(PORT, () => {
