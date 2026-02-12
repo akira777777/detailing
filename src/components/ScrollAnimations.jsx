@@ -1,30 +1,33 @@
 import React, { useRef } from 'react';
 
 import { motion, useScroll, useTransform, useInView, useMotionValue, animate } from 'framer-motion';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
-// Component with reveal effect on scroll
+// Optimization: Static variants moved outside component to prevent recreation on every render
+const REVEAL_DIRECTIONS = {
+  up: { hidden: { opacity: 0, y: 100 }, visible: { opacity: 1, y: 0 } },
+  down: { hidden: { opacity: 0, y: -100 }, visible: { opacity: 1, y: 0 } },
+  left: { hidden: { opacity: 0, x: -100 }, visible: { opacity: 1, x: 0 } },
+  right: { hidden: { opacity: 0, x: 100 }, visible: { opacity: 1, x: 0 } },
+};
+
+// Component with reveal effect on scroll - Optimized with shared IntersectionObserver
 export const ScrollReveal = ({ 
   children, 
   direction = 'up',
   delay = 0,
+  once = true,
   className = ''
 }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, amount: 0.2 });
-
-  const directions = {
-    up: { hidden: { opacity: 0, y: 100 }, visible: { opacity: 1, y: 0 } },
-    down: { hidden: { opacity: 0, y: -100 }, visible: { opacity: 1, y: 0 } },
-    left: { hidden: { opacity: 0, x: -100 }, visible: { opacity: 1, x: 0 } },
-    right: { hidden: { opacity: 0, x: 100 }, visible: { opacity: 1, x: 0 } },
-  };
+  // Fix: Destructure isInView from useScrollAnimation (was isVisible)
+  const { ref, isInView } = useScrollAnimation({ once, amount: 0.2 });
 
   return (
     <motion.div
       ref={ref}
       initial="hidden"
       animate={isInView ? 'visible' : 'hidden'}
-      variants={directions[direction]}
+      variants={REVEAL_DIRECTIONS[direction]}
       transition={{ duration: 0.8, delay }}
       className={className}
     >
@@ -33,10 +36,10 @@ export const ScrollReveal = ({
   );
 };
 
-// Component with scaling effect on scroll
-export const ScrollScale = ({ children, className = '' }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, amount: 0.2 });
+// Component with scaling effect on scroll - Optimized with shared IntersectionObserver
+export const ScrollScale = ({ children, once = true, className = '' }) => {
+  // Fix: Destructure isInView from useScrollAnimation (was isVisible)
+  const { ref, isInView } = useScrollAnimation({ once, amount: 0.2 });
 
   return (
     <motion.div
@@ -147,30 +150,32 @@ export const ScrollBlur = ({ children, className = '' }) => {
   );
 };
 
+// AosReveal - refactored to use shared IntersectionObserver and Framer Motion
+// Optimization: Static mapping moved outside component to prevent recreation
+const AOS_VARIANTS = {
+  'fade-up': { hidden: { opacity: 0, y: 50 }, visible: { opacity: 1, y: 0 } },
+  'fade-down': { hidden: { opacity: 0, y: -50 }, visible: { opacity: 1, y: 0 } },
+  'fade-left': { hidden: { opacity: 0, x: 50 }, visible: { opacity: 1, x: 0 } },
+  'fade-right': { hidden: { opacity: 0, x: -50 }, visible: { opacity: 1, x: 0 } },
+  'zoom-in': { hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } },
+  'zoom-out': { hidden: { opacity: 0, scale: 1.2 }, visible: { opacity: 1, scale: 1 } },
+  'flip-up': { hidden: { opacity: 0, rotateX: 90 }, visible: { opacity: 1, rotateX: 0 } },
+  'flip-down': { hidden: { opacity: 0, rotateX: -90 }, visible: { opacity: 1, rotateX: 0 } },
+};
+
 // AosReveal - refactored to use Framer Motion instead of AOS
 export const AosReveal = ({ 
   children, 
   animation = 'fade-up',
   duration = 800,
   delay = 0,
+  once = true,
   className = ''
 }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, amount: 0.2 });
+  // Fix: Destructure isInView from useScrollAnimation (was isVisible)
+  const { ref, isInView } = useScrollAnimation({ once, amount: 0.2 });
 
-  // Map AOS animation names to Framer Motion variants
-  const animations = {
-    'fade-up': { hidden: { opacity: 0, y: 50 }, visible: { opacity: 1, y: 0 } },
-    'fade-down': { hidden: { opacity: 0, y: -50 }, visible: { opacity: 1, y: 0 } },
-    'fade-left': { hidden: { opacity: 0, x: 50 }, visible: { opacity: 1, x: 0 } },
-    'fade-right': { hidden: { opacity: 0, x: -50 }, visible: { opacity: 1, x: 0 } },
-    'zoom-in': { hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } },
-    'zoom-out': { hidden: { opacity: 0, scale: 1.2 }, visible: { opacity: 1, scale: 1 } },
-    'flip-up': { hidden: { opacity: 0, rotateX: 90 }, visible: { opacity: 1, rotateX: 0 } },
-    'flip-down': { hidden: { opacity: 0, rotateX: -90 }, visible: { opacity: 1, rotateX: 0 } },
-  };
-
-  const variant = animations[animation] || animations['fade-up'];
+  const variant = AOS_VARIANTS[animation] || AOS_VARIANTS['fade-up'];
 
   return (
     <motion.div

@@ -1,6 +1,6 @@
-## 2024-05-22 - [React Context and Component Memoization]
-**Learning:** In highly interactive applications with global state (like a Toast system), missing `useMemo` on context values and `React.memo` on high-frequency components causes widespread redundant re-renders. Every component using `useToast()` was re-rendering whenever any toast was added or removed because the context value was a new object literal.
-**Action:** Always memoize context value objects with `useMemo` and wrap generic UI components in `React.memo` to ensure reference stability and skip unnecessary render cycles.
+## 2024-05-22 - Static Constant Extraction & Throttled Scroll
+**Learning:** React components often recreate identical objects (variants, link arrays) on every render, leading to unnecessary memory pressure. Similarly, raw `window` scroll listeners are often unthrottled and can cause performance degradation in complex UIs.
+**Action:** Always move static objects outside component bodies. Use `framer-motion`'s `useScroll` and `useMotionValueEvent` for efficient, throttled scroll handling.
 
 ## 2025-05-15 - [Bypassing React for High-Frequency Interactions]
 **Learning:** For components with high-frequency interactions (like drag-to-reveal sliders), React's state-based rendering is a bottleneck due to reconciliation overhead on every mouse move.
@@ -17,3 +17,10 @@
 ## 2025-05-20 - [Bypassing React for Counter Animations]
 **Learning:** Using `useState` within a `requestAnimationFrame` loop for counter animations triggers a full React render cycle (including reconciliation) on every frame. For simple text updates, this is extremely inefficient.
 **Action:** Use `framer-motion`'s `useMotionValue`, `useTransform`, and `animate` function to update the DOM directly. Passing a `MotionValue` (or a derived one) as a child to a `motion.span` allows Framer Motion to sync the value to `textContent` without triggering component re-renders.
+
+## 2026-02-07 - [Shared IntersectionObservers for Scroll Animations]
+**Learning:** Creating individual `IntersectionObserver` instances for every element with a scroll animation (e.g., in a long list or gallery) leads to significant main-thread overhead as the browser must track hundreds of separate observers.
+**Action:** Implement a centralized observer pool that shares `IntersectionObserver` instances based on unique configuration options (threshold, rootMargin). This consolidates multiple observers into a single instance per config, reducing memory usage and CPU cycles during scroll events. Ensure the hook handles both `once` (unobserve after trigger) and repeatable behaviors correctly within the shared architecture.
+## 2024-05-22 - Mocking Module-Level State
+**Learning:** Modules that initialize state (like database clients) at the top level are hard to test with standard `vi.mock` if the mock state needs to change per test.
+**Action:** Use `vi.resetModules()` and `vi.resetAllMocks()` in `beforeEach` to ensure a clean state for every test case when mocking module-level initializations.

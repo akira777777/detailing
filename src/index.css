@@ -109,7 +109,7 @@ body {
 
 @layer base {
   body {
-    @apply bg-background-light text-gray-900 dark:bg-background-dark dark:text-white selection:bg-primary selection:text-white antialiased font-sans transition-colors duration-300;
+    @apply bg-background-light text-gray-900 dark:bg-background-dark dark:text-white selection:bg-primary selection:text-white antialiased font-sans transition-colors duration-500;
   }
   
   /* Improved focus states for accessibility */
@@ -142,13 +142,10 @@ body {
   background: #0091FF;
 }
 
-/* Glass panel utility with cross-browser support */
-.glass-panel {
-  background: rgba(13, 13, 13, 0.8);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
+  /* Glass panel utility with cross-browser support */
+  .glass-panel {
+    @apply bg-white/70 dark:bg-[#0D0D0D]/80 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-xl;
+  }
 
 /* Fallback for browsers without backdrop-filter support */
 @supports not (backdrop-filter: blur(20px)) {

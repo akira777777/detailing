@@ -484,7 +484,7 @@ describe('Security Features', () => {
     it('should enforce request limits', () => {
       const requests = [];
       const maxRequests = 100;
-      const windowMs = 15 * 60 * 1000; // 15 minutes
+      const _windowMs = 15 * 60 * 1000; // 15 minutes
 
       // Simulate rate limiting logic
       const isAllowed = requests.length < maxRequests;

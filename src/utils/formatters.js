@@ -1,25 +1,26 @@
-/**
- * Centralized Intl formatters to avoid expensive re-instantiation in components and loops.
- * Defined at the module level for maximum performance.
- */
 
-export const monthYearFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'long',
-  year: 'numeric'
-});
+const formattersCache = {};
 
-export const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric'
-});
+function getCachedFormatter(locale, options) {
+  const key = JSON.stringify({ locale, options });
+  if (!formattersCache[key]) {
+    formattersCache[key] = new Intl.DateTimeFormat(locale, options);
+  }
+  return formattersCache[key];
+}
 
-export const shortMonthFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'short'
-});
+export const formatMonthYear = (date, locale = 'en-US') => {
+  return getCachedFormatter(locale, { month: 'long', year: 'numeric' }).format(date);
+};
 
-export const shortDateFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  day: 'numeric',
-  year: 'numeric'
-});
+export const formatFullDate = (date, locale = 'en-US') => {
+  return getCachedFormatter(locale, { month: 'long', day: 'numeric', year: 'numeric' }).format(date);
+};
+
+export const formatShortMonth = (date, locale = 'en-US') => {
+  return getCachedFormatter(locale, { month: 'short' }).format(date);
+};
+
+export const formatShortDate = (date, locale = 'en-US') => {
+  return getCachedFormatter(locale, { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
+};

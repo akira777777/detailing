@@ -40,8 +40,8 @@ describe('useScrollAnimation Performance', () => {
     useScrollAnimation = mod.useScrollAnimation;
 
     TestComponent = ({ options }) => {
-      const { ref, isVisible } = useScrollAnimation(options);
-      return <div ref={ref} data-testid="item">{isVisible ? 'Visible' : 'Hidden'}</div>;
+      const { ref, isInView } = useScrollAnimation(options);
+      return <div ref={ref} data-testid="item">{isInView ? 'Visible' : 'Hidden'}</div>;
     };
   });
 
@@ -62,8 +62,8 @@ describe('useScrollAnimation Performance', () => {
   it('creates distinct observers for different options', () => {
     render(
       <>
-        <TestComponent options={{ threshold: 0.2 }} />
-        <TestComponent options={{ threshold: 0.5 }} />
+        <TestComponent options={{ amount: 0.2 }} />
+        <TestComponent options={{ amount: 0.5 }} />
       </>
     );
 
@@ -73,8 +73,8 @@ describe('useScrollAnimation Performance', () => {
   });
 
   it('reuses observer even if options object identity is different but content is same', () => {
-    const options1 = { threshold: 0.3 };
-    const options2 = { threshold: 0.3 }; // Different object, same content
+    const options1 = { amount: 0.3 };
+    const options2 = { amount: 0.3 }; // Different object, same content
 
     render(
       <>
@@ -87,8 +87,8 @@ describe('useScrollAnimation Performance', () => {
     expect(observeMock).toHaveBeenCalledTimes(2);
   });
 
-  it('correctly triggers visibility and unobserves', () => {
-    render(<TestComponent />);
+  it('correctly triggers visibility and unobserves when once: true', () => {
+    render(<TestComponent options={{ once: true }} />);
 
     const observer = observerInstances[0];
     const callback = observer.callback;
@@ -105,5 +105,35 @@ describe('useScrollAnimation Performance', () => {
     });
 
     expect(unobserveMock).toHaveBeenCalledWith(entry.target);
+  });
+
+  it('handles once: false correctly', () => {
+    render(<TestComponent options={{ once: false }} />);
+
+    const observer = observerInstances[0];
+    const callback = observer.callback;
+    const element = observeMock.mock.calls[0][0];
+
+    // Simulate entry
+    act(() => {
+        callback([{ isIntersecting: true, target: element }], observer);
+    });
+    // Should NOT have unobserved
+    expect(unobserveMock).not.toHaveBeenCalled();
+
+    // Simulate exit
+    act(() => {
+        callback([{ isIntersecting: false, target: element }], observer);
+    });
+    // Should NOT have unobserved
+    expect(unobserveMock).not.toHaveBeenCalled();
+  });
+
+  it('disconnects observer when all components unmount', () => {
+    const { unmount } = render(<TestComponent />);
+    expect(observerInstances.length).toBe(1);
+
+    unmount();
+    expect(disconnectMock).toHaveBeenCalled();
   });
 });

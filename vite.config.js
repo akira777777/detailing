@@ -13,48 +13,46 @@ export default defineConfig({
     target: ['es2020'],
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          // Split vendor chunks more aggressively
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
-              return 'react-vendor';
-            }
-            if (id.includes('framer-motion')) {
-              return 'animation-vendor';
-            }
-            if (id.includes('howler')) {
-              return 'audio-vendor';
-            }
-            if (id.includes('zustand')) {
-              return 'state-vendor';
-            }
-            // Group other dependencies
-            return 'vendor-other';
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'animation-vendor': ['framer-motion'],
+          'audio-vendor': ['howler'],
+          'state-vendor': ['zustand'],
+        },
+        // Optimize asset file names for better caching
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name.split('.')
+          const ext = info[info.length - 1]
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+            return `assets/images/[name]-[hash][extname]`
+          } else if (/woff2?|ttf|otf|eot/i.test(ext)) {
+            return `assets/fonts/[name]-[hash][extname]`
           }
-        }
+          return `assets/[name]-[hash][extname]`
+        },
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
       },
-      // Externalize optional polyfills that are dynamically imported
-      external: [
-        'intersection-observer',
-        'resize-observer-polyfill',
-        'smoothscroll-polyfill'
-      ],
-      onwarn(warning, warn) {
-        // Ignore warnings about externalized polyfills
-        if (warning.message?.includes('intersection-observer') ||
-            warning.message?.includes('resize-observer-polyfill') ||
-            warning.message?.includes('smoothscroll-polyfill')) {
-          return;
-        }
-        warn(warning);
-      }
     },
-    sourcemap: process.env.NODE_ENV === 'development',
+    sourcemap: process.env.NODE_ENV !== 'production',
     chunkSizeWarningLimit: 1000,
-    minify: 'esbuild',
+    minify: 'terser',
     cssMinify: true,
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug'],
+      },
+      format: {
+        comments: false,
+      },
+    },
+    reportCompressedSize: true,
+    cssCodeSplit: true,
   },
   server: {
+    host: true, // Listen on all addresses including IPv4
     headers: {
       'Cache-Control': 'public, max-age=3600'
     },
@@ -71,8 +69,7 @@ export default defineConfig({
   },
   esbuild: {
     drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
-    pure: ['console.log', 'console.info', 'console.debug'],
-    legalComments: 'none'
+    legalComments: 'none',
   },
   resolve: {
     alias: {
@@ -93,6 +90,13 @@ export default defineConfig({
       '**/dist/**',
       '**/e2e/**',  // Exclude Playwright E2E tests
       '**/*.spec.js',
-    ]
+    ],
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      'framer-motion',
+      'zustand',
+    ],
   }
 })
