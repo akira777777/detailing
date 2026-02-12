@@ -1,0 +1,129 @@
+{
+    "welcome": "Welcome to React",
+    "nav": {
+        "home": "Home",
+        "gallery": "Gallery",
+        "calculator": "Calculator",
+        "booking": "Booking",
+        "dashboard": "Dashboard",
+        "animations": "Animations",
+        "login": "Login",
+        "book_now": "Book Now",
+        "mobile_menu_close": "Close menu",
+        "mobile_menu_open": "Open menu"
+    },
+    "footer": {
+        "description": "The final word in automotive surface preservation. We don't just detail, we re-engineer the aesthetic experience.",
+        "company": "Company",
+        "services": "Services",
+        "links": {
+            "studio": "Studio",
+            "our_work": "Our Work",
+            "pricing": "Pricing",
+            "coatings": "Coatings",
+            "correction": "Correction",
+            "protection": "Protection"
+        },
+        "newsletter": "Newsletter",
+        "newsletter_placeholder": "Email address",
+        "subscribe": "Subscribe",
+        "copyright": "© 2024 LUXE DETAIL STUDIO. ENGINEERED FOR PERFECTION.",
+        "privacy": "Privacy",
+        "terms": "Terms"
+    },
+    "skip_to_main": "Skip to main content",
+    "home": {
+        "hero": {
+            "excellence": "Excellence since 2012",
+            "title_art": "The Art of",
+            "title_perfection": "Perfection",
+            "subtitle": "Premium detailing for true connoisseurs. Precision care for elite vehicles.",
+            "our_services": "Our Services",
+            "book_now": "Book Now",
+            "status": "Status"
+        },
+        "services": {
+            "title_label": "Core Services",
+            "title_main_1": "Precision",
+            "title_main_2": "Procedures",
+            "description": "Our studio utilizes advanced technologies and professional care methods to ensure your vehicle exceeds factory standards.",
+            "learn_more": "Learn More",
+            "items": {
+                "01": {
+                    "category": "Protection",
+                    "title": "Ceramic Coating",
+                    "description": "Next-generation molecular protection with permanent hydrophobic properties and deep gloss."
+                },
+                "02": {
+                    "category": "Interior",
+                    "title": "Interior Detailing",
+                    "description": "Deep cleaning of every pore and seam using pH-neutral organic agents for leather and carbon."
+                },
+                "03": {
+                    "category": "Polishing",
+                    "title": "Paint Correction",
+                    "description": "Multi-stage abrasive polishing to eliminate defects, holograms, and micro-scratches to an ideal shine."
+                }
+            }
+        },
+        "membership": {
+            "club": "Luxe Club",
+            "title": "Membership",
+            "description": "Automated maintenance schedules and priority booking for dedicated automotive enthusiasts.",
+            "perks": {
+                "01": {
+                    "title": "Climate-Controlled Storage",
+                    "desc": "Specialized moisture-controlled bays with 24/7 monitoring of your vehicle's condition."
+                },
+                "02": {
+                    "title": "Digital Logbook",
+                    "desc": "Verified service history and HD photography of every procedure."
+                },
+                "03": {
+                    "title": "Precision Monitoring",
+                    "desc": "Regular battery maintenance and tire rotation on an automated schedule."
+                },
+                "04": {
+                    "title": "Exclusive Circle",
+                    "desc": "VIP access to private rallies, track days, and exclusive automotive offers."
+                }
+            },
+            "prestige": {
+                "limited": "Limited",
+                "title": "Prestige",
+                "price": "$499",
+                "period": "/ month",
+                "features": {
+                    "01": "Ceramic maintenance 2x per month",
+                    "02": "Monthly interior deep clean",
+                    "03": "Door-to-door vehicle delivery",
+                    "04": "Priority booking without wait"
+                },
+                "request_invitation": "Request Invitation",
+                "available_spots": "Available spots: 04",
+                "invitation_sent": "Invitation request sent! Our concierge will contact you within 24 hours."
+            }
+        }
+    },
+    "booking": {
+        "title": "Schedule Your Detailing Session",
+        "step_2": "Step 2 of 3",
+        "date_time_selection": "Date & Time Selection",
+        "pick_date": "Pick a Date",
+        "weekends_info": "Appointments on weekends include a complimentary exterior foam wash.",
+        "your_selection": "Your Selection",
+        "change": "Change",
+        "duration": "4-5 Hours Duration",
+        "select_start_time": "Select Start Time",
+        "morning": "Morning",
+        "afternoon": "Afternoon",
+        "evening": "Evening",
+        "fully_booked": "Fully Booked",
+        "back": "Back",
+        "total_estimated": "Total Estimated",
+        "confirm_booking": "Confirm Booking",
+        "processing": "Processing...",
+        "success": "Booking successfully scheduled!",
+        "error": "Failed to confirm booking"
+    }
+}
