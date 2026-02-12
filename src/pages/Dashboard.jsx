@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
 import { userData, dashboardMenu, activeService, serviceHistory } from '../data/mockData';
-import { shortDateFormatter } from '../utils/formatters';
+import { formatShortDate } from '../utils/formatters';
 
 const Dashboard = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { addToast } = useToast();
     const [bookings, setBookings] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -35,7 +35,7 @@ const Dashboard = () => {
                 // This avoids expensive 'new Date()' allocations and 'Intl.format()' calls in the render loop.
                 const formattedData = result.data.map(booking => ({
                     ...booking,
-                    displayDate: shortDateFormatter.format(new Date(booking.date)),
+                    displayDate: formatShortDate(new Date(booking.date), i18n.language),
                     displayPrice: `$${parseFloat(booking.total_price).toFixed(2)}`
                 }));
 
@@ -66,7 +66,7 @@ const Dashboard = () => {
         fetchBookings();
 
         return () => controller.abort();
-    }, [addToast, currentPage]);
+    }, [addToast, currentPage, i18n.language]);
 
     return (
         <div className="flex min-h-screen pt-20 bg-background-light dark:bg-background-dark transition-colors duration-300">

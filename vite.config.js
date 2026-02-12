@@ -13,7 +13,7 @@ export default defineConfig({
           'animation-vendor': ['framer-motion'],
           'audio-vendor': ['howler'],
           'state-vendor': ['zustand'],
-          'validation-vendor': ['zod'],
+
         },
         // Optimize asset file names for better caching
         assetFileNames: (assetInfo) => {

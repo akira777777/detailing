@@ -341,7 +341,7 @@ const AnimationsShowcase = () => {
             </motion.div>
           </div>
         </ScrollReveal>
-      </div >
+      </div>
     </div >
   );
 };

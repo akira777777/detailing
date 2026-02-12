@@ -216,7 +216,7 @@ const Calculator = () => {
                                         <p className="text-[10px] text-white/40 uppercase font-black tracking-widest mb-1">{t('calculator.summary.condition')}</p>
                                         <p className="text-sm font-bold capitalize text-white">{condition}</p>
                                     </div>
-                                    <span className="text-xs font-bold text-white">x{pricingConfig.conditionMultiplier[condition]} ({t('calculator.filters.correction')})</span>
+                                    <span className="text-xs font-bold text-white">x{pricingConfig.conditionMultiplier[condition]} ({t('calculator.step_2.condition')})</span>
                                 </div>
                                 <div className="flex justify-between items-start">
                                     <div>

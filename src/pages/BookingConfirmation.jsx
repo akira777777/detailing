@@ -3,11 +3,11 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useToast } from "../context/ToastContext";
 import useBookingStore from "../store/useBookingStore";
-import { fullDateFormatter } from "../utils/formatters";
+import { formatFullDate } from "../utils/formatters";
 import { getPackageName } from "../utils/bookingUtils";
 
 const BookingConfirmation = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { addToast } = useToast();
   const { carModel, totalPrice, modules } = useBookingStore();
   const today = new Date();
@@ -77,7 +77,7 @@ const BookingConfirmation = () => {
                 </h3>
                 <div className="bg-gray-100 dark:bg-background-dark/50 p-4 rounded-lg border border-gray-200 dark:border-white/5">
                   <p className="text-gray-900 dark:text-white text-lg font-bold">
-                    {fullDateFormatter.format(today)}
+                    {formatFullDate(today, i18n.language)}
                   </p>
                   <p className="text-gray-600 dark:text-white/60">
                     {t('confirmation.selected_time')}
@@ -94,7 +94,7 @@ const BookingConfirmation = () => {
                 <ul className="space-y-3">
                   <li className="flex justify-between items-center text-sm">
                     <span className="text-gray-600 dark:text-white/60">
-                      {getPackageName(modules)}
+                      {getPackageName(modules, t)}
                     </span>
                     <span className="text-gray-900 dark:text-white font-semibold">
                       ${totalPrice.toFixed(2)}
