@@ -13,6 +13,7 @@ vi.mock('@neondatabase/serverless', () => ({
 describe('Booking API', () => {
   let handler;
   let req;
+  let res;
 
   const validBooking = {
     carModel: 'Tesla Model 3',
