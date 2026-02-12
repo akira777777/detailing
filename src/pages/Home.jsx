@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import LazyImage from '../components/LazyImage';
+import Testimonials from '../components/Testimonials';
+import ContactSection from '../components/ContactSection';
 import { SectionHeader, Button } from '../components/ui/Components';
 import { AosReveal } from '../components/ScrollAnimations';
 import { useToast } from '../context/ToastContext';
@@ -120,10 +122,10 @@ const Home = () => {
         >
           <span className="material-symbols-outlined text-white/30 text-2xl">south</span>
         </motion.div>
-      </section>
+      </section >
 
       {/* Services Section */}
-      <section className="py-32 px-6 lg:px-12 bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-white/5 transition-colors duration-300">
+      < section className="py-32 px-6 lg:px-12 bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-white/5 transition-colors duration-300" >
         <div className="max-w-[1440px] mx-auto">
           <AosReveal animation="fade-up">
             <SectionHeader
@@ -148,9 +150,11 @@ const Home = () => {
                       <p className="text-gray-600 dark:text-white/40 text-sm leading-relaxed mb-12 group-hover:text-gray-900 dark:group-hover:text-white/60 transition-colors">{t(`home.services.items.${service.key}.description`)}</p>
                     </div>
                     <div className="flex items-center gap-4 text-gray-900 dark:text-white font-bold text-[10px] tracking-[0.2em] uppercase">
-                      <span>{t('home.services.learn_more')}</span>
-                      <div className="w-0 group-hover:w-8 h-[1px] bg-primary transition-all duration-500"></div>
-                      <span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500">trending_flat</span>
+                      <Link to={`/services/${service.key}`} className="flex items-center gap-4 group-hover:text-primary transition-colors">
+                        <span>{t('home.services.learn_more')}</span>
+                        <div className="w-0 group-hover:w-8 h-[1px] bg-primary transition-all duration-500"></div>
+                        <span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500">trending_flat</span>
+                      </Link>
                     </div>
                   </div>
                   <div className="absolute top-0 right-0 w-full h-full opacity-0 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none">
@@ -161,10 +165,10 @@ const Home = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       {/* Membership Section */}
-      <section className="py-32 px-6 lg:px-12 bg-[#080808] relative overflow-hidden">
+      < section className="py-32 px-6 lg:px-12 bg-[#080808] relative overflow-hidden" >
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
         <div className="max-w-[1440px] mx-auto">
           <AosReveal animation="fade-up" className="text-center mb-24">
@@ -245,7 +249,13 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section >
+
+      {/* Testimonials Section */}
+      < Testimonials />
+
+      {/* Contact Section */}
+      < ContactSection />
     </>
   );
 };

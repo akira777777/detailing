@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useToast } from "../context/ToastContext";
 import useBookingStore from "../store/useBookingStore";
@@ -6,6 +7,7 @@ import { fullDateFormatter } from "../utils/formatters";
 import { getPackageName } from "../utils/bookingUtils";
 
 const BookingConfirmation = () => {
+  const { t } = useTranslation();
   const { addToast } = useToast();
   const { carModel, totalPrice, modules } = useBookingStore();
   const today = new Date();
@@ -16,13 +18,13 @@ const BookingConfirmation = () => {
     navigator.clipboard
       .writeText(confirmationId)
       .then(() => {
-        addToast("Confirmation ID copied to clipboard!", "success");
+        addToast(t('confirmation.id_copied'), "success");
       })
       .catch((err) => {
         console.error("Could not copy text: ", err);
-        addToast("Failed to copy ID", "error");
+        addToast(t('confirmation.copy_failed'), "error");
       });
-  }, [addToast, confirmationId]);
+  }, [addToast, confirmationId, t]);
 
   return (
     <div className="pt-32 pb-24 px-4 lg:px-12 bg-background-light dark:bg-background-dark min-h-screen flex flex-col items-center">
@@ -35,11 +37,10 @@ const BookingConfirmation = () => {
             </span>
           </div>
           <h1 className="text-gray-900 dark:text-white tracking-tight text-4xl md:text-5xl font-extrabold leading-tight pb-3">
-            Booking Confirmed!
+            {t('confirmation.title')}
           </h1>
           <p className="text-gray-600 dark:text-white/60 text-base md:text-lg font-normal leading-normal max-w-md">
-            Your vehicle is in good hands. We've sent a detailed confirmation to
-            your email address.
+            {t('confirmation.subtitle')}
           </p>
         </div>
 
@@ -59,7 +60,7 @@ const BookingConfirmation = () => {
                 {carModel}
               </h2>
               <p className="text-primary font-medium">
-                Luxe Detailing Approved
+                {t('confirmation.approved')}
               </p>
             </div>
           </div>
@@ -72,14 +73,14 @@ const BookingConfirmation = () => {
                   <span className="material-symbols-outlined text-primary text-lg">
                     calendar_today
                   </span>
-                  Appointment Details
+                  {t('confirmation.appointment_details')}
                 </h3>
                 <div className="bg-gray-100 dark:bg-background-dark/50 p-4 rounded-lg border border-gray-200 dark:border-white/5">
                   <p className="text-gray-900 dark:text-white text-lg font-bold">
                     {fullDateFormatter.format(today)}
                   </p>
                   <p className="text-gray-600 dark:text-white/60">
-                    Selected Time Appointment
+                    {t('confirmation.selected_time')}
                   </p>
                 </div>
               </div>
@@ -88,7 +89,7 @@ const BookingConfirmation = () => {
                   <span className="material-symbols-outlined text-primary text-lg">
                     construction
                   </span>
-                  Selected Services
+                  {t('confirmation.selected_services')}
                 </h3>
                 <ul className="space-y-3">
                   <li className="flex justify-between items-center text-sm">
@@ -106,7 +107,7 @@ const BookingConfirmation = () => {
             <div className="border-t border-gray-200 dark:border-white/5 pt-6 flex justify-between items-center">
               <div>
                 <p className="text-gray-500 dark:text-white/40 text-xs uppercase font-bold tracking-widest">
-                  Total Investment
+                  {t('confirmation.total_investment')}
                 </p>
                 <p className="text-3xl font-extrabold text-primary">
                   ${totalPrice.toFixed(2)}
@@ -116,7 +117,7 @@ const BookingConfirmation = () => {
                 <span className="material-symbols-outlined text-[18px]">
                   receipt_long
                 </span>
-                Receipt
+                {t('confirmation.receipt')}
               </button>
             </div>
           </div>
@@ -128,14 +129,14 @@ const BookingConfirmation = () => {
             <span className="material-symbols-outlined text-[20px]">
               calendar_add_on
             </span>
-            Add to Calendar
+            {t('confirmation.add_calendar')}
           </button>
           <Link
             to="/"
             className="flex-1 max-w-[240px] h-12 flex items-center justify-center gap-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-all font-bold shadow-lg shadow-primary/20"
           >
             <span className="material-symbols-outlined text-[20px]">home</span>
-            Return Home
+            {t('confirmation.return_home')}
           </Link>
         </div>
 
@@ -144,11 +145,11 @@ const BookingConfirmation = () => {
           <div className="bg-white dark:bg-panel-dark p-6 rounded-xl border border-gray-200 dark:border-white/5 flex gap-4 shadow-sm dark:shadow-none">
             <div className="flex-1">
               <h3 className="text-gray-900 dark:text-white font-bold mb-2">
-                Salon Location
+                {t('confirmation.location.title')}
               </h3>
               <p className="text-gray-600 dark:text-white/60 text-sm mb-4">
-                742 Detailing Blvd, <br />
-                Performance District, CA 90210
+                {t('confirmation.location.address_1')} <br />
+                {t('confirmation.location.address_2')}
               </p>
               <a
                 href="#"
@@ -157,7 +158,7 @@ const BookingConfirmation = () => {
                 <span className="material-symbols-outlined text-[18px]">
                   directions
                 </span>
-                Get Directions
+                {t('confirmation.location.directions')}
               </a>
             </div>
             <div className="w-32 h-32 rounded-lg overflow-hidden border border-gray-200 dark:border-white/10 shrink-0">
@@ -174,11 +175,10 @@ const BookingConfirmation = () => {
           <div className="bg-white dark:bg-panel-dark p-6 rounded-xl border border-gray-200 dark:border-white/5 flex flex-col justify-between shadow-sm dark:shadow-none">
             <div>
               <h3 className="text-gray-900 dark:text-white font-bold mb-2">
-                Need Help?
+                {t('confirmation.help.title')}
               </h3>
               <p className="text-gray-600 dark:text-white/60 text-sm">
-                If you need to reschedule or have special instructions, contact
-                our concierge.
+                {t('confirmation.help.desc')}
               </p>
             </div>
             <div className="flex gap-4 mt-4">
@@ -189,7 +189,7 @@ const BookingConfirmation = () => {
                 <span className="material-symbols-outlined text-[18px]">
                   call
                 </span>
-                Call Us
+                {t('confirmation.help.call')}
               </a>
               <a
                 href="mailto:support@prodetail.com"
@@ -198,7 +198,7 @@ const BookingConfirmation = () => {
                 <span className="material-symbols-outlined text-[18px]">
                   mail
                 </span>
-                Email
+                {t('confirmation.help.email')}
               </a>
             </div>
           </div>
@@ -208,17 +208,17 @@ const BookingConfirmation = () => {
           <div
             className="flex items-center gap-2 group cursor-pointer"
             onClick={handleCopyId}
-            title="Click to copy ID"
+            title={t('confirmation.copy_id_title')}
           >
             <div className="text-gray-400 dark:text-white/30 text-xs font-mono bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded border border-gray-200 dark:border-white/10 group-hover:border-primary group-hover:text-primary transition-all flex items-center gap-2 shadow-sm">
               <span>
-                Confirmation ID:{" "}
+                {t('confirmation.id_label')}{" "}
                 <span className="font-bold text-gray-600 dark:text-white/60 group-hover:text-primary">
                   {confirmationId}
                 </span>
               </span>
               <button
-                aria-label="Copy Confirmation ID"
+                aria-label={t('confirmation.copy_id_aria')}
                 className="text-gray-400 group-hover:text-primary transition-colors flex items-center"
               >
                 <span className="material-symbols-outlined text-[14px]">
@@ -228,7 +228,7 @@ const BookingConfirmation = () => {
             </div>
           </div>
           <p className="text-gray-400 dark:text-white/30 text-[10px] uppercase tracking-[0.2em] mt-2">
-            © 2024 Luxe Detail Salon Professional Services
+            {t('confirmation.copyright')}
           </p>
         </div>
       </div>

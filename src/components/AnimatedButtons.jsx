@@ -45,9 +45,8 @@ export const AnimatedButton = ({
 
   return (
     <motion.button
-      className={`relative font-semibold rounded-lg transition-colors ${sizeClasses[size]} ${variantClasses[variant]} ${className} ${
-        disabled ? 'opacity-50 cursor-not-allowed' : ''
-      }`}
+      className={`relative font-semibold rounded-lg transition-colors ${sizeClasses[size]} ${variantClasses[variant]} ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''
+        }`}
       onClick={handleClick}
       disabled={disabled}
       whileHover={!disabled ? { scale: 1.05 } : {}}
@@ -104,11 +103,11 @@ export const PulseButton = ({ children, onClick, className = '' }) => {
 };
 
 // Button with loading state
-export const LoadingButton = ({ 
-  children, 
-  isLoading = false, 
-  onClick, 
-  className = '' 
+export const LoadingButton = ({
+  children,
+  isLoading = false,
+  onClick,
+  className = ''
 }) => {
   return (
     <motion.button
@@ -136,11 +135,11 @@ export const LoadingButton = ({
 };
 
 // Interactive button with tooltip
-export const TooltipButton = ({ 
-  children, 
-  tooltip, 
-  onClick, 
-  className = '' 
+export const TooltipButton = ({
+  children,
+  tooltip,
+  onClick,
+  className = ''
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
@@ -170,5 +169,42 @@ export const TooltipButton = ({
         />
       </motion.div>
     </motion.div>
+  );
+};
+// Magnetic Button effect
+export const MagneticButton = ({ children, className = '', strength = 30 }) => {
+  const ref = React.useRef(null);
+  const { playTone } = useSound();
+  const [position, setPosition] = React.useState({ x: 0, y: 0 });
+
+  const handleMouse = (e) => {
+    const { clientX, clientY } = e;
+    const { height, width, left, top } = ref.current.getBoundingClientRect();
+    const middleX = clientX - (left + width / 2);
+    const middleY = clientY - (top + height / 2);
+
+    setPosition({ x: middleX * (strength / 100), y: middleY * (strength / 100) });
+  };
+
+  const reset = () => {
+    setPosition({ x: 0, y: 0 });
+  };
+
+  const { x, y } = position;
+
+  return (
+    <motion.button
+      ref={ref}
+      className={`relative px-6 py-3 font-bold rounded-lg bg-gray-900 text-white dark:bg-white dark:text-gray-900 border border-transparent hover:border-primary transition-colors ${className}`}
+      onMouseMove={handleMouse}
+      onMouseLeave={reset}
+      animate={{ x, y }}
+      transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={() => playTone(500, 50, 0.4)}
+    >
+      <span className="relative z-10">{children}</span>
+    </motion.button>
   );
 };

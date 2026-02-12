@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const NotFound = () => {
+    const { t } = useTranslation();
     return (
         <div className="min-h-screen flex items-center justify-center bg-background-light dark:bg-background-dark transition-colors px-6">
             <div className="max-w-2xl w-full text-center">
@@ -20,10 +22,10 @@ const NotFound = () => {
 
                     {/* Error Message */}
                     <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tight text-gray-900 dark:text-white mb-4">
-                        Page Not Found
+                        {t('not_found.title')}
                     </h1>
                     <p className="text-lg text-gray-600 dark:text-white/60 mb-12 max-w-md mx-auto">
-                        The page you're looking for doesn't exist or has been moved to another location.
+                        {t('not_found.desc')}
                     </p>
 
                     {/* Actions */}
@@ -32,20 +34,20 @@ const NotFound = () => {
                             to="/"
                             className="bg-primary text-white px-8 h-14 rounded font-black uppercase tracking-wider text-sm hover:bg-white hover:text-black transition-all inline-flex items-center justify-center shadow-lg hover:shadow-xl"
                         >
-                            Go to Home
+                            {t('not_found.go_home')}
                         </Link>
                         <Link
                             to="/calculator"
                             className="border-2 border-gray-200 dark:border-white/20 text-gray-900 dark:text-white px-8 h-14 rounded font-black uppercase tracking-wider text-sm hover:border-primary hover:text-primary transition-all inline-flex items-center justify-center"
                         >
-                            View Services
+                            {t('not_found.view_services')}
                         </Link>
                     </div>
 
                     {/* Decorative Element */}
                     <div className="mt-16 flex items-center gap-3 justify-center text-gray-400 dark:text-white/40">
                         <span className="material-symbols-outlined">info</span>
-                        <p className="text-sm font-medium uppercase tracking-wider">Error Code: 404</p>
+                        <p className="text-sm font-medium uppercase tracking-wider">{t('not_found.error_code')}: 404</p>
                     </div>
                 </motion.div>
             </div>

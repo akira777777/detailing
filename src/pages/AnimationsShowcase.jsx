@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { soundManager } from '../utils/soundManager';
 import {
@@ -24,6 +25,7 @@ import {
 } from '../components/ScrollAnimations';
 
 const AnimationsShowcase = () => {
+  const { t } = useTranslation();
   useTheme(); // Theme context used for dark mode classes
   const [isLoading, setIsLoading] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
@@ -68,10 +70,10 @@ const AnimationsShowcase = () => {
       <ScrollReveal direction="up">
         <div className="max-w-5xl mx-auto text-center mb-20">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
-            🎨 Animation System & Micro-interactions
+            {t('showcase.title')}
           </h1>
           <p className="text-lg text-gray-600 dark:text-white/60">
-            Showcasing Framer Motion, AOS-style reveals, SVG animations, and interactive sound effects
+            {t('showcase.subtitle')}
           </p>
         </div>
       </ScrollReveal>
@@ -81,7 +83,7 @@ const AnimationsShowcase = () => {
         <ScrollReveal direction="left">
           <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
             <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
-              ✨ SVG Animated Icons
+              {t('showcase.sections.svg')}
             </h2>
 
             <motion.div
@@ -93,7 +95,7 @@ const AnimationsShowcase = () => {
             >
               <motion.div className="flex flex-col items-center gap-4" variants={itemVariants}>
                 <AnimatedLogo className="w-16 h-16 text-primary" />
-                <p className="text-sm text-gray-600 dark:text-white/60">Logo</p>
+                <p className="text-sm text-gray-600 dark:text-white/60">{t('showcase.labels.logo')}</p>
               </motion.div>
 
               <motion.div className="flex flex-col items-center gap-4" variants={itemVariants}>
@@ -110,12 +112,12 @@ const AnimationsShowcase = () => {
                   />
                 </motion.div>
                 <p className="text-sm text-gray-600 dark:text-white/60">
-                  Likes: {likeCount}
+                  {t('showcase.labels.likes')}: {likeCount}
                 </p>
               </motion.div>
 
               <motion.div className="flex flex-col items-center gap-4" variants={itemVariants}>
-                <p className="text-sm text-gray-600 dark:text-white/60">Rating:</p>
+                <p className="text-sm text-gray-600 dark:text-white/60">{t('showcase.labels.rating')}:</p>
                 <div className="flex gap-1">
                   {selectedStars.map((active, idx) => (
                     <motion.button
@@ -135,7 +137,7 @@ const AnimationsShowcase = () => {
 
               <motion.div className="flex flex-col items-center gap-4" variants={itemVariants}>
                 <AnimatedArrowIcon className="w-16 h-16 text-primary" />
-                <p className="text-sm text-gray-600 dark:text-white/60">Arrow</p>
+                <p className="text-sm text-gray-600 dark:text-white/60">{t('showcase.labels.arrow')}</p>
               </motion.div>
             </motion.div>
           </div>
@@ -145,7 +147,7 @@ const AnimationsShowcase = () => {
         <ScrollReveal direction="right">
           <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
             <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
-              🔘 Animated Buttons
+              {t('showcase.sections.buttons')}
             </h2>
 
             <motion.div
@@ -157,46 +159,46 @@ const AnimationsShowcase = () => {
             >
               <motion.div variants={itemVariants} className="flex justify-center">
                 <AnimatedButton variant="primary" size="md">
-                  Primary
+                  {t('showcase.labels.primary')}
                 </AnimatedButton>
               </motion.div>
 
               <motion.div variants={itemVariants} className="flex justify-center">
                 <AnimatedButton variant="success" size="md">
-                  Success
+                  {t('showcase.labels.success')}
                 </AnimatedButton>
               </motion.div>
 
               <motion.div variants={itemVariants} className="flex justify-center">
                 <AnimatedButton variant="danger" size="md">
-                  Danger
+                  {t('showcase.labels.danger')}
                 </AnimatedButton>
               </motion.div>
 
               <motion.div variants={itemVariants} className="flex justify-center">
-                <PulseButton>Pulse</PulseButton>
+                <PulseButton>{t('showcase.labels.pulse')}</PulseButton>
               </motion.div>
 
               <motion.div variants={itemVariants} className="flex justify-center">
                 <LoadingButton isLoading={isLoading} onClick={handleLoadingButton}>
-                  {isLoading ? 'Sending...' : 'Load'}
+                  {isLoading ? t('showcase.labels.sending') : t('showcase.labels.loading')}
                 </LoadingButton>
               </motion.div>
 
               <motion.div variants={itemVariants} className="flex justify-center">
-                <TooltipButton tooltip="This is a tooltip!" onClick={() => soundManager.playTone(600, 100, 0.2)}>
-                  Tooltip
+                <TooltipButton tooltip={t('showcase.labels.tooltip_text')} onClick={() => soundManager.playTone(600, 100, 0.2)}>
+                  {t('showcase.labels.tooltip')}
                 </TooltipButton>
               </motion.div>
 
               <motion.div variants={itemVariants} className="flex justify-center">
                 <AnimatedButton variant="secondary" size="lg">
-                  Large
+                  {t('showcase.labels.large')}
                 </AnimatedButton>
               </motion.div>
 
               <motion.div variants={itemVariants} className="flex justify-center">
-                <AnimatedButton size="sm">Small</AnimatedButton>
+                <AnimatedButton size="sm">{t('showcase.labels.small')}</AnimatedButton>
               </motion.div>
             </motion.div>
           </div>
@@ -206,7 +208,7 @@ const AnimationsShowcase = () => {
         <ScrollReveal direction="up">
           <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
             <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
-              📜 Scroll-trigger Animations
+              {t('showcase.sections.scroll')}
             </h2>
 
             <motion.div className="space-y-12">
@@ -214,10 +216,10 @@ const AnimationsShowcase = () => {
               <ScrollScale>
                 <div className="p-8 rounded-lg border-2 border-primary bg-blue-50 dark:bg-surface-dark transition-colors duration-300">
                   <h3 className="font-bold mb-2 text-gray-900 dark:text-white">
-                    Scale Animation
+                    {t('showcase.labels.scale_title')}
                   </h3>
                   <p className="text-gray-600 dark:text-white/60">
-                    This element scales up as it enters the viewport
+                    {t('showcase.labels.scale_desc')}
                   </p>
                 </div>
               </ScrollScale>
@@ -226,13 +228,13 @@ const AnimationsShowcase = () => {
               <AosReveal animation="zoom-in">
                 <div className="p-8 rounded-lg border-2 border-green-500 bg-green-50 dark:bg-surface-dark transition-colors duration-300">
                   <h3 className="font-bold mb-2 text-gray-900 dark:text-white">
-                    Counter Animation
+                    {t('showcase.labels.counter_title')}
                   </h3>
                   <div className="text-4xl font-bold text-green-500">
                     <CountUp from={0} to={5000} duration={3} />+
                   </div>
                   <p className="mt-2 text-gray-600 dark:text-white/60">
-                    Animated counter on reveal
+                    {t('showcase.labels.counter_desc')}
                   </p>
                 </div>
               </AosReveal>
@@ -241,10 +243,10 @@ const AnimationsShowcase = () => {
               <Parallax offset={100}>
                 <div className="p-8 rounded-lg border-2 border-purple-500 bg-purple-50 dark:bg-surface-dark transition-colors duration-300">
                   <h3 className="font-bold mb-2 text-gray-900 dark:text-white">
-                    Parallax Effect
+                    {t('showcase.labels.parallax_title')}
                   </h3>
                   <p className="text-gray-600 dark:text-white/60">
-                    Elements moving at different speeds on scroll
+                    {t('showcase.labels.parallax_desc')}
                   </p>
                 </div>
               </Parallax>
@@ -256,7 +258,7 @@ const AnimationsShowcase = () => {
         <ScrollReveal direction="left">
           <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
             <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
-              🎯 Features
+              {t('showcase.sections.features')}
             </h2>
 
             <motion.div
@@ -267,12 +269,12 @@ const AnimationsShowcase = () => {
               viewport={{ once: false, amount: 0.2 }}
             >
               {[
-                { icon: '🌙', title: 'Dark/Light Mode', desc: 'Seamless theme switching with persistence' },
-                { icon: '🔊', title: 'Sound Effects', desc: 'Interactive UI feedback with audio tones' },
-                { icon: '✨', title: 'SVG Animations', desc: 'Smooth, scalable animated vector graphics' },
-                { icon: '📜', title: 'Scroll-trigger', desc: 'Dynamic animations triggered by scrolling' },
-                { icon: '🎭', title: 'Micro-interactions', desc: 'Ripple effects and smooth state transitions' },
-                { icon: '⚡', title: 'Performance', desc: 'Optimized for 60fps across all devices' },
+                { icon: '🌙', title: t('showcase.features.dark_mode.title'), desc: t('showcase.features.dark_mode.desc') },
+                { icon: '🔊', title: t('showcase.features.sound_effects.title'), desc: t('showcase.features.sound_effects.desc') },
+                { icon: '✨', title: t('showcase.features.svg_animations.title'), desc: t('showcase.features.svg_animations.desc') },
+                { icon: '📜', title: t('showcase.features.scroll_trigger.title'), desc: t('showcase.features.scroll_trigger.desc') },
+                { icon: '🎭', title: t('showcase.features.micro_interactions.title'), desc: t('showcase.features.micro_interactions.desc') },
+                { icon: '⚡', title: t('showcase.features.performance.title'), desc: t('showcase.features.performance.desc') },
               ].map((feature, idx) => (
                 <motion.div
                   key={idx}
@@ -297,7 +299,7 @@ const AnimationsShowcase = () => {
         <ScrollReveal direction="right">
           <div className="rounded-xl p-12 bg-gray-50 dark:bg-panel-dark transition-colors duration-300">
             <h2 className="text-2xl font-bold mb-12 text-gray-900 dark:text-white">
-              🎪 Interactive Demo
+              {t('showcase.sections.demo')}
             </h2>
 
             <motion.div
@@ -320,8 +322,7 @@ const AnimationsShowcase = () => {
                 variants={itemVariants}
                 className="text-lg text-center max-w-2xl text-gray-600 dark:text-white/60"
               >
-                Hover over elements and click buttons to experience the full range of animations and sound effects.
-                Try toggling the dark mode in the header!
+                {t('showcase.labels.demo_text')}
               </motion.p>
 
               <motion.button
@@ -335,13 +336,13 @@ const AnimationsShowcase = () => {
                   soundManager.playTone(800, 200, 0.2);
                 }}
               >
-                🎵 Play a Melody!
+                {t('showcase.labels.play_melody')}
               </motion.button>
             </motion.div>
           </div>
         </ScrollReveal>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 
