@@ -14,6 +14,7 @@ const Booking = lazy(() => import('./pages/Booking'));
 const BookingConfirmation = lazy(() => import('./pages/BookingConfirmation'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const AnimationsShowcase = lazy(() => import('./pages/AnimationsShowcase'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -46,6 +47,7 @@ function App() {
                   <Route path="/booking-confirmation" element={<BookingConfirmation />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/animations" element={<AnimationsShowcase />} />
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
             </ErrorBoundary>

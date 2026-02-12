@@ -1,29 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
 import { PageHeader } from '../components/ui/Components';
 import { pricingConfig } from '../data/mockData';
+import { VEHICLE_TYPES, CONDITION_LEVELS, SERVICE_MODULES } from '../constants/pricing';
+import { STORAGE_KEYS } from '../constants/config';
 import useBookingStore from '../store/useBookingStore';
-
-// Static configuration arrays (extracted for performance)
-const VEHICLE_TYPES = [
-    { id: 'sedan', label: 'Sedan', icon: 'directions_car' },
-    { id: 'suv', label: 'SUV', icon: 'airport_shuttle' },
-    { id: 'sport', label: 'Sport', icon: 'speed' },
-    { id: 'luxury', label: 'Luxury', icon: 'diamond' }
-];
-
-const CONDITION_LEVELS = [
-    { id: 'new', label: 'Pristine / New', desc: 'Delivery mileage, minimal contamination.', bar: 'w-1/4' },
-    { id: 'used', label: 'Light Wear', desc: 'Swirl marks, minor oxidation, daily use.', bar: 'w-2/4' },
-    { id: 'bad', label: 'Heavy Correction', desc: 'Deep scratches, etching, dull finish.', bar: 'w-full' }
-];
-
-const SERVICE_MODULES = [
-    { id: 'coating', title: 'Level 3 Ceramic Coating', desc: 'Multi-layer nano-technological protection. 5-year durability.', icon: 'layers' },
-    { id: 'correction', title: 'Precision Paint Correction', desc: 'Optical refinement for a swirl-free mirror finish.', icon: 'auto_fix_high' },
-    { id: 'interior', title: 'Interior Concours Detail', desc: 'Deep pore cleaning and leather preservation treatment.', icon: 'vacuum' }
-];
 
 const Calculator = () => {
     const { addToast } = useToast();
@@ -55,6 +37,37 @@ const Calculator = () => {
         return subtotal;
     }, [vehicle, condition, modules]);
 
+    // Load saved configuration on mount
+    useEffect(() => {
+        const saved = localStorage.getItem(STORAGE_KEYS.bookingConfig);
+        if (saved) {
+            try {
+                const config = JSON.parse(saved);
+                const savedDate = new Date(config.savedAt).toLocaleDateString();
+
+                // Show toast to restore saved config
+                const shouldLoad = window.confirm(
+                    `Found saved configuration from ${savedDate}. Would you like to load it ? `
+                );
+
+                if (shouldLoad) {
+                    setVehicle(config.vehicle);
+                    setCondition(config.condition);
+                    // Restore modules
+                    Object.keys(config.modules).forEach(moduleId => {
+                        if (config.modules[moduleId] !== modules[moduleId]) {
+                            toggleModule(moduleId);
+                        }
+                    });
+                    addToast('Configuration loaded successfully!', 'success');
+                }
+            } catch (error) {
+                console.error('Failed to load saved config:', error);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Run once on mount - Zustand store functions are stable
+
     const ringClass = "focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-background-light dark:focus-within:ring-offset-background-dark";
 
     return (
@@ -76,7 +89,7 @@ const Calculator = () => {
                             </div>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 {['sedan', 'suv', 'sport', 'luxury'].map((type) => (
-                                    <label key={type} className={`group relative cursor-pointer rounded-xl ${ringClass}`}>
+                                    <label key={type} className={`group relative cursor - pointer rounded - xl ${ringClass} `}>
                                         <input
                                             type="radio"
                                             name="vehicle"
@@ -85,11 +98,11 @@ const Calculator = () => {
                                             onChange={() => setVehicle(type)}
                                         />
                                         <div className="bg-white dark:bg-panel-dark border border-gray-200 dark:border-white/10 p-6 flex flex-col items-center gap-4 transition-all duration-300 peer-checked:border-primary peer-checked:bg-primary/5 group-hover:border-gray-400 dark:group-hover:border-white/30 rounded-xl shadow-sm dark:shadow-none">
-                                            <span className={`material-symbols-outlined text-4xl transition-colors ${vehicle === type ? 'text-primary' : 'text-gray-400 dark:text-white/20 group-hover:text-gray-900 dark:group-hover:text-white'}`}>
+                                            <span className={`material - symbols - outlined text - 4xl transition - colors ${vehicle === type ? 'text-primary' : 'text-gray-400 dark:text-white/20 group-hover:text-gray-900 dark:group-hover:text-white'} `}>
                                                 {type === 'sedan' ? 'directions_car' : type === 'suv' ? 'airport_shuttle' : type === 'sport' ? 'speed' : 'diamond'}
                                             </span>
                                             <span className="text-[11px] font-black uppercase tracking-[0.1em] text-gray-900 dark:text-white">{type}</span>
-                                            <div className={`absolute top-2 right-2 transition-opacity ${vehicle === type ? 'opacity-100' : 'opacity-0'}`}>
+                                            <div className={`absolute top - 2 right - 2 transition - opacity ${vehicle === type ? 'opacity-100' : 'opacity-0'} `}>
                                                 <span className="material-symbols-outlined text-primary text-sm">check_circle</span>
                                             </div>
                                         </div>
@@ -110,7 +123,7 @@ const Calculator = () => {
                                     { id: 'used', label: 'Light Wear', desc: 'Swirl marks, minor oxidation, daily use.', bar: 'w-2/4' },
                                     { id: 'bad', label: 'Heavy Correction', desc: 'Deep scratches, etching, dull finish.', bar: 'w-full' }
                                 ].map((item) => (
-                                    <label key={item.id} className={`cursor-pointer rounded-xl ${ringClass}`}>
+                                    <label key={item.id} className={`cursor - pointer rounded - xl ${ringClass} `}>
                                         <input
                                             type="radio"
                                             name="condition"
@@ -125,7 +138,7 @@ const Calculator = () => {
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <div className="h-[2px] w-full bg-gray-200 dark:bg-white/10 overflow-hidden rounded-full">
-                                                    <div className={`h-full bg-primary ${item.bar}`}></div>
+                                                    <div className={`h - full bg - primary ${item.bar} `}></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -146,10 +159,10 @@ const Calculator = () => {
                                     { id: 'correction', title: 'Precision Paint Correction', desc: 'Optical refinement for a swirl-free mirror finish.', icon: 'auto_fix_high', cost: pricingConfig.modules.correction },
                                     { id: 'interior', title: 'Interior Concours Detail', desc: 'Deep pore cleaning and leather preservation treatment.', icon: 'vacuum', cost: pricingConfig.modules.interior }
                                 ].map((mod) => (
-                                    <label key={mod.id} className={`group cursor-pointer block bg-white dark:bg-panel-dark border p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all rounded-xl shadow-sm dark:shadow-none ${ringClass} ${modules[mod.id] ? 'border-primary/30 bg-primary/5' : 'border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/20'}`}>
+                                    <label key={mod.id} className={`group cursor - pointer block bg - white dark: bg - panel - dark border p - 6 flex flex - col md: flex - row md: items - center justify - between gap - 6 transition - all rounded - xl shadow - sm dark: shadow - none ${ringClass} ${modules[mod.id] ? 'border-primary/30 bg-primary/5' : 'border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/20'} `}>
                                         <div className="flex gap-6 items-start md:items-center">
-                                            <div className={`size-12 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center shrink-0 rounded-lg transition-colors ${modules[mod.id] ? 'border-primary/30' : 'group-hover:border-primary/30'}`}>
-                                                <span className={`material-symbols-outlined transition-colors ${modules[mod.id] ? 'text-primary' : 'text-gray-500 dark:text-white group-hover:text-primary'}`}>{mod.icon}</span>
+                                            <div className={`size - 12 bg - gray - 100 dark: bg - white / 5 border border - gray - 200 dark: border - white / 10 flex items - center justify - center shrink - 0 rounded - lg transition - colors ${modules[mod.id] ? 'border-primary/30' : 'group-hover:border-primary/30'} `}>
+                                                <span className={`material - symbols - outlined transition - colors ${modules[mod.id] ? 'text-primary' : 'text-gray-500 dark:text-white group-hover:text-primary'} `}>{mod.icon}</span>
                                             </div>
                                             <div>
                                                 <h4 className="text-lg font-black uppercase tracking-tight text-gray-900 dark:text-white transition-colors">{mod.title}</h4>
@@ -167,8 +180,8 @@ const Calculator = () => {
                                                     checked={modules[mod.id]}
                                                     onChange={() => toggleModule(mod.id)}
                                                     className="sr-only peer"
-                                                    id={`module-${mod.id}`}
-                                                    aria-label={`Toggle ${mod.title}`}
+                                                    id={`module - ${mod.id} `}
+                                                    aria-label={`Toggle ${mod.title} `}
                                                 />
                                                 <div
                                                     className="w-14 h-7 bg-gray-200 dark:bg-white/10 rounded-full peer-checked:bg-primary transition-colors after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-5 after:w-6 after:transition-all peer-checked:after:translate-x-full peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-focus-visible:ring-offset-2"
