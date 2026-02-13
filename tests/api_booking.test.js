@@ -416,6 +416,7 @@ describe('Booking API', () => {
     });
 
     it('should return 201 for valid POST data', async () => {
+<<<<<<< Updated upstream
       req = {
         method: 'POST',
         body: {
@@ -426,6 +427,13 @@ describe('Booking API', () => {
           totalPrice: 499.00,
         },
       };
+=======
+      mockSql.mockResolvedValueOnce([{ id: 123 }]);
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/palette-calendar-enhancements-267134661186377706
+>>>>>>> Stashed changes
       await handler(req, res);
       
       expect(res.status).toHaveBeenCalledWith(201);
@@ -456,6 +464,7 @@ describe('Booking API', () => {
     });
 
     it('should handle database errors on POST', async () => {
+<<<<<<< Updated upstream
       // Set flag to throw error
       shouldThrowError = true;
 
@@ -469,26 +478,100 @@ describe('Booking API', () => {
           totalPrice: 499.00,
         },
       };
+<<<<<<< Updated upstream
       mockSql.mockImplementationOnce(() => { throw new Error('DB Error'); });
       mockSql.mockRejectedValueOnce(new Error('DB Error'));
 
+=======
+=======
+<<<<<<< HEAD
+      mockSql.mockRejectedValueOnce(new Error('DB Error'));
+
+=======
+      mockSql.mockImplementationOnce(() => { throw new Error('DB Error'); });
+>>>>>>> origin/palette-calendar-enhancements-267134661186377706
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
       await handler(req, res);
       
       expect(res.status).toHaveBeenCalledWith(500);
+<<<<<<< Updated upstream
       expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
         error: 'Failed to save booking'
       }));
+=======
+    });
+
+    it('should return 400 for invalid POST data (missing fields)', async () => {
+      req.body = { carModel: 'Tesla' };
+      await handler(req, res);
+      expect(res.status).toHaveBeenCalledWith(400);
+    });
+
+    it('should return 400 for invalid date format', async () => {
+      req.body = { ...validBooking, date: 'invalid-date' };
+      await handler(req, res);
+      expect(res.status).toHaveBeenCalledWith(400);
+    });
+
+    it('should return 400 for negative totalPrice', async () => {
+      req.body = { ...validBooking, totalPrice: -100 };
+      await handler(req, res);
+      expect(res.status).toHaveBeenCalledWith(400);
     });
   });
 
+  describe('Edge Cases', () => {
+    it('should handle null body in POST request', async () => {
+      req.method = 'POST';
+      req.body = null;
+      await handler(req, res);
+      expect(res.status).toHaveBeenCalledWith(400);
+    });
+
+<<<<<<< HEAD
+    it('should handle very large totalPrice values', async () => {
+      req.method = 'POST';
+      req.body = { ...validBooking, totalPrice: 1000000 };
+      mockSql.mockResolvedValueOnce([{ id: 1 }]);
+      await handler(req, res);
+      expect(res.status).toHaveBeenCalledWith(201);
+    });
+
+=======
+>>>>>>> origin/palette-calendar-enhancements-267134661186377706
+    it('should handle special characters in carModel', async () => {
+      req.method = 'POST';
+      req.body = { ...validBooking, carModel: 'Model S P100D (Ludicrous+)' };
+      mockSql.mockResolvedValueOnce([{ id: 1 }]);
+      await handler(req, res);
+      expect(res.status).toHaveBeenCalledWith(201);
+    });
+  });
+
+<<<<<<< HEAD
+    it('should handle unicode characters in packageName', async () => {
+      req.method = 'POST';
+      req.body = { ...validBooking, packageName: 'Premium ✨ Detail' };
+      mockSql.mockResolvedValueOnce([{ id: 1 }]);
+      await handler(req, res);
+      expect(res.status).toHaveBeenCalledWith(201);
+>>>>>>> Stashed changes
+    });
+  });
+
+=======
+>>>>>>> origin/palette-calendar-enhancements-267134661186377706
   describe('Environment Configuration', () => {
     it('should return 500 when DATABASE_URL is missing', async () => {
+      const originalUrl = process.env.DATABASE_URL;
       delete process.env.DATABASE_URL;
       vi.resetModules();
       
       const module = await import('../api/booking.js');
       handler = module.default;
 
+<<<<<<< Updated upstream
       req = { method: 'GET', query: {} };
       await handler(req, res);
       
