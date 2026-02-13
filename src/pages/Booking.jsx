@@ -235,12 +235,39 @@ const Booking = () => {
         }
     };
 
+<<<<<<< Updated upstream
     // Translation helpers for time slots
     const getTimeLabel = (label) => {
         if (label === 'Morning') return t('booking.morning');
         if (label === 'Afternoon') return t('booking.afternoon');
         if (label === 'Evening') return t('booking.evening');
         return label;
+=======
+  const [selectedDate, setSelectedDate] = useState(currentDay);
+  const [selectedTime, setSelectedTime] = useState('10:30 AM');
+
+  const handleDayClick = React.useCallback((day) => {
+    setSelectedDate(day);
+  }, []);
+
+  const { days, emptyDays } = useMemo(() => {
+    const numDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+
+    const daysArray = Array.from({ length: numDays }, (_, i) => {
+      const day = i + 1;
+      const dateObj = new Date(currentYear, currentMonth, day);
+      return {
+        day,
+        fullDate: fullDateFormatter.format(dateObj),
+        isWeekend: dateObj.getDay() === 0 || dateObj.getDay() === 6
+      };
+    });
+
+    return {
+      days: daysArray,
+      emptyDays: Array.from({ length: firstDayOfMonth })
+>>>>>>> Stashed changes
     };
 
     return (
@@ -256,10 +283,14 @@ const Booking = () => {
                             <p className="text-gray-600 dark:text-white text-sm font-medium">{t('booking.date_time_selection')}</p>
                         </div>
                     </div>
+<<<<<<< Updated upstream
                     <div className="grid grid-cols-7 text-center mb-2">
                         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
                             <span key={day} className={`text-[11px] font-black uppercase tracking-tighter ${['Sun', 'Sat'].includes(day) ? 'text-primary opacity-80' : 'text-gray-400 dark:text-white/40'}`}>{day}</span>
                         ))}
+=======
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
                     <div
                         className="w-full rounded-full bg-gray-200 dark:bg-white/10 h-2.5 overflow-hidden"
                         role="progressbar"
@@ -269,6 +300,43 @@ const Booking = () => {
                         aria-label="Booking progress"
                     >
                         <div className="h-full rounded-full bg-primary" style={{ width: '66%' }}></div>
+=======
+                    <div className="grid grid-cols-7 text-center mb-2">
+                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                            <span key={day} className={`text-[11px] font-black uppercase tracking-tighter ${day === 'Sun' || day === 'Sat' ? 'text-primary opacity-80' : 'text-gray-400 dark:text-white/40'}`}>{day}</span>
+                        ))}
+                    </div>
+                    <div className="grid grid-cols-7 gap-2">
+                        {/* Empty cells - pre-calculated to avoid redundant new Date() calls */}
+                        {emptyDays.map((_, i) => (
+                            <div key={`empty-${i}`} className="h-14"></div>
+                        ))}
+<<<<<<< HEAD
+                        {days.map(({ day, fullDate }) => (
+                            <CalendarDay
+                                key={day}
+                                day={day}
+                                fullDate={fullDate}
+                                isSelected={selectedDate === day}
+                                onClick={handleDayClick}
+                            />
+=======
+                        {days.map(({ day, fullDate, isWeekend }) => (
+                            <button
+                                key={day}
+                                onClick={() => setSelectedDate(day)}
+                                aria-label={`Select ${fullDate}${isWeekend ? ' - Weekend Special' : ''}`}
+                                aria-pressed={selectedDate === day}
+                                className={`h-14 flex items-center justify-center rounded-lg text-sm font-semibold transition-all relative ${selectedDate === day ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}
+                            >
+                                {day}
+                                {isWeekend && (
+                                    <span className={`absolute bottom-2 size-1 rounded-full ${selectedDate === day ? 'bg-white' : 'bg-primary'}`}></span>
+                                )}
+                            </button>
+>>>>>>> origin/palette-calendar-enhancements-267134661186377706
+                        ))}
+>>>>>>> Stashed changes
                     </div>
                     <div className="grid grid-cols-7 gap-2">
                         {/* Empty cells - pre-calculated to avoid redundant new Date() calls */}
