@@ -658,6 +658,7 @@ describe('Booking API', () => {
       await handler(req, res);
       
       expect(res.setHeader).toHaveBeenCalledWith('Allow', ['GET', 'POST']);
+<<<<<<< Updated upstream
   describe('Environment Configuration', () => {
     it('should return 500 when DATABASE_URL is missing', async () => {
       const originalUrl = process.env.DATABASE_URL;
@@ -676,6 +677,15 @@ describe('Booking API', () => {
       expect(res.status).toHaveBeenCalledWith(500);
 
       process.env.DATABASE_URL = originalUrl;
+=======
+=======
+      req.method = 'GET';
+      await h(req, res);
+      
+      expect(res.status).toHaveBeenCalledWith(500);
+      process.env.DATABASE_URL = originalUrl;
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     });
   });
 });
