@@ -26,6 +26,7 @@ describe('Booking API', () => {
     vi.clearAllMocks();
     vi.resetModules();
 
+    // Re-import the handler to ensure it sees the DATABASE_URL and mocks
     const mod = await import('../api/booking.js?t=' + Date.now());
     handler = mod.default;
 
@@ -35,6 +36,7 @@ describe('Booking API', () => {
       body: {},
     };
     
+    // Set default implementation for SQL
 
     // Set default implementation
     mockSql.mockImplementation(async (strings) => {
@@ -57,6 +59,7 @@ describe('Booking API', () => {
       return [];
     });
 
+    // Create mock response
     res = {
       status: vi.fn().mockReturnThis(),
       json: vi.fn().mockReturnThis(),
@@ -85,6 +88,8 @@ describe('Booking API', () => {
       const mockBookings = [
         { id: 1, car_model: 'Test Car', package: 'Test Package', date: '2023-10-24', time: '10:30 AM', total_price: 100, status: 'Confirmed' }
       ];
+
+      // The handler expects the aggregate query to return { total, data }
       mockSql.mockResolvedValueOnce([{
         data: mockBookings,
         total: 1
@@ -203,11 +208,19 @@ describe('Booking API', () => {
     it('should return 500 when DATABASE_URL is missing', async () => {
       const originalUrl = process.env.DATABASE_URL;
       delete process.env.DATABASE_URL;
+
+      // Fresh import to trigger the check if it happens at module level
+      // Though in many handlers it happens inside the handler
       vi.resetModules();
+      const mod = await import('../api/booking.js?t=' + Date.now());
+      const h = mod.default;
+
+      req.method = 'GET';
       const module = await import('../api/booking.js?t=' + Date.now());
       const h = module.default;
       await h(req, res);
       expect(res.status).toHaveBeenCalledWith(500);
+
       process.env.DATABASE_URL = originalUrl;
     });
   });
