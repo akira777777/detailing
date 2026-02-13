@@ -20,6 +20,7 @@ export async function loadPolyfills() {
     return Promise.resolve();
   }
 
+<<<<<<< Updated upstream
   // IntersectionObserver polyfill for Safari < 12.1
   if (!window.IntersectionObserver) {
     const ioPkg = 'intersection-observer';
@@ -50,11 +51,22 @@ export async function loadPolyfills() {
       observe() { }
       unobserve() { }
       disconnect() { }
+=======
+  const polyfills = [];
+
+  // Fallbacks for legacy browsers - defined inline to avoid missing dependency errors in Vite
+  if (!window.IntersectionObserver) {
+    window.IntersectionObserver = class IntersectionObserver {
+      constructor() {}
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+>>>>>>> Stashed changes
     };
   }
 
-  // ResizeObserver polyfill for Safari < 13.1
   if (!window.ResizeObserver) {
+<<<<<<< Updated upstream
     const roPkg = 'resize-observer-polyfill';
     polyfills.push(
       import(/* @vite-ignore */ roPkg)
@@ -75,6 +87,9 @@ export async function loadPolyfills() {
           };
         })
     );
+=======
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
     console.warn('ResizeObserver not available, using fallback');
     window.ResizeObserver = class ResizeObserver {
       constructor(callback) {
@@ -108,6 +123,17 @@ export async function loadPolyfills() {
   }
 
   return Promise.resolve();
+=======
+    window.ResizeObserver = class ResizeObserver {
+      constructor() {}
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    };
+  }
+
+  return Promise.all(polyfills);
+>>>>>>> Stashed changes
 }
 
 /**
