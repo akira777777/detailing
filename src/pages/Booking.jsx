@@ -1,12 +1,65 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback, memo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '../context/ToastContext';
 import { Button } from '../components/ui/Components';
 import useBookingStore from '../store/useBookingStore';
 import { getPackageName } from '../utils/bookingUtils';
+import {
+    formatMonthYear,
+    formatShortDate,
+    formatDateWithWeekday,
+    formatWeekdayShort
+} from '../utils/formatters';
 
+const TIME_SLOTS = [
+    { time: '08:00 AM', label: 'Morning', avail: true },
+    { time: '10:30 AM', label: 'Morning', avail: true },
+    { time: '01:00 PM', label: 'Afternoon', avail: true },
+    { time: '03:30 PM', label: 'Afternoon', avail: true },
+    { time: '06:00 PM', label: 'Fully Booked', avail: false },
+    { time: '08:30 PM', label: 'Evening', avail: true },
+];
 
+// Seed dates starting from a Sunday (Jan 5, 2025) to generate localized weekday names
+const WEEKDAY_SEEDS = Array.from({ length: 7 }, (_, i) => new Date(2025, 0, 5 + i));
+
+/**
+ * Optimized sub-components with React.memo to prevent unnecessary re-renders
+ * during selection updates.
+ */
+const CalendarDay = memo(({ day, fullDate, isWeekend, isSelected, onClick }) => {
+    return (
+        <button
+            onClick={() => onClick(day)}
+            aria-label={`Select ${fullDate}${isWeekend ? ' - Weekend Special' : ''}`}
+            aria-pressed={isSelected}
+            className={`h-14 flex flex-col items-center justify-center rounded-lg text-sm font-semibold transition-all relative ${isSelected ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}
+        >
+            <span>{day}</span>
+            {isWeekend && <span className={`size-1 rounded-full mt-1 ${isSelected ? 'bg-white' : 'bg-primary animate-pulse'}`}></span>}
+        </button>
+    );
+});
+
+CalendarDay.displayName = 'CalendarDay';
+
+const TimeSlot = memo(({ slot, isSelected, onClick, timeLabel, fullyBookedLabel }) => {
+    return (
+        <button
+            disabled={!slot.avail}
+            onClick={() => onClick(slot.time)}
+            aria-label={`${slot.time} ${timeLabel}${!slot.avail ? ` - ${fullyBookedLabel}` : ''}`}
+            aria-pressed={isSelected}
+            className={`flex flex-col items-center justify-center py-4 rounded-xl border transition-all ${!slot.avail ? 'border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-white/5 opacity-50 cursor-not-allowed' : isSelected ? 'border-primary bg-primary shadow-lg shadow-primary/20 transform scale-[1.02]' : 'border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 hover:border-primary/50 group'}`}
+        >
+            <span className={`text-sm font-bold mb-1 ${!slot.avail ? 'text-gray-400 dark:text-white/40' : isSelected ? 'text-white' : 'text-gray-900 dark:text-white'}`}>{slot.time}</span>
+            <span className={`text-[10px] uppercase font-bold ${!slot.avail ? 'text-gray-300 dark:text-white/20' : isSelected ? 'text-white/70' : 'text-gray-400 dark:text-white/40 group-hover:text-primary transition-colors'}`}>{slot.avail ? timeLabel : fullyBookedLabel}</span>
+        </button>
+    );
+});
+
+TimeSlot.displayName = 'TimeSlot';
 
 const Booking = () => {
   const navigate = useNavigate();
@@ -166,44 +219,47 @@ const Booking = () => {
     const [selectedFullDate, setSelectedFullDate] = useState(new Date());
     const [selectedTime, setSelectedTime] = useState('10:30 AM');
 
+    const handleDateSelect = useCallback((day) => {
+        setSelectedFullDate(new Date(viewDate.getFullYear(), viewDate.getMonth(), day));
+    }, [viewDate]);
+
+    const handleTimeSelect = useCallback((time) => {
+        setSelectedTime(time);
+    }, []);
+
     const { days, emptyDays } = useMemo(() => {
         const year = viewDate.getFullYear(), month = viewDate.getMonth();
         const numDays = new Date(year, month + 1, 0).getDate();
         const firstDay = new Date(year, month, 1).getDay();
 
-        const dateFormatter = new Intl.DateTimeFormat(i18n.language, {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
-        });
-
         return {
             days: Array.from({ length: numDays }, (_, i) => {
                 const d = new Date(year, month, i + 1);
-                return { day: i + 1, fullDate: dateFormatter.format(d), isWeekend: [0, 6].includes(d.getDay()) };
+                return {
+                    day: i + 1,
+                    fullDate: formatDateWithWeekday(d, i18n.language),
+                    isWeekend: [0, 6].includes(d.getDay())
+                };
             }),
             emptyDays: Array.from({ length: firstDay })
         };
     }, [viewDate, i18n.language]);
 
     const weekdays = useMemo(() => {
-        const formatter = new Intl.DateTimeFormat(i18n.language, { weekday: 'short' });
-        // Jan 5, 2025 is a Sunday. We want Sun-Sat.
-        return Array.from({ length: 7 }, (_, i) => formatter.format(new Date(2025, 0, 5 + i)));
+        return WEEKDAY_SEEDS.map(d => formatWeekdayShort(d, i18n.language));
     }, [i18n.language]);
 
     const monthName = useMemo(() => {
-        return new Intl.DateTimeFormat(i18n.language, { month: 'long', year: 'numeric' }).format(viewDate);
+        return formatMonthYear(viewDate, i18n.language);
     }, [viewDate, i18n.language]);
 
     const formattedSelectedDate = useMemo(() => {
-        return new Intl.DateTimeFormat(i18n.language, { month: 'short', day: 'numeric', year: 'numeric' }).format(selectedFullDate);
+        return formatShortDate(selectedFullDate, i18n.language);
     }, [selectedFullDate, i18n.language]);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleConfirm = async () => {
+    const handleConfirm = useCallback(async () => {
         setIsSubmitting(true);
         const dateStr = `${selectedFullDate.getFullYear()}-${String(selectedFullDate.getMonth() + 1).padStart(2, '0')}-${String(selectedFullDate.getDate()).padStart(2, '0')}`;
         try {
@@ -233,15 +289,15 @@ const Booking = () => {
         } finally {
             setIsSubmitting(false);
         }
-    };
+    }, [selectedFullDate, selectedTime, carModel, modules, totalPrice, addToast, navigate]);
 
     // Translation helpers for time slots
-    const getTimeLabel = (label) => {
+    const getTimeLabel = useCallback((label) => {
         if (label === 'Morning') return t('booking.morning');
         if (label === 'Afternoon') return t('booking.afternoon');
         if (label === 'Evening') return t('booking.evening');
         return label;
-    };
+    }, [t]);
 
     return (
         <div className="pt-32 pb-24 px-4 lg:px-12 bg-background-light dark:bg-background-dark min-h-screen transition-colors duration-300">
@@ -344,12 +400,18 @@ const Booking = () => {
                                     <div key={`empty-${i}`} className="h-14"></div>
                                 ))}
                                 {days.map(({ day, fullDate, isWeekend }) => {
-                                    const isSel = selectedFullDate.getDate() === day && selectedFullDate.getMonth() === viewDate.getMonth() && selectedFullDate.getFullYear() === viewDate.getFullYear();
+                                    const isSel = selectedFullDate.getDate() === day &&
+                                                 selectedFullDate.getMonth() === viewDate.getMonth() &&
+                                                 selectedFullDate.getFullYear() === viewDate.getFullYear();
                                     return (
-                                        <button key={day} onClick={() => setSelectedFullDate(new Date(viewDate.getFullYear(), viewDate.getMonth(), day))} aria-label={`Select ${fullDate}${isWeekend ? ' - Weekend Special' : ''}`} aria-pressed={isSel} className={`h-14 flex flex-col items-center justify-center rounded-lg text-sm font-semibold transition-all relative ${isSel ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}>
-                                            <span>{day}</span>
-                                            {isWeekend && <span className={`size-1 rounded-full mt-1 ${isSel ? 'bg-white' : 'bg-primary animate-pulse'}`}></span>}
-                                        </button>
+                                        <CalendarDay
+                                            key={day}
+                                            day={day}
+                                            fullDate={fullDate}
+                                            isWeekend={isWeekend}
+                                            isSelected={isSel}
+                                            onClick={handleDateSelect}
+                                        />
                                     );
                                 })}
                             </div>
@@ -426,25 +488,15 @@ const Booking = () => {
                                 </span>
                             </div>
                             <div className="grid grid-cols-2 gap-3">
-                                {[
-                                    { time: '08:00 AM', label: 'Morning', avail: true },
-                                    { time: '10:30 AM', label: 'Morning', avail: true },
-                                    { time: '01:00 PM', label: 'Afternoon', avail: true },
-                                    { time: '03:30 PM', label: 'Afternoon', avail: true },
-                                    { time: '06:00 PM', label: 'Fully Booked', avail: false },
-                                    { time: '08:30 PM', label: 'Evening', avail: true },
-                                ].map((slot) => (
-                                    <button
+                                {TIME_SLOTS.map((slot) => (
+                                    <TimeSlot
                                         key={slot.time}
-                                        disabled={!slot.avail}
-                                        onClick={() => setSelectedTime(slot.time)}
-                                        aria-label={`${slot.time} ${getTimeLabel(slot.label)}${!slot.avail ? ` - ${t('booking.fully_booked')}` : ''}`}
-                                        aria-pressed={selectedTime === slot.time}
-                                        className={`flex flex-col items-center justify-center py-4 rounded-xl border transition-all ${!slot.avail ? 'border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-white/5 opacity-50 cursor-not-allowed' : selectedTime === slot.time ? 'border-primary bg-primary shadow-lg shadow-primary/20 transform scale-[1.02]' : 'border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 hover:border-primary/50 group'}`}
-                                    >
-                                        <span className={`text-sm font-bold mb-1 ${!slot.avail ? 'text-gray-400 dark:text-white/40' : selectedTime === slot.time ? 'text-white' : 'text-gray-900 dark:text-white'}`}>{slot.time}</span>
-                                        <span className={`text-[10px] uppercase font-bold ${!slot.avail ? 'text-gray-300 dark:text-white/20' : selectedTime === slot.time ? 'text-white/70' : 'text-gray-400 dark:text-white/40 group-hover:text-primary transition-colors'}`}>{slot.avail ? getTimeLabel(slot.label) : t('booking.fully_booked')}</span>
-                                    </button>
+                                        slot={slot}
+                                        isSelected={selectedTime === slot.time}
+                                        onClick={handleTimeSelect}
+                                        timeLabel={getTimeLabel(slot.label)}
+                                        fullyBookedLabel={t('booking.fully_booked')}
+                                    />
                                 ))}
                             </div>
                         </div>
