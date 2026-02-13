@@ -1,6 +1,6 @@
 /**
  * Polyfills for cross-browser compatibility
- * These are loaded dynamically only when needed by the browser
+ * These are inline implementations to avoid external dependencies
  */
 
 // Check if polyfills are needed
@@ -12,8 +12,7 @@ const needsPolyfills = () => {
 };
 
 /**
- * Load polyfills dynamically only when needed
- * Uses dynamic imports that gracefully fail if packages aren't available
+ * Load polyfills - now using inline implementations only
  */
 export async function loadPolyfills() {
   // Skip if all features are natively supported
@@ -31,6 +30,9 @@ export async function loadPolyfills() {
       observe() {}
       unobserve() {}
       disconnect() {}
+      observe() { }
+      unobserve() { }
+      disconnect() { }
     };
   }
 
@@ -50,6 +52,10 @@ export async function loadPolyfills() {
   // Smooth scroll polyfill for older browsers
   if (!('scrollBehavior' in document.documentElement.style)) {
     console.warn('Smooth scroll polyfill not available');
+      observe() { }
+      unobserve() { }
+      disconnect() { }
+    };
   }
 
   return Promise.resolve();
