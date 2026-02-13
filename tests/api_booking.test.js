@@ -82,6 +82,7 @@ describe('Booking API', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
+<<<<<<< Updated upstream
     
     // Reset mock state
     mockSql = createMockSql();
@@ -91,9 +92,19 @@ describe('Booking API', () => {
     // Reset environment
     process.env.DATABASE_URL = 'postgres://test:test@localhost/test';
     
+<<<<<<< Updated upstream
     vi.resetModules();
 
     // Re-import the handler to ensure it sees the DATABASE_URL and mocks
+=======
+=======
+    vi.resetModules();
+<<<<<<< HEAD
+
+=======
+    // Re-import the handler to ensure it sees the DATABASE_URL
+>>>>>>> origin/palette-calendar-enhancements-267134661186377706
+>>>>>>> Stashed changes
     const mod = await import('../api/booking.js?t=' + Date.now());
     handler = mod.default;
 
@@ -102,8 +113,11 @@ describe('Booking API', () => {
       query: {},
       body: {},
     };
+<<<<<<< Updated upstream
     
     // Set default implementation for SQL
+=======
+>>>>>>> Stashed changes
 
     // Set default implementation
     mockSql.mockImplementation(async (strings) => {
@@ -118,6 +132,7 @@ describe('Booking API', () => {
         return [{
           total: 1,
           data: [{
+<<<<<<< Updated upstream
             id: 1, date: '2023-10-24', time: '10:30 AM', car_model: 'Test Car',
             package: 'Test Package', total_price: 100, status: 'Confirmed'
           }]
@@ -126,6 +141,23 @@ describe('Booking API', () => {
       return [];
     });
 
+=======
+            id: 1,
+            date: '2023-10-24',
+            time: '10:30 AM',
+            car_model: 'Test Car',
+            package: 'Test Package',
+            total_price: 100,
+            status: 'Confirmed'
+          }]
+        }];
+      }
+
+      return [];
+    });
+
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     // Create mock response
     res = {
       status: vi.fn().mockReturnThis(),
@@ -139,13 +171,24 @@ describe('Booking API', () => {
     handler = module.default;
   });
 
+<<<<<<< Updated upstream
   afterEach(() => {
     vi.resetModules();
   });
 
   describe('HTTP Method Handling', () => {
+<<<<<<< Updated upstream
   describe('HTTP Method Handling', () => {
   describe('Method Validation', () => {
+=======
+=======
+<<<<<<< HEAD
+  describe('Method Validation', () => {
+=======
+  describe('HTTP Method Handling', () => {
+>>>>>>> origin/palette-calendar-enhancements-267134661186377706
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     it('should return 405 for unsupported methods', async () => {
       req = { method: 'PUT' };
       await handler(req, res);
