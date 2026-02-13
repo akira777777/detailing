@@ -5,7 +5,6 @@ process.env.DATABASE_URL = 'postgres://mock:mock@mock.com/mock';
 
 // Single mock function to control SQL queries
 const mockSql = vi.fn();
-
 vi.mock('@neondatabase/serverless', () => ({
   neon: vi.fn(() => mockSql),
 }));
@@ -35,6 +34,7 @@ describe('Booking API', () => {
       query: {},
       body: {},
     };
+    
 
     // Set default implementation
     mockSql.mockImplementation(async (strings) => {
@@ -65,6 +65,7 @@ describe('Booking API', () => {
     };
   });
 
+  describe('HTTP Method Handling', () => {
   describe('Method Validation', () => {
     it('should return 405 for unsupported methods', async () => {
       req.method = 'PUT';
@@ -84,6 +85,9 @@ describe('Booking API', () => {
       const mockBookings = [
         { id: 1, car_model: 'Test Car', package: 'Test Package', date: '2023-10-24', time: '10:30 AM', total_price: 100, status: 'Confirmed' }
       ];
+      mockSql.mockResolvedValueOnce([{
+        data: mockBookings,
+        total: 1
 
       mockSql.mockResolvedValueOnce([{
         total: 1,
@@ -115,6 +119,7 @@ describe('Booking API', () => {
     });
 
     it('should handle database errors on GET', async () => {
+      mockSql.mockImplementationOnce(() => { throw new Error('Database error'); });
       mockSql.mockRejectedValueOnce(new Error('Database error'));
 
       req.method = 'GET';
@@ -140,12 +145,14 @@ describe('Booking API', () => {
     it('should return booking id on successful creation', async () => {
       mockSql.mockResolvedValueOnce([{ id: 123 }]);
       await handler(req, res);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ 
       expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
         id: 123
       }));
     });
 
     it('should handle database errors on POST', async () => {
+      mockSql.mockImplementationOnce(() => { throw new Error('DB Error'); });
       mockSql.mockRejectedValueOnce(new Error('DB Error'));
 
       await handler(req, res);

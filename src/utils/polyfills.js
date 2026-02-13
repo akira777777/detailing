@@ -27,6 +27,9 @@ export async function loadPolyfills() {
       constructor(callback) {
         this.callback = callback;
       }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
       observe() { }
       unobserve() { }
       disconnect() { }
@@ -40,6 +43,15 @@ export async function loadPolyfills() {
       constructor(callback) {
         this.callback = callback;
       }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    };
+  }
+
+  // Smooth scroll polyfill for older browsers
+  if (!('scrollBehavior' in document.documentElement.style)) {
+    console.warn('Smooth scroll polyfill not available');
       observe() { }
       unobserve() { }
       disconnect() { }
