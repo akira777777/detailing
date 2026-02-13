@@ -213,7 +213,9 @@ describe('Booking API', () => {
 
   describe('GET /bookings', () => {
     it('should return 200 and list of bookings for GET', async () => {
+<<<<<<< Updated upstream
       req = { method: 'GET', query: { limit: '10', offset: '0' } };
+<<<<<<< Updated upstream
       const mockBookings = [
         { id: 1, car_model: 'Test Car', package: 'Test Package', date: '2023-10-24', time: '10:30 AM', total_price: 100, status: 'Confirmed' }
       ];
@@ -222,14 +224,33 @@ describe('Booking API', () => {
       mockSql.mockResolvedValueOnce([{
         data: mockBookings,
         total: 1
+=======
+=======
+      const mockBookings = [
+        { id: 1, car_model: 'Test Car', package: 'Test Package', date: '2023-10-24', time: '10:30 AM', total_price: 100, status: 'Confirmed' }
+      ];
+<<<<<<< HEAD
+>>>>>>> Stashed changes
 
       mockSql.mockResolvedValueOnce([{
         total: 1,
         data: mockBookings
+<<<<<<< Updated upstream
+=======
+=======
+      mockSql.mockResolvedValueOnce([{
+        data: mockBookings,
+        total: 1
+>>>>>>> origin/palette-calendar-enhancements-267134661186377706
+>>>>>>> Stashed changes
       }]);
 
       req.method = 'GET';
       req.query = { limit: '10', offset: '0' };
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
       await handler(req, res);
       
       expect(res.status).toHaveBeenCalledWith(200);
@@ -257,10 +278,21 @@ describe('Booking API', () => {
     });
 
     it('should handle database errors on GET', async () => {
+<<<<<<< Updated upstream
       // Set flag to throw error
       shouldThrowError = true;
+<<<<<<< Updated upstream
       mockSql.mockImplementationOnce(() => { throw new Error('Database error'); });
       mockSql.mockRejectedValueOnce(new Error('Database error'));
+=======
+=======
+<<<<<<< HEAD
+      mockSql.mockRejectedValueOnce(new Error('Database error'));
+=======
+      mockSql.mockImplementationOnce(() => { throw new Error('Database error'); });
+>>>>>>> origin/palette-calendar-enhancements-267134661186377706
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
       req = { method: 'GET', query: { limit: '10', offset: '0' } };
       await handler(req, res);
