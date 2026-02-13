@@ -1,11 +1,16 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), visualizer({
+    filename: 'dist/stats.html',
+    open: true,
+    gzipSize: true
+  })],
   build: {
-    target: ['es2020', 'edge88', 'firefox78', 'chrome87', 'safari14'],
+    target: ['es2020'],
     rollupOptions: {
       output: {
         manualChunks: {
@@ -13,7 +18,6 @@ export default defineConfig({
           'animation-vendor': ['framer-motion'],
           'audio-vendor': ['howler'],
           'state-vendor': ['zustand'],
-
         },
         // Optimize asset file names for better caching
         assetFileNames: (assetInfo) => {
@@ -73,6 +77,20 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
+    // Exclude optional polyfills from optimization
+    exclude: [
+      'intersection-observer',
+      'resize-observer-polyfill',
+      'smoothscroll-polyfill'
+    ]
+  },
+  test: {
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/e2e/**',  // Exclude Playwright E2E tests
+      '**/*.spec.js',
+    ],
     include: [
       'react',
       'react-dom',
