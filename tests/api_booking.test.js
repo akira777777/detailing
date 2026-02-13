@@ -37,6 +37,8 @@ const createMockSql = () => {
 
 let mockSql = createMockSql();
 
+// Single mock function to control SQL queries
+const mockSql = vi.fn();
 vi.mock('@neondatabase/serverless', () => ({
   neon: vi.fn(() => mockSql),
 }));
@@ -65,6 +67,41 @@ describe('Booking API', () => {
     // Reset environment
     process.env.DATABASE_URL = 'postgres://test:test@localhost/test';
     
+    vi.resetModules();
+
+    // Re-import the handler to ensure it sees the DATABASE_URL and mocks
+    const mod = await import('../api/booking.js?t=' + Date.now());
+    handler = mod.default;
+
+    req = {
+      method: 'GET',
+      query: {},
+      body: {},
+    };
+    
+    // Set default implementation for SQL
+
+    // Set default implementation
+    mockSql.mockImplementation(async (strings) => {
+      if (!Array.isArray(strings)) return [];
+      const query = strings[0];
+
+      if (query.includes('INSERT')) {
+        return [{ id: 123 }];
+      }
+
+      if (query.includes('SELECT') && query.includes('JSON_AGG')) {
+        return [{
+          total: 1,
+          data: [{
+            id: 1, date: '2023-10-24', time: '10:30 AM', car_model: 'Test Car',
+            package: 'Test Package', total_price: 100, status: 'Confirmed'
+          }]
+        }];
+      }
+      return [];
+    });
+
     // Create mock response
     res = {
       status: vi.fn().mockReturnThis(),
@@ -83,6 +120,8 @@ describe('Booking API', () => {
   });
 
   describe('HTTP Method Handling', () => {
+  describe('HTTP Method Handling', () => {
+  describe('Method Validation', () => {
     it('should return 405 for unsupported methods', async () => {
       req = { method: 'PUT' };
       await handler(req, res);
@@ -108,6 +147,22 @@ describe('Booking API', () => {
   describe('GET /bookings', () => {
     it('should return 200 and list of bookings for GET', async () => {
       req = { method: 'GET', query: { limit: '10', offset: '0' } };
+      const mockBookings = [
+        { id: 1, car_model: 'Test Car', package: 'Test Package', date: '2023-10-24', time: '10:30 AM', total_price: 100, status: 'Confirmed' }
+      ];
+
+      // The handler expects the aggregate query to return { total, data }
+      mockSql.mockResolvedValueOnce([{
+        data: mockBookings,
+        total: 1
+
+      mockSql.mockResolvedValueOnce([{
+        total: 1,
+        data: mockBookings
+      }]);
+
+      req.method = 'GET';
+      req.query = { limit: '10', offset: '0' };
       await handler(req, res);
       
       expect(res.status).toHaveBeenCalledWith(200);
@@ -137,6 +192,8 @@ describe('Booking API', () => {
     it('should handle database errors on GET', async () => {
       // Set flag to throw error
       shouldThrowError = true;
+      mockSql.mockImplementationOnce(() => { throw new Error('Database error'); });
+      mockSql.mockRejectedValueOnce(new Error('Database error'));
 
       req = { method: 'GET', query: { limit: '10', offset: '0' } };
       await handler(req, res);
@@ -293,6 +350,9 @@ describe('Booking API', () => {
       
       expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ 
         id: expect.any(String) 
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ 
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+        id: 123
       }));
     });
 
@@ -310,6 +370,9 @@ describe('Booking API', () => {
           totalPrice: 499.00,
         },
       };
+      mockSql.mockImplementationOnce(() => { throw new Error('DB Error'); });
+      mockSql.mockRejectedValueOnce(new Error('DB Error'));
+
       await handler(req, res);
       
       expect(res.status).toHaveBeenCalledWith(500);
@@ -413,6 +476,24 @@ describe('Booking API', () => {
       await handler(req, res);
       
       expect(res.setHeader).toHaveBeenCalledWith('Allow', ['GET', 'POST']);
+  describe('Environment Configuration', () => {
+    it('should return 500 when DATABASE_URL is missing', async () => {
+      const originalUrl = process.env.DATABASE_URL;
+      delete process.env.DATABASE_URL;
+
+      // Fresh import to trigger the check if it happens at module level
+      // Though in many handlers it happens inside the handler
+      vi.resetModules();
+      const mod = await import('../api/booking.js?t=' + Date.now());
+      const h = mod.default;
+
+      req.method = 'GET';
+      const module = await import('../api/booking.js?t=' + Date.now());
+      const h = module.default;
+      await h(req, res);
+      expect(res.status).toHaveBeenCalledWith(500);
+
+      process.env.DATABASE_URL = originalUrl;
     });
   });
 });
