@@ -119,6 +119,7 @@ const Home = () => {
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
           className="absolute bottom-12 right-12"
+          aria-hidden="true"
         >
           <span className="material-symbols-outlined text-white/30 text-2xl">south</span>
         </motion.div>

@@ -64,20 +64,35 @@ const Navbar = () => {
         </motion.div>
 
         <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
-          {NAV_LINKS.map((link) => (
-            <motion.div key={link.key} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                to={link.path}
-                className={`text-[11px] font-bold uppercase tracking-[0.15em] transition-colors ${location.pathname === link.path
-                    ? 'text-primary dark:text-white'
-                    : 'text-gray-600 hover:text-gray-900 dark:text-white/50 dark:hover:text-white'
-                  }`}
-                onClick={() => soundManager.playTone(500, 50, 0.15)}
+          {NAV_LINKS.map((link) => {
+            const isActive = location.pathname === link.path;
+            return (
+              <motion.div
+                key={link.key}
+                className="relative py-2"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                {t(link.key)}
-              </Link>
-            </motion.div>
-          ))}
+                <Link
+                  to={link.path}
+                  className={`text-[11px] font-bold uppercase tracking-[0.15em] transition-colors ${isActive
+                      ? 'text-primary dark:text-white'
+                      : 'text-gray-600 hover:text-gray-900 dark:text-white/50 dark:hover:text-white'
+                    }`}
+                  onClick={() => soundManager.playTone(500, 50, 0.15)}
+                >
+                  {t(link.key)}
+                </Link>
+                {isActive && (
+                  <motion.div
+                    layoutId="active-nav-link"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary shadow-[0_0_8px_rgba(0,145,255,0.5)]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </motion.div>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-6">
