@@ -4,6 +4,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 let mockDbResponse = null;
 let shouldThrowError = false;
 
+<<<<<<< Updated upstream
 const createMockSql = () => {
   return vi.fn().mockImplementation(async (strings, ...values) => {
     if (shouldThrowError) {
@@ -37,18 +38,41 @@ const createMockSql = () => {
 
 let mockSql = createMockSql();
 
+<<<<<<< Updated upstream
 // Single mock function to control SQL queries
 const mockSql = vi.fn();
+=======
+=======
+<<<<<<< HEAD
+// Single mock function to control SQL queries
+=======
+>>>>>>> origin/palette-calendar-enhancements-267134661186377706
+const mockSql = vi.fn();
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 vi.mock('@neondatabase/serverless', () => ({
   neon: vi.fn(() => mockSql),
 }));
 
+<<<<<<< Updated upstream
 // Mock zod
 vi.mock('zod', async () => {
   const actual = await vi.importActual('zod');
   return {
     ...actual,
     z: actual.z
+=======
+describe('Booking API', () => {
+  let handler;
+  let req;
+
+  const validBooking = {
+    carModel: 'Tesla Model 3',
+    packageName: 'Full Detail',
+    date: '2023-11-01',
+    time: '09:00 AM',
+    totalPrice: 250
+>>>>>>> Stashed changes
   };
 });
 
