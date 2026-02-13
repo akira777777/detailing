@@ -1,6 +1,6 @@
 /**
  * Polyfills for cross-browser compatibility
- * These are loaded dynamically only when needed by the browser
+ * These are inline implementations to avoid external dependencies
  */
 
 // Check if polyfills are needed
@@ -12,16 +12,13 @@ const needsPolyfills = () => {
 };
 
 /**
- * Load polyfills dynamically only when needed
- * Uses dynamic imports that gracefully fail if packages aren't available
+ * Load polyfills - now using inline implementations only
  */
 export async function loadPolyfills() {
   // Skip if all features are natively supported
   if (!needsPolyfills()) {
     return Promise.resolve();
   }
-
-  const polyfills = [];
 
   // IntersectionObserver polyfill for Safari < 12.1
   if (!window.IntersectionObserver) {
@@ -42,6 +39,18 @@ export async function loadPolyfills() {
           };
         })
     );
+    console.warn('IntersectionObserver not available, using fallback');
+    window.IntersectionObserver = class IntersectionObserver {
+      constructor(callback) {
+        this.callback = callback;
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+      observe() { }
+      unobserve() { }
+      disconnect() { }
+    };
   }
 
   // ResizeObserver polyfill for Safari < 13.1
@@ -66,6 +75,15 @@ export async function loadPolyfills() {
           };
         })
     );
+    console.warn('ResizeObserver not available, using fallback');
+    window.ResizeObserver = class ResizeObserver {
+      constructor(callback) {
+        this.callback = callback;
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    };
   }
 
   // Smooth scroll polyfill for older browsers
@@ -82,9 +100,14 @@ export async function loadPolyfills() {
           console.warn('Smooth scroll polyfill not available');
         })
     );
+    console.warn('Smooth scroll polyfill not available');
+      observe() { }
+      unobserve() { }
+      disconnect() { }
+    };
   }
 
-  return Promise.all(polyfills);
+  return Promise.resolve();
 }
 
 /**
