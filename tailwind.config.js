@@ -8,12 +8,34 @@ export default {
   theme: {
     extend: {
       colors: {
-        "primary": "#0091FF", // Unified Blue Accent
-        "secondary": "#f2b90d", // Gold Accent (for Luxe option)
+        "primary": {
+          DEFAULT: "#0091FF", // Unified Blue Accent
+          hover: "#0077D4",
+          active: "#005CAB",
+          glow: "rgba(0, 145, 255, 0.5)",
+        },
+        "secondary": {
+          DEFAULT: "#F2B90D", // Gold Accent
+          hover: "#D4A00B",
+        },
+        "background": {
+          light: "#F6F7F8",
+          dark: "#050505", // Deepest black
+        },
+        "surface": {
+          light: "#FFFFFF",
+          dark: "#0D0D0D", // Panel background
+          darker: "#0A0A0A", // Card background
+        },
+        "panel": {
+          light: "#FFFFFF",
+          dark: "#121212", // Floating panels
+        },
+        // Legacy mappings to keep existing code working while we refactor
         "background-dark": "#050505",
         "panel-dark": "#0D0D0D",
         "surface-dark": "#171717",
-        "background-light": "#f6f7f8",
+        "background-light": "#F6f7F8",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],

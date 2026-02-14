@@ -9,3 +9,14 @@
 ## 2025-05-16 - [Visual progress feedback for auto-dismissing notifications]
 **Learning:** Purely time-based notifications without visual feedback can be frustrating for users who don't know how long they have to read or act. A shrinking progress bar provides an intuitive, non-obtrusive way to communicate remaining time.
 **Action:** Implemented a `framer-motion` based progress bar in `ToastItem`. Using `scaleX` and `origin-left` is more performant than animating `width` as it avoids layout reflows. Added `relative overflow-hidden` to the toast container to ensure the bar is contained and correctly positioned at the bottom.
+
+## 2025-05-17 - [Bypassing Vite resolution errors for missing optional polyfills]
+**Learning:** Vite's eager import analysis can cause dev-server or build failures if an application uses dynamic `import()` for optional packages that are not present in `node_modules`. Using `/* @vite-ignore */` alone may not be enough if the path is a static string.
+**Action:** Combine `/* @vite-ignore */` with a dynamic variable for the package name (e.g., `const pkg = 'name'; import(pkg)`) to successfully bypass Vite's build-time resolution, allowing the application to gracefully fall back to inline polyfills without failing the build.
+## 2025-05-17 - [Calendar UX: Contextual indicators and cross-month selection]
+**Learning:** A static booking calendar prevents users from planning ahead. Functional month navigation combined with visual promotional indicators (like weekend special dots) provides a more empowering and transparent scheduling experience. Storing selection as a full date object ensures consistency when navigating between months.
+**Action:** Implemented state-driven month navigation in `Booking.jsx`. Added visual weekend indicators (dots) and updated ARIA labels to mention promotions. Used `aria-live="polite"` on the month header to announce navigation changes to screen reader users.
+
+## 2026-02-12 - [Fluid navigation indicators with Shared Layout Animations]
+**Learning:** Standard static highlights for active navigation links feel "step-like" and lack premium polish. Using Framer Motion's `layoutId` allows the active indicator (underline or background) to physically slide between elements, creating a much more cohesive and delightful user experience.
+**Action:** Implemented `layoutId="active-nav-link"` in `Layout.jsx` and `layoutId="active-lang"` in `LanguageSwitcher.jsx`. Combined with accessibility improvements like `aria-hidden` for decorative icons to ensure the "delight" doesn't come at the cost of screen reader clarity.
