@@ -20,6 +20,15 @@ export async function loadPolyfills() {
     return Promise.resolve();
   }
 
+  const polyfills = [];
+
+  // Fallbacks for legacy browsers - defined inline to avoid missing dependency errors in Vite
+  if (!window.IntersectionObserver) {
+    window.IntersectionObserver = class IntersectionObserver {
+      constructor() {}
+      observe() {}
+      unobserve() {}
+      disconnect() {}
   // IntersectionObserver polyfill for Safari < 12.1
   if (!window.IntersectionObserver) {
     const ioPkg = 'intersection-observer';
@@ -53,8 +62,9 @@ export async function loadPolyfills() {
     };
   }
 
-  // ResizeObserver polyfill for Safari < 13.1
   if (!window.ResizeObserver) {
+    window.ResizeObserver = class ResizeObserver {
+      constructor() {}
     const roPkg = 'resize-observer-polyfill';
     polyfills.push(
       import(/* @vite-ignore */ roPkg)

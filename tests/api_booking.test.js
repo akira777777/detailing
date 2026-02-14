@@ -53,11 +53,14 @@ vi.mock('zod', async () => {
 });
 
 describe('Booking API', () => {
+  let handler;
   let req, res;
   let handler;
 
   beforeEach(async () => {
     vi.clearAllMocks();
+    vi.resetModules();
+    // Re-import the handler to ensure it sees the DATABASE_URL
     
     // Reset mock state
     mockSql = createMockSql();
@@ -123,6 +126,7 @@ describe('Booking API', () => {
   describe('HTTP Method Handling', () => {
   describe('Method Validation', () => {
     it('should return 405 for unsupported methods', async () => {
+      req.method = 'PUT';
       req = { method: 'PUT' };
       await handler(req, res);
       expect(res.status).toHaveBeenCalledWith(405);
@@ -150,12 +154,28 @@ describe('Booking API', () => {
       const mockBookings = [
         { id: 1, car_model: 'Test Car', package: 'Test Package', date: '2023-10-24', time: '10:30 AM', total_price: 100, status: 'Confirmed' }
       ];
+      mockSql.mockResolvedValueOnce([{
+        data: mockBookings,
+        total: 1
+      }]);
+
+      req.method = 'GET';
+      req.query = { limit: '10', offset: '0' };
+      await handler(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
 
       // The handler expects the aggregate query to return { total, data }
       mockSql.mockResolvedValueOnce([{
         data: mockBookings,
         total: 1
 
+    it('should handle empty bookings list', async () => {
+      mockSql.mockResolvedValueOnce([{ total: 0, data: [] }]);
+
+      req.method = 'GET';
+      req.query = { limit: '10', offset: '0' };
       mockSql.mockResolvedValueOnce([{
         total: 1,
         data: mockBookings
@@ -195,6 +215,8 @@ describe('Booking API', () => {
       mockSql.mockImplementationOnce(() => { throw new Error('Database error'); });
       mockSql.mockRejectedValueOnce(new Error('Database error'));
 
+      req.method = 'GET';
+      req.query = { limit: '10', offset: '0' };
       req = { method: 'GET', query: { limit: '10', offset: '0' } };
       await handler(req, res);
       
@@ -233,6 +255,8 @@ describe('Booking API', () => {
       }));
     });
 
+    it('should return 201 for valid POST data', async () => {
+      mockSql.mockResolvedValueOnce([{ id: 123 }]);
     it('should return 400 for invalid date format', async () => {
       req = {
         method: 'POST',
@@ -336,6 +360,7 @@ describe('Booking API', () => {
     });
 
     it('should return booking id on successful creation', async () => {
+      mockSql.mockResolvedValueOnce([{ id: 123 }]);
       req = {
         method: 'POST',
         body: {
@@ -357,6 +382,10 @@ describe('Booking API', () => {
     });
 
     it('should handle database errors on POST', async () => {
+      mockSql.mockImplementationOnce(() => { throw new Error('DB Error'); });
+      await handler(req, res);
+      expect(res.status).toHaveBeenCalledWith(500);
+    });
       // Set flag to throw error
       shouldThrowError = true;
 
@@ -411,6 +440,10 @@ describe('Booking API', () => {
       expect(res.status).toHaveBeenCalledWith(400);
     });
 
+    it('should handle special characters in carModel', async () => {
+      req.method = 'POST';
+      req.body = { ...validBooking, carModel: 'Model S P100D (Ludicrous+)' };
+      mockSql.mockResolvedValueOnce([{ id: 1 }]);
     it('should handle undefined body in POST request', async () => {
       req = {
         method: 'POST',
@@ -452,6 +485,7 @@ describe('Booking API', () => {
       
       expect(res.status).toHaveBeenCalledWith(201);
     });
+  });
 
     it('should handle unicode characters in package name', async () => {
       req = {
@@ -484,6 +518,10 @@ describe('Booking API', () => {
       // Fresh import to trigger the check if it happens at module level
       // Though in many handlers it happens inside the handler
       vi.resetModules();
+      const module = await import('../api/booking.js?t=' + Date.now());
+      const h = module.default;
+
+      req.method = 'GET';
       const mod = await import('../api/booking.js?t=' + Date.now());
       const h = mod.default;
 
