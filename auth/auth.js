@@ -275,10 +275,14 @@ export async function requestPasswordReset(email) {
       { expiresIn: '1h' }
     );
     
-    // In a real app, you'd send this via email
-    console.log(`Password reset token for ${user.email}: ${resetToken}`);
+    // In a real app, you'd send this via email.
+    // In development, we log the token and return it for convenience.
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Password reset token for ${user.email}: ${resetToken}`);
+      return { success: true, resetToken };
+    }
     
-    return { success: true, resetToken }; // Remove resetToken in production
+    return { success: true };
   } catch (error) {
     throw new AuthError('Password reset request failed: ' + error.message);
   }
