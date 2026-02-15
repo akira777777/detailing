@@ -20,6 +20,10 @@ export async function loadPolyfills() {
     return Promise.resolve();
   }
 
+  const polyfills = [];
+
+  // IntersectionObserver polyfill for Safari < 12.1
+
   // IntersectionObserver polyfill for Safari < 12.1
   if (!window.IntersectionObserver) {
     const ioPkg = 'intersection-observer';
