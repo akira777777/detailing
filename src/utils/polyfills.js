@@ -20,7 +20,6 @@ export async function loadPolyfills() {
     return Promise.resolve();
   }
 
-<<<<<<< Updated upstream
   // IntersectionObserver polyfill for Safari < 12.1
   if (!window.IntersectionObserver) {
     const ioPkg = 'intersection-observer';
@@ -34,9 +33,9 @@ export async function loadPolyfills() {
             constructor(callback) {
               this.callback = callback;
             }
-            observe() {}
-            unobserve() {}
-            disconnect() {}
+            observe() { }
+            unobserve() { }
+            disconnect() { }
           };
         })
     );
@@ -45,28 +44,13 @@ export async function loadPolyfills() {
       constructor(callback) {
         this.callback = callback;
       }
-      observe() {}
-      unobserve() {}
-      disconnect() {}
       observe() { }
       unobserve() { }
       disconnect() { }
-=======
-  const polyfills = [];
-
-  // Fallbacks for legacy browsers - defined inline to avoid missing dependency errors in Vite
-  if (!window.IntersectionObserver) {
-    window.IntersectionObserver = class IntersectionObserver {
-      constructor() {}
-      observe() {}
-      unobserve() {}
-      disconnect() {}
->>>>>>> Stashed changes
     };
   }
 
   if (!window.ResizeObserver) {
-<<<<<<< Updated upstream
     const roPkg = 'resize-observer-polyfill';
     polyfills.push(
       import(/* @vite-ignore */ roPkg)
@@ -81,48 +65,64 @@ export async function loadPolyfills() {
             constructor(callback) {
               this.callback = callback;
             }
-            observe() {}
-            unobserve() {}
-            disconnect() {}
+            observe() { }
+            unobserve() { }
+            disconnect() { }
           };
         })
     );
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
     console.warn('ResizeObserver not available, using fallback');
     window.ResizeObserver = class ResizeObserver {
       constructor(callback) {
         this.callback = callback;
       }
-      observe() {}
-      unobserve() {}
-      disconnect() {}
-    };
-  }
-
-  // Smooth scroll polyfill for older browsers
-  if (!('scrollBehavior' in document.documentElement.style)) {
-    const ssPkg = 'smoothscroll-polyfill';
-    polyfills.push(
-      import(/* @vite-ignore */ ssPkg)
-        .then(module => {
-          module.polyfill();
-          console.log('Loaded smooth scroll polyfill');
-        })
-        .catch(() => {
-          // Polyfill not critical - scroll will just be instant
-          console.warn('Smooth scroll polyfill not available');
-        })
-    );
-    console.warn('Smooth scroll polyfill not available');
       observe() { }
       unobserve() { }
       disconnect() { }
     };
   }
 
-  return Promise.resolve();
+  unobserve() { }
+  disconnect() { }
+};
+        })
+    );
+=======
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+console.warn('ResizeObserver not available, using fallback');
+window.ResizeObserver = class ResizeObserver {
+  constructor(callback) {
+    this.callback = callback;
+  }
+  observe() { }
+  unobserve() { }
+  disconnect() { }
+};
+  }
+
+// Smooth scroll polyfill for older browsers
+if (!('scrollBehavior' in document.documentElement.style)) {
+  const ssPkg = 'smoothscroll-polyfill';
+  polyfills.push(
+    import(/* @vite-ignore */ ssPkg)
+      .then(module => {
+        module.polyfill();
+        console.log('Loaded smooth scroll polyfill');
+      })
+      .catch(() => {
+        // Polyfill not critical - scroll will just be instant
+        console.warn('Smooth scroll polyfill not available');
+      })
+  );
+  console.warn('Smooth scroll polyfill not available');
+  observe() { }
+  unobserve() { }
+  disconnect() { }
+};
+  }
+
+return Promise.resolve();
 =======
     window.ResizeObserver = class ResizeObserver {
       constructor() {}

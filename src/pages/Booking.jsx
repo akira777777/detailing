@@ -9,203 +9,68 @@ import { getPackageName } from '../utils/bookingUtils';
 
 
 const Booking = () => {
-  const navigate = useNavigate();
-  const { addToast } = useToast();
-  const { carModel, modules, totalPrice } = useBookingStore();
-
-  const [viewDate, setViewDate] = useState(new Date());
-  const today = useMemo(() => new Date(), []);
-
-  const currentYear = viewDate.getFullYear();
-  const currentMonth = viewDate.getMonth();
-  const currentDay = today.getDate();
-
-  const [selectedDate, setSelectedDate] = useState(currentDay);
-  const today = useMemo(() => new Date(), []);
-  const [viewDate, setViewDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
-  const [selectedFullDate, setSelectedFullDate] = useState(today);
-  const [selectedTime, setSelectedTime] = useState('10:30 AM');
-
-  const { days, emptyDays, viewYear, viewMonth } = useMemo(() => {
-    const year = viewDate.getFullYear();
-    const month = viewDate.getMonth();
-    const numDays = new Date(year, month + 1, 0).getDate();
-    const firstDayOfMonth = new Date(year, month, 1).getDay();
-
-    const daysArray = Array.from({ length: numDays }, (_, i) => {
-      const day = i + 1;
-      const dateObj = new Date(year, month, day);
-      return {
-        day,
-        isWeekend: dateObj.getDay() === 0 || dateObj.getDay() === 6,
-        fullDate: fullDateFormatter.format(dateObj)
-        fullDate: fullDateFormatter.format(dateObj),
-        isWeekend: dateObj.getDay() === 0 || dateObj.getDay() === 6,
-        dateObj
-      };
-    });
-
-    return {
-      days: daysArray,
-      emptyDays: Array.from({ length: firstDayOfMonth }),
-      viewYear: year,
-      viewMonth: month
-    };
-  }, [viewDate]);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handlePrevMonth = () => setViewDate(new Date(currentYear, currentMonth - 1, 1));
-  const handleNextMonth = () => setViewDate(new Date(currentYear, currentMonth + 1, 1));
-  const handlePrevMonth = () => setViewDate(new Date(viewYear, viewMonth - 1, 1));
-  const handleNextMonth = () => setViewDate(new Date(viewYear, viewMonth + 1, 1));
-
-  const handleConfirm = async () => {
-    setIsSubmitting(true);
-
-    // Format date as ISO for the backend (YYYY-MM-DD) using view month/year
-    const bookingDate = new Date(currentYear, currentMonth, selectedDate);
-    // Use local year, month, day to avoid timezone issues with toISOString()
-    const yyyy = bookingDate.getFullYear();
-    const mm = String(bookingDate.getMonth() + 1).padStart(2, '0');
-    const dd = String(bookingDate.getDate()).padStart(2, '0');
-    const dateStr = `${yyyy}-${mm}-${dd}`;
-    // Format date as ISO for the backend (YYYY-MM-DD)
-    const dateStr = `${selectedFullDate.getFullYear()}-${String(selectedFullDate.getMonth() + 1).padStart(2, '0')}-${String(selectedFullDate.getDate()).padStart(2, '0')}`;
-
-    try {
-      const response = await fetch('/api/booking', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          date: dateStr,
-          time: selectedTime,
-          carModel: carModel,
-          packageName: getPackageName(modules),
-          totalPrice: totalPrice,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to confirm booking');
-      }
-
-      addToast('Booking successfully scheduled!', 'success');
-      navigate('/booking-confirmation');
-    } catch (error) {
-      addToast(error.message, 'error');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="pt-32 pb-24 px-4 lg:px-12 bg-background-light dark:bg-background-dark min-h-screen transition-colors duration-300">
-      <div className="max-w-[1100px] mx-auto flex flex-col gap-8">
-
-        {/* Header & Progress */}
-        <div className="flex flex-col gap-4">
-            <div className="flex justify-between items-end">
-                <h1 className="text-gray-900 dark:text-white tracking-tight text-3xl font-extrabold">Schedule Your Detailing Session</h1>
-                <div className="flex flex-col items-end gap-1">
-                    <span className="text-primary text-xs font-bold uppercase tracking-widest">Step 2 of 3</span>
-                    <p className="text-gray-600 dark:text-white text-sm font-medium">Date & Time Selection</p>
-                </div>
-            </div>
-            <div
-                className="w-full rounded-full bg-gray-200 dark:bg-white/10 h-2.5 overflow-hidden"
-                role="progressbar"
-                aria-valuenow="66"
-                aria-valuemin="0"
-                aria-valuemax="100"
-                aria-label="Booking progress"
-            >
-                <div className="h-full rounded-full bg-primary" style={{ width: '66%' }}></div>
-            </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            {/* Calendar */}
-            <div className="lg:col-span-7 flex flex-col gap-6">
-                <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm dark:shadow-none">
-                    <div className="flex items-center justify-between mb-8">
-                        <h3 className="text-gray-900 dark:text-white text-lg font-bold">Pick a Date</h3>
-                        <div className="flex items-center gap-2">
-                            <button
-                                aria-label="Previous month"
-                                onClick={handlePrevMonth}
-                                className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors"
-                            >
-                                <span className="material-symbols-outlined">chevron_left</span>
-                            </button>
-                            <p
-                                className="text-gray-900 dark:text-white text-base font-bold min-w-[140px] text-center uppercase tracking-wide"
-                                aria-live="polite"
-                                aria-live="polite"
-                                className="text-gray-900 dark:text-white text-base font-bold min-w-[140px] text-center uppercase tracking-wide"
-                            >
-                                {monthYearFormatter.format(viewDate)}
-                            </p>
-                            <button
-                                onClick={handleNextMonth}
-                                className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors"
-                                aria-label="Next month"
-                                onClick={handleNextMonth}
-                            >
-                                <span className="material-symbols-outlined">chevron_right</span>
-                            </button>
-    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const { addToast } = useToast();
     const { carModel, modules, totalPrice } = useBookingStore();
 
     const [viewDate, setViewDate] = useState(new Date());
-    const [selectedFullDate, setSelectedFullDate] = useState(new Date());
+    const today = useMemo(() => new Date(), []);
+
+    const currentYear = viewDate.getFullYear();
+    const currentMonth = viewDate.getMonth();
+    const currentDay = today.getDate();
+
+    const [selectedDate, setSelectedDate] = useState(currentDay);
+    const [selectedFullDate, setSelectedFullDate] = useState(today);
     const [selectedTime, setSelectedTime] = useState('10:30 AM');
 
-    const { days, emptyDays } = useMemo(() => {
-        const year = viewDate.getFullYear(), month = viewDate.getMonth();
+    const { days, emptyDays, viewYear, viewMonth } = useMemo(() => {
+        const year = viewDate.getFullYear();
+        const month = viewDate.getMonth();
         const numDays = new Date(year, month + 1, 0).getDate();
-        const firstDay = new Date(year, month, 1).getDay();
+        const firstDayOfMonth = new Date(year, month, 1).getDay();
 
-        const dateFormatter = new Intl.DateTimeFormat(i18n.language, {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
+        const daysArray = Array.from({ length: numDays }, (_, i) => {
+            const day = i + 1;
+            const dateObj = new Date(year, month, day);
+            return {
+                day,
+                isWeekend: dateObj.getDay() === 0 || dateObj.getDay() === 6,
+                fullDate: fullDateFormatter.format(dateObj)
+        fullDate: fullDateFormatter.format(dateObj),
+                isWeekend: dateObj.getDay() === 0 || dateObj.getDay() === 6,
+                dateObj
+            };
         });
 
         return {
-            days: Array.from({ length: numDays }, (_, i) => {
-                const d = new Date(year, month, i + 1);
-                return { day: i + 1, fullDate: dateFormatter.format(d), isWeekend: [0, 6].includes(d.getDay()) };
-            }),
-            emptyDays: Array.from({ length: firstDay })
+            days: daysArray,
+            emptyDays: Array.from({ length: firstDayOfMonth }),
+            viewYear: year,
+            viewMonth: month
         };
-    }, [viewDate, i18n.language]);
-
-    const weekdays = useMemo(() => {
-        const formatter = new Intl.DateTimeFormat(i18n.language, { weekday: 'short' });
-        // Jan 5, 2025 is a Sunday. We want Sun-Sat.
-        return Array.from({ length: 7 }, (_, i) => formatter.format(new Date(2025, 0, 5 + i)));
-    }, [i18n.language]);
-
-    const monthName = useMemo(() => {
-        return new Intl.DateTimeFormat(i18n.language, { month: 'long', year: 'numeric' }).format(viewDate);
-    }, [viewDate, i18n.language]);
-
-    const formattedSelectedDate = useMemo(() => {
-        return new Intl.DateTimeFormat(i18n.language, { month: 'short', day: 'numeric', year: 'numeric' }).format(selectedFullDate);
-    }, [selectedFullDate, i18n.language]);
+    }, [viewDate]);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const handlePrevMonth = () => setViewDate(new Date(currentYear, currentMonth - 1, 1));
+    const handleNextMonth = () => setViewDate(new Date(currentYear, currentMonth + 1, 1));
+    const handlePrevMonth = () => setViewDate(new Date(viewYear, viewMonth - 1, 1));
+    const handleNextMonth = () => setViewDate(new Date(viewYear, viewMonth + 1, 1));
+
     const handleConfirm = async () => {
         setIsSubmitting(true);
+
+        // Format date as ISO for the backend (YYYY-MM-DD) using view month/year
+        const bookingDate = new Date(currentYear, currentMonth, selectedDate);
+        // Use local year, month, day to avoid timezone issues with toISOString()
+        const yyyy = bookingDate.getFullYear();
+        const mm = String(bookingDate.getMonth() + 1).padStart(2, '0');
+        const dd = String(bookingDate.getDate()).padStart(2, '0');
+        const dateStr = `${yyyy}-${mm}-${dd}`;
+        // Format date as ISO for the backend (YYYY-MM-DD)
         const dateStr = `${selectedFullDate.getFullYear()}-${String(selectedFullDate.getMonth() + 1).padStart(2, '0')}-${String(selectedFullDate.getDate()).padStart(2, '0')}`;
+
         try {
             const response = await fetch('/api/booking', {
                 method: 'POST',
@@ -232,6 +97,139 @@ const Booking = () => {
             addToast(error.message, 'error');
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <div className="pt-32 pb-24 px-4 lg:px-12 bg-background-light dark:bg-background-dark min-h-screen transition-colors duration-300">
+            <div className="max-w-[1100px] mx-auto flex flex-col gap-8">
+
+                {/* Header & Progress */}
+                <div className="flex flex-col gap-4">
+                    <div className="flex justify-between items-end">
+                        <h1 className="text-gray-900 dark:text-white tracking-tight text-3xl font-extrabold">Schedule Your Detailing Session</h1>
+                        <div className="flex flex-col items-end gap-1">
+                            <span className="text-primary text-xs font-bold uppercase tracking-widest">Step 2 of 3</span>
+                            <p className="text-gray-600 dark:text-white text-sm font-medium">Date & Time Selection</p>
+                        </div>
+                    </div>
+                    <div
+                        className="w-full rounded-full bg-gray-200 dark:bg-white/10 h-2.5 overflow-hidden"
+                        role="progressbar"
+                        aria-valuenow="66"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        aria-label="Booking progress"
+                    >
+                        <div className="h-full rounded-full bg-primary" style={{ width: '66%' }}></div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                    {/* Calendar */}
+                    <div className="lg:col-span-7 flex flex-col gap-6">
+                        <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm dark:shadow-none">
+                            <div className="flex items-center justify-between mb-8">
+                                <h3 className="text-gray-900 dark:text-white text-lg font-bold">Pick a Date</h3>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        aria-label="Previous month"
+                                        onClick={handlePrevMonth}
+                                        className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors"
+                                    >
+                                        <span className="material-symbols-outlined">chevron_left</span>
+                                    </button>
+                                    <p
+                                        className="text-gray-900 dark:text-white text-base font-bold min-w-[140px] text-center uppercase tracking-wide"
+                                        aria-live="polite"
+                                        aria-live="polite"
+                                        className="text-gray-900 dark:text-white text-base font-bold min-w-[140px] text-center uppercase tracking-wide"
+                                    >
+                                        {monthYearFormatter.format(viewDate)}
+                                    </p>
+                                    <button
+                                        onClick={handleNextMonth}
+                                        className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors"
+                                        aria-label="Next month"
+                                        onClick={handleNextMonth}
+                                    >
+                                        <span className="material-symbols-outlined">chevron_right</span>
+                                    </button>
+                                    const {t, i18n} = useTranslation();
+                                    const navigate = useNavigate();
+                                    const {addToast} = useToast();
+                                    const {carModel, modules, totalPrice} = useBookingStore();
+
+                                    const [viewDate, setViewDate] = useState(new Date());
+                                    const [selectedFullDate, setSelectedFullDate] = useState(new Date());
+                                    const [selectedTime, setSelectedTime] = useState('10:30 AM');
+
+                                    const {days, emptyDays} = useMemo(() => {
+        const year = viewDate.getFullYear(), month = viewDate.getMonth();
+                                    const numDays = new Date(year, month + 1, 0).getDate();
+                                    const firstDay = new Date(year, month, 1).getDay();
+
+                                    const dateFormatter = new Intl.DateTimeFormat(i18n.language, {
+                                        weekday: 'long',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    year: 'numeric'
+        });
+
+                                    return {
+                                        days: Array.from({length: numDays }, (_, i) => {
+                const d = new Date(year, month, i + 1);
+                                    return {day: i + 1, fullDate: dateFormatter.format(d), isWeekend: [0, 6].includes(d.getDay()) };
+            }),
+                                    emptyDays: Array.from({length: firstDay })
+        };
+    }, [viewDate, i18n.language]);
+
+    const weekdays = useMemo(() => {
+        const formatter = new Intl.DateTimeFormat(i18n.language, {weekday: 'short' });
+                                    // Jan 5, 2025 is a Sunday. We want Sun-Sat.
+                                    return Array.from({length: 7 }, (_, i) => formatter.format(new Date(2025, 0, 5 + i)));
+    }, [i18n.language]);
+
+    const monthName = useMemo(() => {
+        return new Intl.DateTimeFormat(i18n.language, {month: 'long', year: 'numeric' }).format(viewDate);
+    }, [viewDate, i18n.language]);
+
+    const formattedSelectedDate = useMemo(() => {
+        return new Intl.DateTimeFormat(i18n.language, {month: 'short', day: 'numeric', year: 'numeric' }).format(selectedFullDate);
+    }, [selectedFullDate, i18n.language]);
+
+                                    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleConfirm = async () => {
+                                        setIsSubmitting(true);
+                                    const dateStr = `${selectedFullDate.getFullYear()}-${String(selectedFullDate.getMonth() + 1).padStart(2, '0')}-${String(selectedFullDate.getDate()).padStart(2, '0')}`;
+                                    try {
+            const response = await fetch('/api/booking', {
+                                        method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                },
+                                    body: JSON.stringify({
+                                        date: dateStr,
+                                    time: selectedTime,
+                                    carModel: carModel,
+                                    packageName: getPackageName(modules),
+                                    totalPrice: totalPrice,
+                }),
+            });
+
+                                    if (!response.ok) {
+                const errorData = await response.json();
+                                    throw new Error(errorData.error || 'Failed to confirm booking');
+            }
+
+                                    addToast('Booking successfully scheduled!', 'success');
+                                    navigate('/booking-confirmation');
+        } catch (error) {
+                                        addToast(error.message, 'error');
+        } finally {
+                                        setIsSubmitting(false);
         }
     };
 
@@ -284,42 +282,43 @@ const Booking = () => {
                         </div>
                     </div>
 <<<<<<< Updated upstream
-                    <div className="grid grid-cols-7 text-center mb-2">
-                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                            <span key={day} className={`text-[11px] font-black uppercase tracking-tighter ${['Sun', 'Sat'].includes(day) ? 'text-primary opacity-80' : 'text-gray-400 dark:text-white/40'}`}>{day}</span>
-                        ))}
+    <div className="grid grid-cols-7 text-center mb-2">
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+            <span key={day} className={`text-[11px] font-black uppercase tracking-tighter ${['Sun', 'Sat'].includes(day) ? 'text-primary opacity-80' : 'text-gray-400 dark:text-white/40'}`}>{day}</span>
+        ))}
 =======
 <<<<<<< Updated upstream
 >>>>>>> Stashed changes
-                    <div
-                        className="w-full rounded-full bg-gray-200 dark:bg-white/10 h-2.5 overflow-hidden"
-                        role="progressbar"
-                        aria-valuenow="66"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                        aria-label="Booking progress"
-                    >
-                        <div className="h-full rounded-full bg-primary" style={{ width: '66%' }}></div>
+    <div
+        className="w-full rounded-full bg-gray-200 dark:bg-white/10 h-2.5 overflow-hidden"
+        role="progressbar"
+        aria-valuenow="66"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-label="Booking progress"
+    >
+        <div className="h-full rounded-full bg-primary" style={{ width: '66%' }}></div>
 =======
                     <div className="grid grid-cols-7 text-center mb-2">
-                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                            <span key={day} className={`text-[11px] font-black uppercase tracking-tighter ${day === 'Sun' || day === 'Sat' ? 'text-primary opacity-80' : 'text-gray-400 dark:text-white/40'}`}>{day}</span>
-                        ))}
-                    </div>
-                    <div className="grid grid-cols-7 gap-2">
-                        {/* Empty cells - pre-calculated to avoid redundant new Date() calls */}
-                        {emptyDays.map((_, i) => (
-                            <div key={`empty-${i}`} className="h-14"></div>
-                        ))}
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                <span key={day} className={`text-[11px] font-black uppercase tracking-tighter ${day === 'Sun' || day === 'Sat' ? 'text-primary opacity-80' : 'text-gray-400 dark:text-white/40'}`}>{day}</span>
+            ))}
+        </div>
+        <div className="grid grid-cols-7 gap-2">
+            {/* Empty cells - pre-calculated to avoid redundant new Date() calls */}
+            {emptyDays.map((_, i) => (
+                <div key={`empty-${i}`} className="h-14"></div>
+            ))}
 <<<<<<< HEAD
-                        {days.map(({ day, fullDate }) => (
-                            <CalendarDay
-                                key={day}
-                                day={day}
-                                fullDate={fullDate}
-                                isSelected={selectedDate === day}
-                                onClick={handleDayClick}
-                            />
+    {
+        days.map(({ day, fullDate }) => (
+            <CalendarDay
+                key={day}
+                day={day}
+                fullDate={fullDate}
+                isSelected={selectedDate === day}
+                onClick={handleDayClick}
+            />
 =======
                         {days.map(({ day, fullDate, isWeekend }) => (
                             <button
@@ -335,49 +334,50 @@ const Booking = () => {
                                 )}
                             </button>
 >>>>>>> origin/palette-calendar-enhancements-267134661186377706
-                        ))}
+        ))
+    }
 >>>>>>> Stashed changes
-                    </div>
-                    <div className="grid grid-cols-7 gap-2">
-                        {/* Empty cells - pre-calculated to avoid redundant new Date() calls */}
-                        {emptyDays.map((_, i) => (
-                            <div key={`empty-${i}`} className="h-14"></div>
-                        ))}
-                        {days.map(({ day, fullDate, isWeekend }) => (
-                            <button
-                                key={day}
-                                onClick={() => setSelectedDate(day)}
-                                aria-label={`Select ${fullDate}${isWeekend ? ' - Weekend Special' : ''}`}
-                                aria-pressed={selectedDate === day}
-                                className={`h-14 flex flex-col items-center justify-center rounded-lg text-sm font-semibold transition-all relative ${selectedDate === day ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}
-                            >
-                                <span className="relative z-10">{day}</span>
-                                {isWeekend && (
-                                    <span className={`absolute bottom-2.5 size-1 rounded-full ${selectedDate === day ? 'bg-white' : 'bg-primary'} shadow-[0_0_4px_rgba(19,127,236,0.4)]`} />
-                                )}
-                            </button>
-                        ))}
-                        {days.map(({ day, fullDate, isWeekend, dateObj }) => {
-                            const isSelected = selectedFullDate.getDate() === day &&
-                                             selectedFullDate.getMonth() === viewMonth &&
-                                             selectedFullDate.getFullYear() === viewYear;
-                            return (
-                                <button
-                                    key={day}
-                                    onClick={() => setSelectedFullDate(dateObj)}
-                                    aria-label={`Select ${fullDate}${isWeekend ? ' - Weekend Special' : ''}`}
-                                    aria-pressed={isSelected}
-                                    className={`h-14 relative flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${isSelected ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}
-                                >
-                                    {day}
-                                    {isWeekend && (
-                                        <span className={`absolute bottom-2 size-1 rounded-full ${isSelected ? 'bg-white' : 'bg-primary'}`}></span>
-                                    )}
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
+                    </div >
+    <div className="grid grid-cols-7 gap-2">
+        {/* Empty cells - pre-calculated to avoid redundant new Date() calls */}
+        {emptyDays.map((_, i) => (
+            <div key={`empty-${i}`} className="h-14"></div>
+        ))}
+        {days.map(({ day, fullDate, isWeekend }) => (
+            <button
+                key={day}
+                onClick={() => setSelectedDate(day)}
+                aria-label={`Select ${fullDate}${isWeekend ? ' - Weekend Special' : ''}`}
+                aria-pressed={selectedDate === day}
+                className={`h-14 flex flex-col items-center justify-center rounded-lg text-sm font-semibold transition-all relative ${selectedDate === day ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}
+            >
+                <span className="relative z-10">{day}</span>
+                {isWeekend && (
+                    <span className={`absolute bottom-2.5 size-1 rounded-full ${selectedDate === day ? 'bg-white' : 'bg-primary'} shadow-[0_0_4px_rgba(19,127,236,0.4)]`} />
+                )}
+            </button>
+        ))}
+        {days.map(({ day, fullDate, isWeekend, dateObj }) => {
+            const isSelected = selectedFullDate.getDate() === day &&
+                selectedFullDate.getMonth() === viewMonth &&
+                selectedFullDate.getFullYear() === viewYear;
+            return (
+                <button
+                    key={day}
+                    onClick={() => setSelectedFullDate(dateObj)}
+                    aria-label={`Select ${fullDate}${isWeekend ? ' - Weekend Special' : ''}`}
+                    aria-pressed={isSelected}
+                    className={`h-14 relative flex items-center justify-center rounded-lg text-sm font-semibold transition-all ${isSelected ? 'bg-primary text-white shadow-lg shadow-primary/30 transform scale-105' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-white'}`}
+                >
+                    {day}
+                    {isWeekend && (
+                        <span className={`absolute bottom-2 size-1 rounded-full ${isSelected ? 'bg-white' : 'bg-primary'}`}></span>
+                    )}
+                </button>
+            );
+        })}
+    </div>
+                </div >
                 <div className="flex items-center gap-3 p-4 bg-primary/10 border border-primary/20 rounded-lg">
                     <span className="material-symbols-outlined text-primary">info</span>
                     <p className="text-gray-700 dark:text-white/90 text-sm">Appointments on weekends include a complimentary exterior foam wash.</p>
