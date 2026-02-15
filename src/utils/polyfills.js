@@ -179,40 +179,6 @@ if (typeof Element !== 'undefined' && !Element.prototype.closest) {
  * Element.prototype.matches polyfill
  */
 if (typeof Element !== 'undefined' && !Element.prototype.matches) {
-}
-
-/**
- * String.prototype.matchAll polyfill
- */
-if (!String.prototype.matchAll) {
-  String.prototype.matchAll = function* (regexp) {
-    const flags = regexp.global ? regexp.flags : regexp.flags + 'g';
-    const re = new RegExp(regexp.source, flags);
-    let match;
-    while ((match = re.exec(this)) !== null) {
-      yield match;
-    }
-  };
-}
-
-/**
- * Element.prototype.closest polyfill for IE11 (if needed in future)
- */
-if (typeof Element !== 'undefined' && !Element.prototype.closest) {
-  Element.prototype.closest = function (s) {
-    let el = this;
-    do {
-      if (el.matches(s)) return el;
-      el = el.parentElement || el.parentNode;
-    } while (el !== null && el.nodeType === 1);
-    return null;
-  };
-}
-
-/**
- * Element.prototype.matches polyfill
- */
-if (typeof Element !== 'undefined' && !Element.prototype.matches) {
   Element.prototype.matches =
     Element.prototype.msMatchesSelector ||
     Element.prototype.webkitMatchesSelector;
