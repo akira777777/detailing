@@ -128,7 +128,13 @@ function sanitizeInput(req, res, next) {
   };
 
   if (req.body) req.body = sanitize(req.body);
-  if (req.query) req.query = sanitize(req.query);
+    if (req.query) {
+    try {
+      req.query = sanitize(req.query);
+    } catch {
+      // Ignore if read-only property
+    }
+  }
   next();
 }
 
@@ -192,31 +198,49 @@ router.get('/bookings',
           u.email
         FROM bookings b
         LEFT JOIN users u ON b.user_id = u.id
-        WHERE b.user_id = ${req.userId}
+        WHERE b.user_id = $1
       `;
       
-      const conditions = [];
+      const queryParams = [req.userId];
       
-      if (status) conditions.push(`b.status = '${status}'`);
-      if (dateFrom) conditions.push(`b.date >= '${dateFrom}'`);
-      if (dateTo) conditions.push(`b.date <= '${dateTo}'`);
-      
-      if (conditions.length > 0) {
-        query += ' AND ' + conditions.join(' AND ');
+      if (status) {
+        queryParams.push(status);
+        query += ` AND b.status = $${queryParams.length}`;
+      }
+      if (dateFrom) {
+        queryParams.push(dateFrom);
+        query += ` AND b.date >= $${queryParams.length}`;
+      }
+      if (dateTo) {
+        queryParams.push(dateTo);
+        query += ` AND b.date <= $${queryParams.length}`;
       }
       
       query += ` ORDER BY b.${sort.column} ${sort.direction}`;
-      query += ` LIMIT ${pagination.limit} OFFSET ${pagination.offset}`;
+      query += ` LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}`;
+
+      queryParams.push(pagination.limit, pagination.offset);
       
-      const result = await db.query(query);
+      const result = await db.query(query, queryParams);
       
       // Get total count
-      let countQuery = `SELECT COUNT(*) FROM bookings WHERE user_id = ${req.userId}`;
-      if (conditions.length > 0) {
-        countQuery += ' AND ' + conditions.join(' AND ');
+      let countQuery = `SELECT COUNT(*) FROM bookings b WHERE b.user_id = $1`;
+      const countParams = [req.userId];
+
+      if (status) {
+        countParams.push(status);
+        countQuery += ` AND b.status = $${countParams.length}`;
+      }
+      if (dateFrom) {
+        countParams.push(dateFrom);
+        countQuery += ` AND b.date >= $${countParams.length}`;
+      }
+      if (dateTo) {
+        countParams.push(dateTo);
+        countQuery += ` AND b.date <= $${countParams.length}`;
       }
       
-      const countResult = await db.query(countQuery);
+      const countResult = await db.query(countQuery, countParams);
       const total = parseInt(countResult[0].count);
       
       res.json({
