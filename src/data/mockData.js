@@ -1,5 +1,5 @@
 export const userData = {
-    name: "Alex Sterling",
+    name: "Stepan",
     avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuBvaJQMaM4lJcXLfwCpIVtPmu3n63vF7NmJmEw3RAIdWcrjy6N22ABLkpm6fm-k_33rPf1wLPU5cKInxEadnq9sVI7S_Aiq8B99QNjDFrAoWXf4G2b0dc-arhoVKkzXT4a0QeqigomBU_5WcvVE2tLM9R9dW05rnmUr1Kn8D-fPBeHhoqJ_5DcY9a0EkvFCHQgkjw3-YSyimO1tct1R_7fWH4dVtRPqVdTe1t82mAIRHkCW0i3G-ESQ-WGxePV20yApGyOPL5E0Cp4",
     membership: "Premium Member",
     loyaltyPoints: 2500,
