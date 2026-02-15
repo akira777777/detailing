@@ -90,13 +90,11 @@ export default defineConfig({
       '**/dist/**',
       '**/e2e/**',  // Exclude Playwright E2E tests
       '**/*.spec.js',
+      '**/tests/**',  // Exclude tests directory
     ],
     include: [
-      'react',
-      'react-dom',
-      'react-router-dom',
-      'framer-motion',
-      'zustand',
+      '**/*.test.js',
+      '**/*.test.jsx',
     ],
   }
 })

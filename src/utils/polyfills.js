@@ -23,15 +23,12 @@ export async function loadPolyfills() {
   const polyfills = [];
 
   // IntersectionObserver polyfill for Safari < 12.1
-
-  // IntersectionObserver polyfill for Safari < 12.1
   if (!window.IntersectionObserver) {
     const ioPkg = 'intersection-observer';
     polyfills.push(
       import(/* @vite-ignore */ ioPkg)
         .then(() => console.log('Loaded IntersectionObserver polyfill'))
         .catch(() => {
-          // Polyfill package not installed - provide minimal fallback
           console.warn('IntersectionObserver polyfill not available, using fallback');
           window.IntersectionObserver = class IntersectionObserver {
             constructor(callback) {
@@ -43,15 +40,6 @@ export async function loadPolyfills() {
           };
         })
     );
-    console.warn('IntersectionObserver not available, using fallback');
-    window.IntersectionObserver = class IntersectionObserver {
-      constructor(callback) {
-        this.callback = callback;
-      }
-      observe() { }
-      unobserve() { }
-      disconnect() { }
-    };
   }
 
   if (!window.ResizeObserver) {
@@ -63,7 +51,6 @@ export async function loadPolyfills() {
           console.log('Loaded ResizeObserver polyfill');
         })
         .catch(() => {
-          // Polyfill package not installed - provide minimal fallback
           console.warn('ResizeObserver polyfill not available, using fallback');
           window.ResizeObserver = class ResizeObserver {
             constructor(callback) {
@@ -75,15 +62,6 @@ export async function loadPolyfills() {
           };
         })
     );
-    console.warn('ResizeObserver not available, using fallback');
-    window.ResizeObserver = class ResizeObserver {
-      constructor(callback) {
-        this.callback = callback;
-      }
-      observe() { }
-      unobserve() { }
-      disconnect() { }
-    };
   }
 
   // Smooth scroll polyfill for older browsers
@@ -96,14 +74,12 @@ export async function loadPolyfills() {
           console.log('Loaded smooth scroll polyfill');
         })
         .catch(() => {
-          // Polyfill not critical - scroll will just be instant
           console.warn('Smooth scroll polyfill not available');
         })
     );
-    console.warn('Smooth scroll polyfill not available');
   }
 
-  return Promise.resolve();
+  return Promise.all(polyfills);
 }
 
 /**
@@ -115,7 +91,6 @@ if (typeof window !== 'undefined' && !('CSS' in window)) {
 
 if (typeof window !== 'undefined' && window.CSS && !window.CSS.supports) {
   window.CSS.supports = () => {
-    // Basic fallback - returns true for unknown properties
     return true;
   };
 }
