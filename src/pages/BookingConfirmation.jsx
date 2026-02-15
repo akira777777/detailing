@@ -227,9 +227,14 @@ const BookingConfirmation = () => {
               </button>
             </div>
           </div>
-          <p className="text-gray-400 dark:text-white/30 text-[10px] uppercase tracking-[0.2em] mt-2">
-            {t('confirmation.copyright')}
-          </p>
+          <div className="flex flex-col gap-1 items-center mt-2">
+            <p className="text-gray-400 dark:text-white/30 text-[10px] uppercase tracking-[0.2em]">
+              {t('confirmation.copyright')}
+            </p>
+            <p className="text-gray-400 dark:text-white/30 text-[10px] uppercase tracking-[0.2em]">
+              {t('footer.developer')}
+            </p>
+          </div>
         </div>
       </div>
     </div>

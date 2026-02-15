@@ -50,8 +50,8 @@ const Navbar = () => {
 
   return (
     <header className={`fixed top-0 w-full z-50 border-b transition-all duration-300 ${scrolled
-        ? 'bg-white/90 dark:bg-background-dark/90 backdrop-blur-xl border-gray-200 dark:border-white/5 py-3'
-        : 'bg-white/50 dark:bg-transparent border-transparent py-5'
+      ? 'bg-white/90 dark:bg-background-dark/90 backdrop-blur-xl border-gray-200 dark:border-white/5 py-3'
+      : 'bg-white/50 dark:bg-transparent border-transparent py-5'
       }`}>
       <div className="max-w-[1440px] mx-auto px-6 lg:px-12 flex items-center justify-between">
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -76,8 +76,8 @@ const Navbar = () => {
                 <Link
                   to={link.path}
                   className={`text-[11px] font-bold uppercase tracking-[0.15em] transition-colors ${isActive
-                      ? 'text-primary dark:text-white'
-                      : 'text-gray-600 hover:text-gray-900 dark:text-white/50 dark:hover:text-white'
+                    ? 'text-primary dark:text-white'
+                    : 'text-gray-600 hover:text-gray-900 dark:text-white/50 dark:hover:text-white'
                     }`}
                   onClick={() => soundManager.playTone(500, 50, 0.15)}
                 >
@@ -274,8 +274,8 @@ const Footer = () => {
                 type="email"
                 placeholder={t('footer.newsletter_placeholder')}
                 className={`rounded-l px-4 py-3 text-sm outline-none focus:border-primary border transition-colors ${isDark
-                    ? 'bg-white/5 border-white/10 focus:bg-white/10 text-white'
-                    : 'bg-gray-100 border-gray-200 focus:bg-white text-gray-900'
+                  ? 'bg-white/5 border-white/10 focus:bg-white/10 text-white'
+                  : 'bg-gray-100 border-gray-200 focus:bg-white text-gray-900'
                   }`}
               />
               <motion.button
@@ -297,9 +297,14 @@ const Footer = () => {
           whileInView="visible"
           viewport={{ once: false, amount: 0.5 }}
         >
-          <p className={`text-[10px] uppercase tracking-[0.3em] font-bold ${isDark ? 'text-white/20' : 'text-gray-500'}`}>
-            {t('footer.copyright')}
-          </p>
+          <div className="flex flex-col gap-2">
+            <p className={`text-[10px] uppercase tracking-[0.3em] font-bold ${isDark ? 'text-white/20' : 'text-gray-500'}`}>
+              {t('footer.copyright')}
+            </p>
+            <p className={`text-[10px] uppercase tracking-[0.3em] font-bold ${isDark ? 'text-white/20' : 'text-gray-500'}`}>
+              {t('footer.developer')}
+            </p>
+          </div>
           <div className="flex gap-12 text-[10px] uppercase tracking-[0.3em] font-bold text-gray-500 dark:text-white/20">
             <motion.a
               href="#"

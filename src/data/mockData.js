@@ -24,10 +24,10 @@ export const activeService = {
 };
 
 export const serviceHistory = [
-    { date: 'Oct 24, 2023', title: 'Ceramic Coating (Level 2)', sub: '5-Year Surface Protection', vehicle: '2023 Tesla Model S Plaid', cost: '$1,200.00', status: 'Completed' },
-    { date: 'Aug 12, 2023', title: 'Full Interior Detail', sub: 'Steam Clean & Leather Conditioning', vehicle: '2023 Porsche 911 GT3', cost: '$350.00', status: 'Completed' },
-    { date: 'Jun 05, 2023', title: 'Paint Protection Film (PPF)', sub: 'Full Front End Package', vehicle: '2023 Porsche 911 GT3', cost: '$2,800.00', status: 'Completed' },
-    { date: 'Mar 18, 2023', title: 'Pre-Delivery Inspection', sub: 'New Vehicle Prep & Decontamination', vehicle: '2023 Porsche 911 GT3', cost: '$150.00', status: 'Completed' }
+    { date: 'Oct 24, 2023', title: 'Ceramic Coating (Level 2)', sub: '5-Year Surface Protection', vehicle: '2023 Tesla Model S Plaid', cost: '27 500 Kč', status: 'Completed' },
+    { date: 'Aug 12, 2023', title: 'Full Interior Detail', sub: 'Steam Clean & Leather Conditioning', vehicle: '2023 Porsche 911 GT3', cost: '8 000 Kč', status: 'Completed' },
+    { date: 'Jun 05, 2023', title: 'Paint Protection Film (PPF)', sub: 'Full Front End Package', vehicle: '2023 Porsche 911 GT3', cost: '64 000 Kč', status: 'Completed' },
+    { date: 'Mar 18, 2023', title: 'Pre-Delivery Inspection', sub: 'New Vehicle Prep & Decontamination', vehicle: '2023 Porsche 911 GT3', cost: '3 500 Kč', status: 'Completed' }
 ];
 
 export const transformations = [
@@ -54,9 +54,9 @@ export const transformations = [
 export const pricingConfig = {
     base: {
         sedan: 0,
-        suv: 100,
-        sport: 50,
-        luxury: 150
+        suv: 2500,
+        sport: 1500,
+        luxury: 3500
     },
     conditionMultiplier: {
         new: 1,
@@ -64,8 +64,8 @@ export const pricingConfig = {
         bad: 1.5
     },
     modules: {
-        coating: 1250,
-        correction: 850,
-        interior: 450
+        coating: 28000,
+        correction: 19000,
+        interior: 10000
     }
 };

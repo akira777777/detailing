@@ -174,7 +174,7 @@ const Calculator = () => {
                                         <div className="flex items-center justify-between md:justify-end gap-8">
                                             <div className="text-right transition-transform duration-300">
                                                 <span className="text-gray-400 dark:text-white/40 text-[10px] uppercase font-bold tracking-widest block">{t('calculator.step_3.est_cost')}</span>
-                                                <span className="text-xl font-black text-gray-900 dark:text-white">${mod.cost}</span>
+                                                <span className="text-xl font-black text-gray-900 dark:text-white">{mod.cost} Kč</span>
                                             </div>
                                             <div className="relative inline-flex items-center">
                                                 <input
@@ -209,7 +209,7 @@ const Calculator = () => {
                                         <p className="text-[10px] text-white/40 uppercase font-black tracking-widest mb-1">{t('calculator.summary.vehicle')}</p>
                                         <p className="text-sm font-bold capitalize text-white">{vehicle}</p>
                                     </div>
-                                    <span className="text-xs font-bold text-white">+${pricingConfig.base[vehicle]}</span>
+                                    <span className="text-xs font-bold text-white">+{pricingConfig.base[vehicle]} Kč</span>
                                 </div>
                                 <div className="flex justify-between items-start">
                                     <div>
@@ -231,7 +231,7 @@ const Calculator = () => {
                                     <span className="text-[11px] text-primary font-black tracking-widest uppercase">{t('calculator.summary.inc_tax')}</span>
                                 </div>
                                 <div className="text-5xl font-black text-white tracking-tighter">
-                                    ${Math.floor(total)}<span className="text-lg text-white/30 ml-2 font-medium tracking-normal">.00</span>
+                                    {Math.floor(total)} <span className="text-3xl text-white/60 font-bold ml-1">Kč</span>
                                 </div>
                             </div>
                             <div className="space-y-4">
