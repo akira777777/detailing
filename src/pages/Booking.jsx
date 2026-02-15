@@ -61,71 +61,73 @@ const TimeSlot = memo(({ slot, isSelected, onClick, timeLabel, fullyBookedLabel 
 
 TimeSlot.displayName = 'TimeSlot';
 
+
 const Booking = () => {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { addToast } = useToast();
   const { carModel, modules, totalPrice } = useBookingStore();
 
   const [viewDate, setViewDate] = useState(new Date());
-  const today = useMemo(() => new Date(), []);
-
-  const currentYear = viewDate.getFullYear();
-  const currentMonth = viewDate.getMonth();
-  const currentDay = today.getDate();
-
-  const [selectedDate, setSelectedDate] = useState(currentDay);
-  const today = useMemo(() => new Date(), []);
-  const [viewDate, setViewDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
-  const [selectedFullDate, setSelectedFullDate] = useState(today);
+  const [selectedFullDate, setSelectedFullDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState('10:30 AM');
 
-  const { days, emptyDays, viewYear, viewMonth } = useMemo(() => {
-    const year = viewDate.getFullYear();
-    const month = viewDate.getMonth();
-    const numDays = new Date(year, month + 1, 0).getDate();
-    const firstDayOfMonth = new Date(year, month, 1).getDay();
+  const handleDateSelect = useCallback((day) => {
+    setSelectedFullDate(new Date(viewDate.getFullYear(), viewDate.getMonth(), day));
+  }, [viewDate]);
 
-    const daysArray = Array.from({ length: numDays }, (_, i) => {
-      const day = i + 1;
-      const dateObj = new Date(year, month, day);
-      return {
-        day,
-        isWeekend: dateObj.getDay() === 0 || dateObj.getDay() === 6,
-        fullDate: fullDateFormatter.format(dateObj)
-        fullDate: fullDateFormatter.format(dateObj),
-        isWeekend: dateObj.getDay() === 0 || dateObj.getDay() === 6,
-        dateObj
-      };
-    });
+  const handleTimeSelect = useCallback((time) => {
+    setSelectedTime(time);
+  }, []);
+
+  const { days, emptyDays } = useMemo(() => {
+    const year = viewDate.getFullYear(), month = viewDate.getMonth();
+    const numDays = new Date(year, month + 1, 0).getDate();
+    const firstDay = new Date(year, month, 1).getDay();
 
     return {
-      days: daysArray,
-      emptyDays: Array.from({ length: firstDayOfMonth }),
-      viewYear: year,
-      viewMonth: month
+      days: Array.from({ length: numDays }, (_, i) => {
+        const d = new Date(year, month, i + 1);
+        return {
+          day: i + 1,
+          fullDate: formatDateWithWeekday(d, i18n.language),
+          isWeekend: [0, 6].includes(d.getDay()),
+          dateObj: d
+        };
+      }),
+      emptyDays: Array.from({ length: firstDay })
     };
-  }, [viewDate]);
+  }, [viewDate, i18n.language]);
+
+  const weekdays = useMemo(() => {
+    return WEEKDAY_SEEDS.map(d => formatWeekdayShort(d, i18n.language));
+  }, [i18n.language]);
+
+  const monthName = useMemo(() => {
+    return formatMonthYear(viewDate, i18n.language);
+  }, [viewDate, i18n.language]);
+
+  const formattedSelectedDate = useMemo(() => {
+    return formatShortDate(selectedFullDate, i18n.language);
+  }, [selectedFullDate, i18n.language]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handlePrevMonth = () => setViewDate(new Date(currentYear, currentMonth - 1, 1));
-  const handleNextMonth = () => setViewDate(new Date(currentYear, currentMonth + 1, 1));
-  const handlePrevMonth = () => setViewDate(new Date(viewYear, viewMonth - 1, 1));
-  const handleNextMonth = () => setViewDate(new Date(viewYear, viewMonth + 1, 1));
+  const handlePrevMonth = () => {
+    const newDate = new Date(viewDate);
+    newDate.setMonth(newDate.getMonth() - 1);
+    setViewDate(newDate);
+  };
 
-  const handleConfirm = async () => {
+  const handleNextMonth = () => {
+    const newDate = new Date(viewDate);
+    newDate.setMonth(newDate.getMonth() + 1);
+    setViewDate(newDate);
+  };
+
+  const handleConfirm = useCallback(async () => {
     setIsSubmitting(true);
-
-    // Format date as ISO for the backend (YYYY-MM-DD) using view month/year
-    const bookingDate = new Date(currentYear, currentMonth, selectedDate);
-    // Use local year, month, day to avoid timezone issues with toISOString()
-    const yyyy = bookingDate.getFullYear();
-    const mm = String(bookingDate.getMonth() + 1).padStart(2, '0');
-    const dd = String(bookingDate.getDate()).padStart(2, '0');
-    const dateStr = `${yyyy}-${mm}-${dd}`;
-    // Format date as ISO for the backend (YYYY-MM-DD)
     const dateStr = `${selectedFullDate.getFullYear()}-${String(selectedFullDate.getMonth() + 1).padStart(2, '0')}-${String(selectedFullDate.getDate()).padStart(2, '0')}`;
-
     try {
       const response = await fetch('/api/booking', {
         method: 'POST',
@@ -153,151 +155,14 @@ const Booking = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [selectedFullDate, selectedTime, carModel, modules, totalPrice, addToast, navigate]);
 
-  return (
-    <div className="pt-32 pb-24 px-4 lg:px-12 bg-background-light dark:bg-background-dark min-h-screen transition-colors duration-300">
-      <div className="max-w-[1100px] mx-auto flex flex-col gap-8">
-
-        {/* Header & Progress */}
-        <div className="flex flex-col gap-4">
-            <div className="flex justify-between items-end">
-                <h1 className="text-gray-900 dark:text-white tracking-tight text-3xl font-extrabold">Schedule Your Detailing Session</h1>
-                <div className="flex flex-col items-end gap-1">
-                    <span className="text-primary text-xs font-bold uppercase tracking-widest">Step 2 of 3</span>
-                    <p className="text-gray-600 dark:text-white text-sm font-medium">Date & Time Selection</p>
-                </div>
-            </div>
-            <div
-                className="w-full rounded-full bg-gray-200 dark:bg-white/10 h-2.5 overflow-hidden"
-                role="progressbar"
-                aria-valuenow="66"
-                aria-valuemin="0"
-                aria-valuemax="100"
-                aria-label="Booking progress"
-            >
-                <div className="h-full rounded-full bg-primary" style={{ width: '66%' }}></div>
-            </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            {/* Calendar */}
-            <div className="lg:col-span-7 flex flex-col gap-6">
-                <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-6 shadow-sm dark:shadow-none">
-                    <div className="flex items-center justify-between mb-8">
-                        <h3 className="text-gray-900 dark:text-white text-lg font-bold">Pick a Date</h3>
-                        <div className="flex items-center gap-2">
-                            <button
-                                aria-label="Previous month"
-                                onClick={handlePrevMonth}
-                                className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors"
-                            >
-                                <span className="material-symbols-outlined">chevron_left</span>
-                            </button>
-                            <p
-                                className="text-gray-900 dark:text-white text-base font-bold min-w-[140px] text-center uppercase tracking-wide"
-                                aria-live="polite"
-                                aria-live="polite"
-                                className="text-gray-900 dark:text-white text-base font-bold min-w-[140px] text-center uppercase tracking-wide"
-                            >
-                                {monthYearFormatter.format(viewDate)}
-                            </p>
-                            <button
-                                onClick={handleNextMonth}
-                                className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-900 dark:text-white transition-colors"
-                                aria-label="Next month"
-                                onClick={handleNextMonth}
-                            >
-                                <span className="material-symbols-outlined">chevron_right</span>
-                            </button>
-    const { t, i18n } = useTranslation();
-    const navigate = useNavigate();
-    const { addToast } = useToast();
-    const { carModel, modules, totalPrice } = useBookingStore();
-
-    const [viewDate, setViewDate] = useState(new Date());
-    const [selectedFullDate, setSelectedFullDate] = useState(new Date());
-    const [selectedTime, setSelectedTime] = useState('10:30 AM');
-
-    const handleDateSelect = useCallback((day) => {
-        setSelectedFullDate(new Date(viewDate.getFullYear(), viewDate.getMonth(), day));
-    }, [viewDate]);
-
-    const handleTimeSelect = useCallback((time) => {
-        setSelectedTime(time);
-    }, []);
-
-    const { days, emptyDays } = useMemo(() => {
-        const year = viewDate.getFullYear(), month = viewDate.getMonth();
-        const numDays = new Date(year, month + 1, 0).getDate();
-        const firstDay = new Date(year, month, 1).getDay();
-
-        return {
-            days: Array.from({ length: numDays }, (_, i) => {
-                const d = new Date(year, month, i + 1);
-                return {
-                    day: i + 1,
-                    fullDate: formatDateWithWeekday(d, i18n.language),
-                    isWeekend: [0, 6].includes(d.getDay())
-                };
-            }),
-            emptyDays: Array.from({ length: firstDay })
-        };
-    }, [viewDate, i18n.language]);
-
-    const weekdays = useMemo(() => {
-        return WEEKDAY_SEEDS.map(d => formatWeekdayShort(d, i18n.language));
-    }, [i18n.language]);
-
-    const monthName = useMemo(() => {
-        return formatMonthYear(viewDate, i18n.language);
-    }, [viewDate, i18n.language]);
-
-    const formattedSelectedDate = useMemo(() => {
-        return formatShortDate(selectedFullDate, i18n.language);
-    }, [selectedFullDate, i18n.language]);
-
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const handleConfirm = useCallback(async () => {
-        setIsSubmitting(true);
-        const dateStr = `${selectedFullDate.getFullYear()}-${String(selectedFullDate.getMonth() + 1).padStart(2, '0')}-${String(selectedFullDate.getDate()).padStart(2, '0')}`;
-        try {
-            const response = await fetch('/api/booking', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    date: dateStr,
-                    time: selectedTime,
-                    carModel: carModel,
-                    packageName: getPackageName(modules),
-                    totalPrice: totalPrice,
-                }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to confirm booking');
-            }
-
-            addToast('Booking successfully scheduled!', 'success');
-            navigate('/booking-confirmation');
-        } catch (error) {
-            addToast(error.message, 'error');
-        } finally {
-            setIsSubmitting(false);
-        }
-    }, [selectedFullDate, selectedTime, carModel, modules, totalPrice, addToast, navigate]);
-
-    // Translation helpers for time slots
-    const getTimeLabel = useCallback((label) => {
-        if (label === 'Morning') return t('booking.morning');
-        if (label === 'Afternoon') return t('booking.afternoon');
-        if (label === 'Evening') return t('booking.evening');
-        return label;
-    }, [t]);
+  const getTimeLabel = useCallback((label) => {
+    if (label === 'Morning') return t('booking.morning');
+    if (label === 'Afternoon') return t('booking.afternoon');
+    if (label === 'Evening') return t('booking.evening');
+    return label;
+  }, [t]);
 
     return (
         <div className="pt-32 pb-24 px-4 lg:px-12 bg-background-light dark:bg-background-dark min-h-screen transition-colors duration-300">
@@ -529,6 +394,9 @@ const Booking = () => {
                     </div>
                 </div>
             </div>
+        </div>
+        </div>
+        </div>
         </div>
     );
 };

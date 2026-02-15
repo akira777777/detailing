@@ -20,8 +20,10 @@ export async function loadPolyfills() {
     return Promise.resolve();
   }
 
+  const polyfills = [];
+
   // IntersectionObserver polyfill for Safari < 12.1
-  if (!window.IntersectionObserver) {
+  if (typeof window !== 'undefined' && !window.IntersectionObserver) {
     const ioPkg = 'intersection-observer';
     polyfills.push(
       import(/* @vite-ignore */ ioPkg)
@@ -39,22 +41,10 @@ export async function loadPolyfills() {
           };
         })
     );
-    console.warn('IntersectionObserver not available, using fallback');
-    window.IntersectionObserver = class IntersectionObserver {
-      constructor(callback) {
-        this.callback = callback;
-      }
-      observe() {}
-      unobserve() {}
-      disconnect() {}
-      observe() { }
-      unobserve() { }
-      disconnect() { }
-    };
   }
 
   // ResizeObserver polyfill for Safari < 13.1
-  if (!window.ResizeObserver) {
+  if (typeof window !== 'undefined' && !window.ResizeObserver) {
     const roPkg = 'resize-observer-polyfill';
     polyfills.push(
       import(/* @vite-ignore */ roPkg)
@@ -75,19 +65,10 @@ export async function loadPolyfills() {
           };
         })
     );
-    console.warn('ResizeObserver not available, using fallback');
-    window.ResizeObserver = class ResizeObserver {
-      constructor(callback) {
-        this.callback = callback;
-      }
-      observe() {}
-      unobserve() {}
-      disconnect() {}
-    };
   }
 
   // Smooth scroll polyfill for older browsers
-  if (!('scrollBehavior' in document.documentElement.style)) {
+  if (typeof window !== 'undefined' && !('scrollBehavior' in document.documentElement.style)) {
     const ssPkg = 'smoothscroll-polyfill';
     polyfills.push(
       import(/* @vite-ignore */ ssPkg)
@@ -100,13 +81,9 @@ export async function loadPolyfills() {
           console.warn('Smooth scroll polyfill not available');
         })
     );
-    console.warn('Smooth scroll polyfill not available');
-      observe() { }
-      unobserve() { }
-      disconnect() { }
-    };
   }
 
+  await Promise.all(polyfills);
   return Promise.resolve();
 }
 

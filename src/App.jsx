@@ -8,6 +8,7 @@ import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from './components/PageTransition';
+import { Analytics } from '@vercel/analytics/react';
 
 // Lazy load all page components for code splitting
 const Home = lazy(() => import('./pages/Home'));
@@ -71,6 +72,7 @@ function App() {
               </Suspense>
             </ErrorBoundary>
           </Layout>
+          <Analytics />
         </Router>
       </ToastProvider>
     </ThemeProvider>
