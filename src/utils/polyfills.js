@@ -89,51 +89,17 @@ export async function loadPolyfills() {
       import(/* @vite-ignore */ ssPkg)
         .then(module => {
           module.polyfill();
->>>>>>> Stashed changes
-          console.warn('ResizeObserver not available, using fallback');
-          window.ResizeObserver = class ResizeObserver {
-            constructor(callback) {
-              this.callback = callback;
-            }
-            observe() { }
-            unobserve() { }
-            disconnect() { }
-          };
-        }
-
-// Smooth scroll polyfill for older browsers
-if (!('scrollBehavior' in document.documentElement.style)) {
-      const ssPkg = 'smoothscroll-polyfill';
-      polyfills.push(
-        import(/* @vite-ignore */ ssPkg)
-          .then(module => {
-            module.polyfill();
-            console.log('Loaded smooth scroll polyfill');
-          })
-          .catch(() => {
-            // Polyfill not critical - scroll will just be instant
-            console.warn('Smooth scroll polyfill not available');
-          })
-      );
-      console.warn('Smooth scroll polyfill not available');
-      observe() { }
-      unobserve() { }
-      disconnect() { }
-    };
+          console.log('Loaded smooth scroll polyfill');
+        })
+        .catch(() => {
+          // Polyfill not critical - scroll will just be instant
+          console.warn('Smooth scroll polyfill not available');
+        })
+    );
+    console.warn('Smooth scroll polyfill not available');
   }
 
   return Promise.resolve();
-=======
-    window.ResizeObserver = class ResizeObserver {
-      constructor() {}
-      observe() {}
-      unobserve() {}
-      disconnect() {}
-    };
-  }
-
-  return Promise.all(polyfills);
->>>>>>> Stashed changes
 }
 
 /**
@@ -179,6 +145,40 @@ if (!Object.fromEntries) {
     }
     return result;
   };
+}
+
+/**
+ * String.prototype.matchAll polyfill
+ */
+if (!String.prototype.matchAll) {
+  String.prototype.matchAll = function* (regexp) {
+    const flags = regexp.global ? regexp.flags : regexp.flags + 'g';
+    const re = new RegExp(regexp.source, flags);
+    let match;
+    while ((match = re.exec(this)) !== null) {
+      yield match;
+    }
+  };
+}
+
+/**
+ * Element.prototype.closest polyfill for IE11 (if needed in future)
+ */
+if (typeof Element !== 'undefined' && !Element.prototype.closest) {
+  Element.prototype.closest = function (s) {
+    let el = this;
+    do {
+      if (el.matches(s)) return el;
+      el = el.parentElement || el.parentNode;
+    } while (el !== null && el.nodeType === 1);
+    return null;
+  };
+}
+
+/**
+ * Element.prototype.matches polyfill
+ */
+if (typeof Element !== 'undefined' && !Element.prototype.matches) {
 }
 
 /**
