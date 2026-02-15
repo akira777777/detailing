@@ -82,47 +82,47 @@ export async function loadPolyfills() {
     };
   }
 
-  unobserve() { }
-  disconnect() { }
-};
-        })
-    );
-=======
-<<<<<<< Updated upstream
+  // Smooth scroll polyfill for older browsers
+  if (!('scrollBehavior' in document.documentElement.style)) {
+    const ssPkg = 'smoothscroll-polyfill';
+    polyfills.push(
+      import(/* @vite-ignore */ ssPkg)
+        .then(module => {
+          module.polyfill();
 >>>>>>> Stashed changes
-console.warn('ResizeObserver not available, using fallback');
-window.ResizeObserver = class ResizeObserver {
-  constructor(callback) {
-    this.callback = callback;
-  }
-  observe() { }
-  unobserve() { }
-  disconnect() { }
-};
-  }
+          console.warn('ResizeObserver not available, using fallback');
+          window.ResizeObserver = class ResizeObserver {
+            constructor(callback) {
+              this.callback = callback;
+            }
+            observe() { }
+            unobserve() { }
+            disconnect() { }
+          };
+        }
 
 // Smooth scroll polyfill for older browsers
 if (!('scrollBehavior' in document.documentElement.style)) {
-  const ssPkg = 'smoothscroll-polyfill';
-  polyfills.push(
-    import(/* @vite-ignore */ ssPkg)
-      .then(module => {
-        module.polyfill();
-        console.log('Loaded smooth scroll polyfill');
-      })
-      .catch(() => {
-        // Polyfill not critical - scroll will just be instant
-        console.warn('Smooth scroll polyfill not available');
-      })
-  );
-  console.warn('Smooth scroll polyfill not available');
-  observe() { }
-  unobserve() { }
-  disconnect() { }
-};
+      const ssPkg = 'smoothscroll-polyfill';
+      polyfills.push(
+        import(/* @vite-ignore */ ssPkg)
+          .then(module => {
+            module.polyfill();
+            console.log('Loaded smooth scroll polyfill');
+          })
+          .catch(() => {
+            // Polyfill not critical - scroll will just be instant
+            console.warn('Smooth scroll polyfill not available');
+          })
+      );
+      console.warn('Smooth scroll polyfill not available');
+      observe() { }
+      unobserve() { }
+      disconnect() { }
+    };
   }
 
-return Promise.resolve();
+  return Promise.resolve();
 =======
     window.ResizeObserver = class ResizeObserver {
       constructor() {}
