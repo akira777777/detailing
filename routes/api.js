@@ -195,7 +195,8 @@ router.get('/bookings',
           b.notes,
           u.first_name,
           u.last_name,
-          u.email
+          u.email,
+          COUNT(*) OVER() AS total_count
         FROM bookings b
         LEFT JOIN users u ON b.user_id = u.id
         WHERE b.user_id = $1
@@ -222,6 +223,22 @@ router.get('/bookings',
       queryParams.push(pagination.limit, pagination.offset);
       
       const result = await db.query(query, queryParams);
+      
+      // Optimization: extract total from window function or fallback only if empty
+      let total = 0;
+      if (result.length > 0) {
+        total = parseInt(result[0].total_count);
+        // Clean up total_count from each row to maintain clean API response
+        result.forEach(row => delete row.total_count);
+      } else if (pagination.offset > 0) {
+        // If result is empty but offset was specified, we need a separate count
+        let countQuery = `SELECT COUNT(*) FROM bookings WHERE user_id = ${req.userId}`;
+        if (conditions.length > 0) {
+          countQuery += ' AND ' + conditions.join(' AND ');
+        }
+        const countResult = await db.query(countQuery);
+        total = parseInt(countResult[0].count);
+      }
       
       // Get total count
       let countQuery = `SELECT COUNT(*) FROM bookings b WHERE b.user_id = $1`;
