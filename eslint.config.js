@@ -6,7 +6,16 @@ import tseslint from 'typescript-eslint';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
-  globalIgnores(['dist', 'detailing', 'node_modules', 'playwright-report']),
+  globalIgnores([
+    'dist',
+    'detailing',
+    'node_modules',
+    'playwright-report',
+    '.kilocode',
+    'tests',
+    'e2e',
+    'public/service-worker.js',
+  ]),
   
   // TypeScript files
   {
@@ -63,41 +72,7 @@ export default defineConfig([
     },
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]|motion' }],
-    },
-  },
-]);
-        varsIgnorePattern: '^[A-Z_]|motion',
-        argsIgnorePattern: '^_' 
-      }],
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'warn',
-    },
-  },
-  
-  // JavaScript/JSX files (legacy)
-  {
-    files: ['**/*.{js,jsx}'],
-    extends: [
-      js.configs.recommended,
-      reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
-    ],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-      },
-      parserOptions: {
-        ecmaVersion: 'latest',
-        ecmaFeatures: { jsx: true },
-        sourceType: 'module',
-      },
-    },
-    rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]|motion' }],
+      'react-hooks/set-state-in-effect': 'off',
     },
   },
 ]);

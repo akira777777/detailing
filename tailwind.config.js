@@ -9,37 +9,47 @@ export default {
     extend: {
       colors: {
         "primary": {
-          DEFAULT: "#0091FF", // Unified Blue Accent
-          hover: "#0077D4",
-          active: "#005CAB",
-          glow: "rgba(0, 145, 255, 0.5)",
+          DEFAULT: "#FF6B35", // Premium orange accent (automotive inspired)
+          hover: "#E55A2B",
+          active: "#CC4B1F",
+          glow: "rgba(255, 107, 53, 0.5)",
         },
         "secondary": {
-          DEFAULT: "#F2B90D", // Gold Accent
-          hover: "#D4A00B",
+          DEFAULT: "#00D4FF", // Cyan accent for modern contrast
+          hover: "#00B8E6",
         },
         "background": {
           light: "#F6F7F8",
-          dark: "#050505", // Deepest black
+          dark: "#0A0A0A", // Premium dark background
         },
         "surface": {
           light: "#FFFFFF",
-          dark: "#0D0D0D", // Panel background
-          darker: "#0A0A0A", // Card background
+          dark: "#1A1A1A", // Card/surface background
+          darker: "#0F0F0F", // Deeper surface
         },
         "panel": {
           light: "#FFFFFF",
-          dark: "#121212", // Floating panels
+          dark: "#252525", // Panel background
+        },
+        "text": {
+          primary: "#FFFFFF",
+          secondary: "#B0B0B0",
+          muted: "#6B7280",
+        },
+        "border": {
+          DEFAULT: "#333333",
+          light: "#E5E7EB",
         },
         // Legacy mappings to keep existing code working while we refactor
-        "background-dark": "#050505",
-        "panel-dark": "#0D0D0D",
-        "surface-dark": "#171717",
+        "background-dark": "#0A0A0A",
+        "panel-dark": "#1A1A1A",
+        "surface-dark": "#252525",
         "background-light": "#F6f7F8",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
         display: ["Manrope", "sans-serif"],
+        heading: ["Montserrat", "sans-serif"], // Premium heading font
       },
       borderRadius: {
         "none": "0",
@@ -105,14 +115,20 @@ export default {
         },
         borderGlow: {
           '0%, 100%': {
-            borderColor: 'rgba(0, 145, 255, 0.2)',
-            boxShadow: '0 0 10px rgba(0, 145, 255, 0.1)',
+            borderColor: 'rgba(255, 107, 53, 0.2)',
+            boxShadow: '0 0 10px rgba(255, 107, 53, 0.1)',
           },
           '50%': {
-            borderColor: 'rgba(0, 145, 255, 0.8)',
-            boxShadow: '0 0 20px rgba(0, 145, 255, 0.4)',
+            borderColor: 'rgba(255, 107, 53, 0.8)',
+            boxShadow: '0 0 20px rgba(255, 107, 53, 0.4)',
           },
         },
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+      },
+      textStroke: {
+        '-2px': '-2px',
       },
     },
   },

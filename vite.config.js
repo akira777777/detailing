@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { visualizer } from 'rollup-plugin-visualizer'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -53,8 +57,9 @@ export default defineConfig({
   },
   server: {
     host: true, // Listen on all addresses including IPv4
-    headers: {
-      'Cache-Control': 'public, max-age=3600'
+    hmr: {
+      clientPort: 5173,
+      port: 5173,
     },
     proxy: {
       '/api': {
@@ -73,7 +78,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': '/src',
+      '@': path.resolve(__dirname, './src'),
     },
   },
   optimizeDeps: {

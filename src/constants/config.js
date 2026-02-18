@@ -6,12 +6,14 @@
  * Application metadata
  */
 export const APP_CONFIG = {
-    name: 'Luxe Detail',
-    tagline: 'Modern Automotive Care',
-    description: 'Premium automotive detailing services',
-    url: 'https://luxedetail.com',
-    email: 'info@luxedetail.com',
-    phone: '+1 (555) 123-4567'
+    name: 'DETAILING SALON LUX',
+    tagline: 'Premium Automotive Care Excellence',
+    description: 'Professional automotive detailing services featuring precision paint correction, ceramic coating, and interior detailing',
+    url: 'https://detailingsalonlux.com',
+    email: 'info@detailingsalonlux.com',
+    phone: '+420 XXX XXX XXX',
+    owner: 'PAN STEPAN',
+    developer: 'Artem Mikhailov'
 };
 
 /**

@@ -28,44 +28,69 @@
         "newsletter": "Newsletter",
         "newsletter_placeholder": "Email address",
         "subscribe": "Subscribe",
-        "copyright": "© 2024 LUXE DETAIL STUDIO. ENGINEERED FOR PERFECTION.",
+        "copyright": "© 2024 DETAILING SALON LUX. ENGINEERED FOR PERFECTION.",
         "privacy": "Privacy",
         "terms": "Terms"
     },
     "skip_to_main": "Skip to main content",
     "home": {
         "hero": {
-            "excellence": "Excellence since 2012",
-            "title_art": "The Art of",
-            "title_perfection": "Perfection",
-            "subtitle": "Premium detailing for true connoisseurs. Precision care for elite vehicles.",
+            "excellence": "Premium Automotive Care",
+            "title_art": "Professional Car",
+            "title_perfection": "Detailing",
+            "subtitle": "Premium detailing services featuring precision paint correction, ceramic coating, and interior detailing. Experience the ultimate in automotive care.",
             "our_services": "Our Services",
             "book_now": "Book Now",
             "status": "Status"
         },
+        "stats": {
+            "clients": "Happy Clients",
+            "experience": "Years Experience",
+            "satisfaction": "Satisfaction",
+            "cars": "Cars Detailed"
+        },
         "services": {
             "title_label": "Core Services",
-            "title_main_1": "Precision",
-            "title_main_2": "Procedures",
-            "description": "Our studio utilizes advanced technologies and professional care methods to ensure your vehicle exceeds factory standards.",
+            "title_main_1": "Our Standout",
+            "title_main_2": "Services",
+            "description": "Professional detailing services tailored to your vehicle's needs",
             "learn_more": "Learn More",
             "items": {
                 "01": {
-                    "category": "Protection",
-                    "title": "Ceramic Coating",
-                    "description": "Next-generation molecular protection with permanent hydrophobic properties and deep gloss."
+                    "category": "Exterior",
+                    "title": "Exterior Detailing",
+                    "description": "Complete exterior wash, clay bar treatment, and premium wax protection for a showroom finish."
                 },
                 "02": {
                     "category": "Interior",
                     "title": "Interior Detailing",
-                    "description": "Deep cleaning of every pore and seam using pH-neutral organic agents for leather and carbon."
+                    "description": "Deep cleaning and conditioning of all interior surfaces, including leather treatment and fabric protection."
                 },
                 "03": {
-                    "category": "Polishing",
+                    "category": "Correction",
                     "title": "Paint Correction",
-                    "description": "Multi-stage abrasive polishing to eliminate defects, holograms, and micro-scratches to an ideal shine."
+                    "description": "Multi-stage polishing to remove swirl marks, scratches, and restore your paint's original brilliance."
+                },
+                "04": {
+                    "category": "Protection",
+                    "title": "Ceramic Coating",
+                    "description": "Long-lasting ceramic protection with hydrophobic properties and enhanced gloss for years."
+                },
+                "05": {
+                    "category": "Premium",
+                    "title": "Paint Protection Film",
+                    "description": "Invisible shield against rock chips, scratches, and road debris with self-healing technology."
                 }
             }
+        },
+        "about": {
+            "title": "Our Detailing Story",
+            "description": "At DETAILING SALON LUX, we are passionate about bringing out the best in every vehicle. Our team of skilled professionals uses only the finest products and techniques to deliver exceptional results.",
+            "feature1": "Certified Experts",
+            "feature2": "Eco-Friendly Products",
+            "feature3": "Fast Service",
+            "feature4": "Premium Quality",
+            "cta": "Learn More"
         },
         "membership": {
             "club": "Luxe Club",

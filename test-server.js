@@ -4,7 +4,7 @@ const PORT = 3001;
 
 app.get('/', (req, res) => res.send('Hello'));
 
-const server = app.listen(PORT, () => {
+const _server = app.listen(PORT, () => {
 	console.log(`Test server running on ${PORT}`);
 });
 
