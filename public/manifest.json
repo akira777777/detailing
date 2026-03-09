@@ -1,0 +1,30 @@
+{
+    "name": "Luxe Detail",
+    "short_name": "LuxeDetail",
+    "description": "Premium automotive detailing services featuring precision paint correction, ceramic coating, and interior detailing",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0a0a0a",
+    "theme_color": "#0091ff",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "automotive",
+        "lifestyle",
+        "business"
+    ],
+    "screenshots": []
+}

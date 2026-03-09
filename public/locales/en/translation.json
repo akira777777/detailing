@@ -1,0 +1,400 @@
+{
+    "welcome": "Welcome to React",
+    "loading": "Loading...",
+    "nav": {
+        "home": "Home",
+        "gallery": "Gallery",
+        "calculator": "Calculator",
+        "booking": "Booking",
+        "dashboard": "Dashboard",
+        "animations": "Animations",
+        "login": "Login",
+        "book_now": "Book Now",
+        "mobile_menu_close": "Close menu",
+        "mobile_menu_open": "Open menu"
+    },
+    "footer": {
+        "description": "The final word in automotive surface preservation. We don't just detail, we re-engineer the aesthetic experience.",
+        "company": "Company",
+        "services": "Services",
+        "links": {
+            "studio": "Studio",
+            "our_work": "Our Work",
+            "pricing": "Pricing",
+            "coatings": "Coatings",
+            "correction": "Correction",
+            "protection": "Protection"
+        },
+        "newsletter": "Newsletter",
+        "newsletter_placeholder": "Email address",
+        "subscribe": "Subscribe",
+        "copyright": "© 2024 LUXE DETAIL STUDIO. ENGINEERED FOR PERFECTION.",
+        "privacy": "Privacy",
+        "terms": "Terms"
+    },
+    "skip_to_main": "Skip to main content",
+    "home": {
+        "hero": {
+            "excellence": "Excellence since 2012",
+            "title_art": "The Art of",
+            "title_perfection": "Perfection",
+            "subtitle": "Premium detailing for true connoisseurs. Precision care for elite vehicles.",
+            "our_services": "Our Services",
+            "book_now": "Book Now",
+            "status": "Status"
+        },
+        "services": {
+            "title_label": "Core Services",
+            "title_main_1": "Precision",
+            "title_main_2": "Procedures",
+            "description": "Our studio utilizes advanced technologies and professional care methods to ensure your vehicle exceeds factory standards.",
+            "learn_more": "Learn More",
+            "items": {
+                "01": {
+                    "category": "Protection",
+                    "title": "Ceramic Coating",
+                    "description": "Next-generation molecular protection with permanent hydrophobic properties and deep gloss."
+                },
+                "02": {
+                    "category": "Interior",
+                    "title": "Interior Detailing",
+                    "description": "Deep cleaning of every pore and seam using pH-neutral organic agents for leather and carbon."
+                },
+                "03": {
+                    "category": "Polishing",
+                    "title": "Paint Correction",
+                    "description": "Multi-stage abrasive polishing to eliminate defects, holograms, and micro-scratches to an ideal shine."
+                }
+            }
+        },
+        "membership": {
+            "club": "Luxe Club",
+            "title": "Membership",
+            "description": "Automated maintenance schedules and priority booking for dedicated automotive enthusiasts.",
+            "perks": {
+                "01": {
+                    "title": "Climate-Controlled Storage",
+                    "desc": "Specialized moisture-controlled bays with 24/7 monitoring of your vehicle's condition."
+                },
+                "02": {
+                    "title": "Digital Logbook",
+                    "desc": "Verified service history and HD photography of every procedure."
+                },
+                "03": {
+                    "title": "Precision Monitoring",
+                    "desc": "Regular battery maintenance and tire rotation on an automated schedule."
+                },
+                "04": {
+                    "title": "Exclusive Circle",
+                    "desc": "VIP access to private rallies, track days, and exclusive automotive offers."
+                }
+            },
+            "prestige": {
+                "limited": "Limited",
+                "title": "Prestige",
+                "price": "$499",
+                "period": "/ month",
+                "features": {
+                    "01": "Ceramic maintenance 2x per month",
+                    "02": "Monthly interior deep clean",
+                    "03": "Door-to-door vehicle delivery",
+                    "04": "Priority booking without wait"
+                },
+                "request_invitation": "Request Invitation",
+                "available_spots": "Available spots: 04",
+                "invitation_sent": "Invitation request sent! Our concierge will contact you within 24 hours."
+            }
+        }
+    },
+    "booking": {
+        "title": "Schedule Your Detailing Session",
+        "step_2": "Step 2 of 3",
+        "date_time_selection": "Date & Time Selection",
+        "pick_date": "Pick a Date",
+        "weekends_info": "Appointments on weekends include a complimentary exterior foam wash.",
+        "your_selection": "Your Selection",
+        "change": "Change",
+        "duration": "4-5 Hours Duration",
+        "select_start_time": "Select Start Time",
+        "morning": "Morning",
+        "afternoon": "Afternoon",
+        "evening": "Evening",
+        "fully_booked": "Fully Booked",
+        "back": "Back",
+        "total_estimated": "Total Estimated",
+        "confirm_booking": "Confirm Booking",
+        "processing": "Processing...",
+        "success": "Booking successfully scheduled!",
+        "error": "Failed to confirm booking"
+    },
+    "gallery": {
+        "label": "The Results",
+        "title": "Transformation Gallery",
+        "description": "Witness the professional precision and showroom-quality results. Our gallery highlights the level of care we put into every vehicle that enters our studio.",
+        "filter_by": "Filter By:",
+        "filters": {
+            "all": "All",
+            "luxury": "Luxury",
+            "suv": "SUV",
+            "correction": "Correction",
+            "protection": "Protection"
+        },
+        "total_time": "Total Time",
+        "case_study": "Case Study"
+    },
+    "calculator": {
+        "label": "Configuration Studio",
+        "title_1": "Service Cost",
+        "title_2": "Calculator",
+        "description": "Configure your bespoke detailing package. Our pricing algorithm calculates precision estimates based on vehicle geometry and surface requirements.",
+        "step_1": {
+            "title": "01. Select Vehicle Geometry",
+            "required": "Required",
+            "types": {
+                "sedan": "Sedan",
+                "suv": "SUV",
+                "sport": "Sport",
+                "luxury": "Luxury"
+            }
+        },
+        "step_2": {
+            "title": "02. Paint Surface Assessment",
+            "condition": "Condition",
+            "options": {
+                "new": {
+                    "label": "Pristine / New",
+                    "desc": "Delivery mileage, minimal contamination."
+                },
+                "used": {
+                    "label": "Light Wear",
+                    "desc": "Swirl marks, minor oxidation, daily use."
+                },
+                "bad": {
+                    "label": "Heavy Correction",
+                    "desc": "Deep scratches, etching, dull finish."
+                }
+            }
+        },
+        "step_3": {
+            "title": "03. Core Service Modules",
+            "multiselect": "Multi-Select",
+            "modules": {
+                "coating": {
+                    "title": "Level 3 Ceramic Coating",
+                    "desc": "Multi-layer nano-technological protection. 5-year durability."
+                },
+                "correction": {
+                    "title": "Precision Paint Correction",
+                    "desc": "Optical refinement for a swirl-free mirror finish."
+                },
+                "interior": {
+                    "title": "Interior Concours Detail",
+                    "desc": "Deep pore cleaning and leather preservation treatment."
+                }
+            },
+            "est_cost": "Est. Cost"
+        },
+        "summary": {
+            "title": "Configuration Summary",
+            "vehicle": "Vehicle",
+            "condition": "Surface Condition",
+            "modules": "Active Modules",
+            "selected": "Selected",
+            "total": "Estimated Total",
+            "inc_tax": "Inc. Tax",
+            "book": "Book This Configuration",
+            "save": "Save for later",
+            "guaranteed": "Guaranteed Studio Slots available within 7 days"
+        },
+        "toasts": {
+            "loaded": "Configuration loaded successfully!",
+            "applied": "Configuration applied to booking!",
+            "saved": "Configuration saved successfully!",
+            "restore_prompt": "Found saved configuration from {{date}}. Would you like to load it?"
+        }
+    },
+    "confirmation": {
+        "title": "Booking Confirmed!",
+        "subtitle": "Your vehicle is in good hands. We've sent a detailed confirmation to your email address.",
+        "approved": "Luxe Detailing Approved",
+        "appointment_details": "Appointment Details",
+        "selected_time": "Selected Time Appointment",
+        "selected_services": "Selected Services",
+        "total_investment": "Total Investment",
+        "receipt": "Receipt",
+        "add_calendar": "Add to Calendar",
+        "return_home": "Return Home",
+        "location": {
+            "title": "Salon Location",
+            "address_1": "742 Detailing Blvd,",
+            "address_2": "Performance District, CA 90210",
+            "directions": "Get Directions"
+        },
+        "help": {
+            "title": "Need Help?",
+            "desc": "If you need to reschedule or have special instructions, contact our concierge.",
+            "call": "Call Us",
+            "email": "Email"
+        },
+        "id_label": "Confirmation ID:",
+        "copy_id_title": "Click to copy ID",
+        "copy_id_aria": "Copy Confirmation ID",
+        "id_copied": "Confirmation ID copied to clipboard!",
+        "copy_failed": "Failed to copy ID",
+        "copyright": "© 2024 Luxe Detail Salon Professional Services"
+    },
+    "dashboard": {
+        "title": "Customer Dashboard",
+        "subtitle": "Manage your premium detailing services and loyalty rewards.",
+        "view_perks": "View Membership Perks",
+        "status": {
+            "title": "Current Status",
+            "active_detailing": "Active Detailing",
+            "vehicle": "Vehicle",
+            "live_camera": "Live Camera",
+            "connecting_feed": "Connecting to live feed... (Demo)",
+            "estimated_completion": "Estimated Completion",
+            "master_detailer": "Master Detailer"
+        },
+        "history": {
+            "title": "Service History",
+            "search_placeholder": "Search history...",
+            "filter_aria": "Filter history",
+            "loading": "Loading history...",
+            "no_history": "No service history found.",
+            "showing": "Showing {{start}} to {{end}} of {{total}} service entries",
+            "previous": "Previous",
+            "next": "Next",
+            "pdf": "PDF",
+            "columns": {
+                "date": "Date",
+                "service": "Service",
+                "vehicle": "Vehicle",
+                "cost": "Cost",
+                "status": "Status",
+                "invoice": "Invoice"
+            }
+        },
+        "sidebar": {
+            "loyalty_points": "Loyalty Points",
+            "pts_next_reward": "pts to next reward",
+            "book_new_service": "Book New Service",
+            "menu": {
+                "Dashboard": "Dashboard",
+                "My Vehicles": "My Vehicles",
+                "Service History": "Service History",
+                "Settings": "Settings",
+                "Support": "Support"
+            }
+        },
+        "appointment": "Appointment"
+    },
+    "not_found": {
+        "title": "Page Not Found",
+        "desc": "The page you're looking for doesn't exist or has been moved to another location.",
+        "go_home": "Go to Home",
+        "view_services": "View Services",
+        "error_code": "Error Code"
+    },
+    "showcase": {
+        "title": "Animation System & Micro-interactions",
+        "subtitle": "Showcasing Framer Motion, AOS-style reveals, SVG animations, and interactive sound effects",
+        "sections": {
+            "svg": "SVG Animated Icons",
+            "buttons": "Animated Buttons",
+            "scroll": "Scroll-trigger Animations",
+            "features": "Features",
+            "demo": "Interactive Demo"
+        },
+        "labels": {
+            "logo": "Logo",
+            "likes": "Likes",
+            "rating": "Rating",
+            "arrow": "Arrow",
+            "primary": "Primary",
+            "success": "Success",
+            "danger": "Danger",
+            "pulse": "Pulse",
+            "loading": "Load",
+            "sending": "Sending...",
+            "tooltip": "Tooltip",
+            "tooltip_text": "This is a tooltip!",
+            "large": "Large",
+            "small": "Small",
+            "scale_title": "Scale Animation",
+            "scale_desc": "This element scales up as it enters the viewport",
+            "counter_title": "Counter Animation",
+            "counter_desc": "Animated counter on reveal",
+            "parallax_title": "Parallax Effect",
+            "parallax_desc": "Elements moving at different speeds on scroll",
+            "demo_text": "Hover over elements and click buttons to experience the full range of animations and sound effects. Try toggling the dark mode in the header!",
+            "play_melody": "Play a Melody!"
+        },
+        "features": {
+            "dark_mode": {
+                "title": "Dark/Light Mode",
+                "desc": "Seamless theme switching with persistence"
+            },
+            "sound_effects": {
+                "title": "Sound Effects",
+                "desc": "Interactive UI feedback with audio tones"
+            },
+            "svg_animations": {
+                "title": "SVG Animations",
+                "desc": "Smooth, scalable animated vector graphics"
+            },
+            "scroll_trigger": {
+                "title": "Scroll-trigger",
+                "desc": "Dynamic animations triggered by scrolling"
+            },
+            "micro_interactions": {
+                "title": "Micro-interactions",
+                "desc": "Ripple effects and smooth state transitions"
+            },
+            "performance": {
+                "title": "Performance",
+                "desc": "Optimized for 60fps across all devices"
+            }
+        }
+    },
+    "testimonials": {
+        "title": "Client Stories",
+        "subtitle": "Trusted by automotive enthusiasts",
+        "items": {
+            "01": {
+                "name": "Alexander Petrov",
+                "car": "Porsche 911 GT3",
+                "text": "The attention to detail is simply unmatched. My GT3 looks better than the day I picked it up from the dealership."
+            },
+            "02": {
+                "name": "Elena Volkova",
+                "car": "Mercedes-AMG G63",
+                "text": "Professional service from start to finish. The ceramic coating has made maintenance incredibly easy."
+            },
+            "03": {
+                "name": "Dmitry Sokolov",
+                "car": "BMW M5 CS",
+                "text": "I trust no one else with my vehicles. Luxe Detail understands what 'perfection' truly means."
+            }
+        }
+    },
+    "contact": {
+        "title": "Contact Us",
+        "subtitle": "Get in touch for a personalized consultation",
+        "form": {
+            "name": "Name",
+            "email": "Email",
+            "message": "Message",
+            "send": "Send Message",
+            "sending": "Sending...",
+            "success": "Message sent successfully!",
+            "error": "Failed to send message. Please try again."
+        },
+        "info": {
+            "address": "123 Premium Blvd, Beverly Hills, CA 90210",
+            "phone": "+1 (555) 123-4567",
+            "email": "info@luxedetail.com",
+            "hours": "Mon-Sat: 9:00 AM - 7:00 PM"
+        }
+    }
+}

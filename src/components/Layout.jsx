@@ -1,0 +1,351 @@
+import React, { useState, useCallback } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
+import { AnimatedLogo } from './AnimatedIcons';
+import LanguageSwitcher from './LanguageSwitcher';
+import { soundManager } from '../utils/soundManager';
+
+// Optimization: Static navigation data moved outside component to prevent recreation on every render
+const NAV_LINKS = [
+  { key: 'nav.home', path: '/' },
+  { key: 'nav.gallery', path: '/gallery' },
+  { key: 'nav.calculator', path: '/calculator' },
+  { key: 'nav.booking', path: '/booking' },
+  { key: 'nav.dashboard', path: '/dashboard' },
+  { key: 'nav.animations', path: '/animations' },
+];
+
+const Navbar = () => {
+  const { t } = useTranslation();
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  const { isDark, toggleTheme } = useTheme();
+
+  // Optimization: Use framer-motion's useScroll for throttled scroll handling
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const isScrolled = latest > 50;
+    if (isScrolled !== scrolled) {
+      setScrolled(isScrolled);
+    }
+  });
+
+  const handleThemeToggle = useCallback(() => {
+    soundManager.playTone(440, 100, 0.2);
+    toggleTheme();
+  }, [toggleTheme]);
+
+  const handleLinkClick = useCallback((name) => {
+    if (name === 'MobileMenu') {
+      setMenuOpen(prev => !prev);
+    } else {
+      setMenuOpen(false);
+    }
+    soundManager.playTone(500, 50, 0.15);
+  }, []);
+
+  return (
+    <header className={`fixed top-0 w-full z-50 border-b transition-all duration-300 ${scrolled
+        ? 'bg-white/90 dark:bg-background-dark/90 backdrop-blur-xl border-gray-200 dark:border-white/5 py-3'
+        : 'bg-white/50 dark:bg-transparent border-transparent py-5'
+      }`}>
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-12 flex items-center justify-between">
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Link to="/" className="flex items-center gap-3 group">
+            <AnimatedLogo className="text-gray-900 dark:text-white" />
+            <h2 className="text-xl font-black tracking-[-0.05em] uppercase text-gray-900 dark:text-white transition-colors">
+              LUXE<span className="text-primary">DETAIL</span>
+            </h2>
+          </Link>
+        </motion.div>
+
+        <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
+          {NAV_LINKS.map((link) => {
+            const isActive = location.pathname === link.path;
+            return (
+              <motion.div
+                key={link.key}
+                className="relative py-2"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Link
+                  to={link.path}
+                  className={`text-[11px] font-bold uppercase tracking-[0.15em] transition-colors ${isActive
+                      ? 'text-primary dark:text-white'
+                      : 'text-gray-600 hover:text-gray-900 dark:text-white/50 dark:hover:text-white'
+                    }`}
+                  onClick={() => soundManager.playTone(500, 50, 0.15)}
+                >
+                  {t(link.key)}
+                </Link>
+                {isActive && (
+                  <motion.div
+                    layoutId="active-nav-link"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary shadow-[0_0_8px_rgba(0,145,255,0.5)]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </motion.div>
+            );
+          })}
+        </nav>
+
+        <div className="flex items-center gap-6">
+          <LanguageSwitcher />
+          {/* Theme Toggle */}
+          <motion.button
+            onClick={handleThemeToggle}
+            className="p-2 rounded-lg transition-colors bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-gray-900 dark:text-white"
+            whileHover={{ scale: 1.1, rotate: 20 }}
+            whileTap={{ scale: 0.95 }}
+            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {isDark ? '☀️' : '🌙'}
+          </motion.button>
+
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              to="/dashboard"
+              className="hidden sm:block text-[11px] font-bold uppercase tracking-[0.15em] transition-colors text-gray-600 hover:text-primary dark:text-white dark:hover:text-primary"
+              onClick={() => soundManager.playTone(500, 50, 0.15)}
+            >
+              {t('nav.login')}
+            </Link>
+          </motion.div>
+
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              to="/booking"
+              className="bg-gray-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded font-black text-[11px] uppercase tracking-[0.15em] hover:bg-primary dark:hover:bg-primary hover:text-white dark:hover:text-white transition-all"
+              onClick={() => soundManager.playTone(600, 100, 0.2)}
+            >
+              {t('nav.book_now')}
+            </Link>
+          </motion.div>
+
+          <motion.button
+            onClick={() => handleLinkClick('MobileMenu')}
+            className="lg:hidden p-2"
+            whileTap={{ scale: 0.95 }}
+            aria-label={menuOpen ? t('nav.mobile_menu_close') : t('nav.mobile_menu_open')}
+            aria-expanded={menuOpen}
+          >
+            <span className="material-symbols-outlined transition-colors text-gray-600 hover:text-gray-900 dark:text-white/70 dark:hover:text-white" aria-hidden="true">
+              {menuOpen ? 'close' : 'menu'}
+            </span>
+          </motion.button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="lg:hidden overflow-hidden border-t border-gray-200 bg-white/95 dark:border-white/5 dark:bg-background-dark/95"
+            aria-hidden={!menuOpen}
+          >
+            <nav className="flex flex-col gap-4 px-6 py-4" aria-label="Mobile navigation">
+              {NAV_LINKS.map((link, index) => (
+                <motion.div
+                  key={link.key}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  whileHover={{ x: 5 }}
+                >
+                  <Link
+                    to={link.path}
+                    className="block text-sm font-bold uppercase tracking-[0.1em] transition-colors text-gray-600 hover:text-gray-900 dark:text-white/70 dark:hover:text-white"
+                    onClick={() => handleLinkClick(link.key)}
+                  >
+                    {t(link.key)}
+                  </Link>
+                </motion.div>
+              ))}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
+  );
+};
+
+// Optimization: Static variants moved outside component
+const FOOTER_VARIANTS = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const ITEM_VARIANTS = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const Footer = () => {
+  const { t } = useTranslation();
+  const { isDark } = useTheme();
+
+  return (
+    <footer className="border-t transition-colors bg-gray-50 border-gray-200 dark:bg-background-dark dark:border-white/10 pt-20 pb-10 px-6 lg:px-12">
+      <div className="max-w-[1440px] mx-auto">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20"
+          variants={FOOTER_VARIANTS}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.2 }}
+        >
+          <motion.div className="md:col-span-4" variants={ITEM_VARIANTS}>
+            <div className="flex items-center gap-4 mb-8">
+              <div className="size-6 bg-primary flex items-center justify-center rounded-sm">
+                <div className="size-3 bg-white transform rotate-45"></div>
+              </div>
+              <h2 className="text-xl font-black tracking-[-0.05em] uppercase text-gray-900 dark:text-white transition-colors">
+                LUXE<span className="text-primary">DETAIL</span>
+              </h2>
+            </div>
+            <p className="text-sm leading-relaxed max-w-xs mb-8 text-gray-600 dark:text-white/30 transition-colors">
+              {t('footer.description')}
+            </p>
+            <div className="flex gap-4">
+              {[1, 2].map((i) => (
+                <motion.a
+                  key={i}
+                  href="#"
+                  className="size-10 border flex items-center justify-center hover:text-primary transition-all rounded-full border-gray-300 hover:border-primary dark:border-white/10 dark:hover:border-primary"
+                  whileHover={{ scale: 1.1, rotate: 10 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => soundManager.playTone(500, 50, 0.15)}
+                >
+                  <span className="material-symbols-outlined text-lg">
+                    {i === 1 ? 'share' : 'public'}
+                  </span>
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
+
+          {[
+            { title: 'footer.company', links: ['footer.links.studio', 'footer.links.our_work', 'footer.links.pricing'] },
+            { title: 'footer.services', links: ['footer.links.coatings', 'footer.links.correction', 'footer.links.protection'] },
+          ].map((section) => (
+            <motion.div key={section.title} className="md:col-span-2" variants={ITEM_VARIANTS}>
+              <h6 className="text-[11px] font-black uppercase tracking-[0.3em] mb-8 text-gray-900 dark:text-white transition-colors">
+                {t(section.title)}
+              </h6>
+              <ul className="space-y-4 text-[13px] font-medium">
+                {section.links.map((link) => (
+                  <motion.li key={link} whileHover={{ x: 5 }}>
+                    <a
+                      href="#"
+                      className="transition-colors text-gray-600 hover:text-primary dark:text-white/40 dark:hover:text-primary"
+                      onClick={() => soundManager.playTone(500, 50, 0.15)}
+                    >
+                      {t(link)}
+                    </a>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
+
+          <motion.div className="md:col-span-4" variants={ITEM_VARIANTS}>
+            <h6 className={`text-[11px] font-black uppercase tracking-[0.3em] mb-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              {t('footer.newsletter')}
+            </h6>
+            <div className="flex">
+              <input
+                type="email"
+                placeholder={t('footer.newsletter_placeholder')}
+                className={`rounded-l px-4 py-3 text-sm outline-none focus:border-primary border transition-colors ${isDark
+                    ? 'bg-white/5 border-white/10 focus:bg-white/10 text-white'
+                    : 'bg-gray-100 border-gray-200 focus:bg-white text-gray-900'
+                  }`}
+              />
+              <motion.button
+                className="bg-gray-900 dark:bg-white text-white dark:text-black px-6 rounded-r font-black text-[11px] uppercase tracking-widest hover:bg-primary dark:hover:bg-primary hover:text-white dark:hover:text-white transition-all"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => soundManager.playTone(600, 100, 0.2)}
+              >
+                {t('footer.subscribe')}
+              </motion.button>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          className="flex flex-col md:flex-row justify-between items-center pt-12 border-t gap-8 border-gray-200 dark:border-white/5 transition-colors"
+          variants={ITEM_VARIANTS}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.5 }}
+        >
+          <p className={`text-[10px] uppercase tracking-[0.3em] font-bold ${isDark ? 'text-white/20' : 'text-gray-500'}`}>
+            {t('footer.copyright')}
+          </p>
+          <div className="flex gap-12 text-[10px] uppercase tracking-[0.3em] font-bold text-gray-500 dark:text-white/20">
+            <motion.a
+              href="#"
+              className="hover:text-gray-900 dark:hover:text-white transition-colors"
+              whileHover={{ scale: 1.1 }}
+              onClick={() => soundManager.playTone(500, 50, 0.15)}
+            >
+              {t('footer.privacy')}
+            </motion.a>
+            <motion.a
+              href="#"
+              className="hover:text-gray-900 dark:hover:text-white transition-colors"
+              whileHover={{ scale: 1.1 }}
+              onClick={() => soundManager.playTone(500, 50, 0.15)}
+            >
+              {t('footer.terms')}
+            </motion.a>
+          </div>
+        </motion.div>
+      </div>
+    </footer>
+  );
+};
+
+const Layout = ({ children }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="min-h-screen flex flex-col font-sans transition-colors bg-background-light text-gray-900 dark:bg-background-dark dark:text-white">
+      {/* Skip to main content link for accessibility */}
+      <a href="#main-content" className="skip-to-main">
+        {t('skip_to_main')}
+      </a>
+      <Navbar />
+      <motion.main
+        id="main-content"
+        className="flex-grow outline-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        tabIndex={-1}
+      >
+        {children}
+      </motion.main>
+      <Footer />
+    </div>
+  );
+};
+
+export default Layout;
