@@ -248,7 +248,7 @@ const Calculator = () => {
                                 <button
                                     onClick={() => {
                                         const config = { vehicle, condition, modules, total: Math.floor(total), savedAt: new Date().toISOString() };
-                                        localStorage.setItem('detailingConfig', JSON.stringify(config));
+                                        localStorage.setItem(STORAGE_KEYS.bookingConfig, JSON.stringify(config));
                                         addToast(t('calculator.toasts.saved'), 'success');
                                     }}
                                     className="w-full border border-white/10 text-white/60 h-14 rounded font-black uppercase tracking-[0.2em] text-[11px] hover:border-white hover:text-white transition-all"
