@@ -224,41 +224,12 @@ router.get('/bookings',
       
       const result = await db.query(query, queryParams);
       
-      // Optimization: extract total from window function or fallback only if empty
+      // Extract total from window function; 0 if no results (correct for empty pages)
       let total = 0;
       if (result.length > 0) {
         total = parseInt(result[0].total_count);
-        // Clean up total_count from each row to maintain clean API response
         result.forEach(row => delete row.total_count);
-      } else if (pagination.offset > 0) {
-        // If result is empty but offset was specified, we need a separate count
-        let countQuery = `SELECT COUNT(*) FROM bookings WHERE user_id = ${req.userId}`;
-        if (conditions.length > 0) {
-          countQuery += ' AND ' + conditions.join(' AND ');
-        }
-        const countResult = await db.query(countQuery);
-        total = parseInt(countResult[0].count);
       }
-      
-      // Get total count
-      let countQuery = `SELECT COUNT(*) FROM bookings b WHERE b.user_id = $1`;
-      const countParams = [req.userId];
-
-      if (status) {
-        countParams.push(status);
-        countQuery += ` AND b.status = $${countParams.length}`;
-      }
-      if (dateFrom) {
-        countParams.push(dateFrom);
-        countQuery += ` AND b.date >= $${countParams.length}`;
-      }
-      if (dateTo) {
-        countParams.push(dateTo);
-        countQuery += ` AND b.date <= $${countParams.length}`;
-      }
-      
-      const countResult = await db.query(countQuery, countParams);
-      const total = parseInt(countResult[0].count);
       
       res.json({
         data: result,
@@ -415,52 +386,52 @@ router.put('/bookings/:id',
         });
       }
       
-      // Build update query dynamically
+      // Build update query dynamically with parameterized placeholders
       const updates = [];
       const params = [];
-      
+      let paramIndex = 1;
+
       if (date !== undefined) {
-        updates.push(`date = ${date}`);
+        updates.push(`date = $${paramIndex++}`);
         params.push(date);
       }
       if (time !== undefined) {
-        updates.push(`time = ${time}`);
+        updates.push(`time = $${paramIndex++}`);
         params.push(time);
       }
       if (carModel !== undefined) {
-        updates.push(`car_model = ${carModel}`);
+        updates.push(`car_model = $${paramIndex++}`);
         params.push(carModel);
       }
       if (packageId !== undefined) {
-        updates.push(`package_id = ${packageId}`);
+        updates.push(`package_id = $${paramIndex++}`);
         params.push(packageId);
       }
       if (selectedModules !== undefined) {
-        updates.push(`selected_modules = ${selectedModules}`);
+        updates.push(`selected_modules = $${paramIndex++}`);
         params.push(selectedModules);
       }
       if (totalPrice !== undefined) {
-        updates.push(`total_price = ${totalPrice}`);
+        updates.push(`total_price = $${paramIndex++}`);
         params.push(totalPrice);
       }
       if (notes !== undefined) {
-        updates.push(`notes = ${notes}`);
+        updates.push(`notes = $${paramIndex++}`);
         params.push(notes);
       }
       if (status !== undefined) {
-        updates.push(`status = ${status}`);
+        updates.push(`status = $${paramIndex++}`);
         params.push(status);
       }
-      
+
       if (updates.length === 0) {
-        return res.status(400).json({ 
+        return res.status(400).json({
           error: 'No valid fields provided for update',
           code: 'NO_UPDATES'
         });
       }
-      
-      // Use raw query for dynamic updates
-      const query = `UPDATE bookings SET ${updates.join(', ')}, updated_at = NOW() WHERE id = $${params.length + 1} RETURNING *`;
+
+      const query = `UPDATE bookings SET ${updates.join(', ')}, updated_at = NOW() WHERE id = $${paramIndex} RETURNING *`;
       params.push(id);
       
       const result = await db.query(query, params);

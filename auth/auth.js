@@ -4,7 +4,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { userSchema } from '../db/database.js';
 import { db } from '../db/database.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
+  throw new Error('JWT_SECRET environment variable must be set in production');
+}
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-not-for-production';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 const SALT_ROUNDS = 12;
 
@@ -37,9 +40,9 @@ export async function register(userData) {
     
     // Create user
     const result = await db.query(
-      `INSERT INTO users (email, password_hash, first_name, last_name, phone) 
-       VALUES ($1, $2, $3, $4, $5) 
-       RETURNING id, email, first_name, last_name, phone, created_at`,
+      `INSERT INTO users (email, password_hash, first_name, last_name, phone)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id, email, first_name, last_name, phone, role, created_at`,
       [
         validatedData.email.toLowerCase(),
         hashedPassword,
@@ -48,11 +51,11 @@ export async function register(userData) {
         validatedData.phone || null
       ]
     );
-    
+
     const user = result[0];
-    
+
     // Generate tokens
-    const { accessToken, refreshToken } = await generateTokens(user.id);
+    const { accessToken, refreshToken } = await generateTokens(user.id, user.role);
     
     // Store refresh token
     await storeRefreshToken(user.id, refreshToken);
@@ -109,8 +112,8 @@ export async function login(email, password) {
     );
     
     // Generate tokens
-    const { accessToken, refreshToken } = await generateTokens(user.id);
-    
+    const { accessToken, refreshToken } = await generateTokens(user.id, user.role);
+
     // Store refresh token
     await storeRefreshToken(user.id, refreshToken);
     
@@ -133,9 +136,9 @@ export async function login(email, password) {
 }
 
 // Token generation
-async function generateTokens(userId) {
-  const payload = { userId };
-  
+async function generateTokens(userId, role) {
+  const payload = { userId, role };
+
   const accessToken = jwt.sign(payload, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN,
     issuer: 'detailing-app',
@@ -239,18 +242,19 @@ export function authenticateToken(req, res, next) {
     
     const decoded = verifyAccessToken(token);
     req.userId = decoded.userId;
+    req.userRole = decoded.role;
     next();
   } catch {
     return res.status(403).json({ error: 'Invalid or expired token' });
   }
 }
 
-// Authorization middleware
-export function authorizeRoles() {
+// Authorization middleware — call with the roles allowed, e.g. authorizeRoles('admin', 'staff')
+export function authorizeRoles(...roles) {
   return (req, res, next) => {
-    // This would typically check the user's role from database
-    // For now, we'll implement basic role checking
-    // In a real implementation, you'd fetch user role from database
+    if (!roles.includes(req.userRole)) {
+      return res.status(403).json({ error: 'Insufficient permissions', code: 'FORBIDDEN' });
+    }
     next();
   };
 }
@@ -275,10 +279,9 @@ export async function requestPasswordReset(email) {
       { expiresIn: '1h' }
     );
     
-    // In a real app, you'd send this via email
-    console.log(`Password reset token for ${user.email}: ${resetToken}`);
-    
-    return { success: true, resetToken }; // Remove resetToken in production
+    // TODO: send resetToken via email (e.g. using nodemailer or a transactional email service)
+
+    return { success: true };
   } catch (error) {
     throw new AuthError('Password reset request failed: ' + error.message);
   }
